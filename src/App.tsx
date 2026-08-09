@@ -10,7 +10,7 @@ import { ScrollProgress } from './components/ScrollProgress';
 import { CustomCursor } from './components/CustomCursor';
 import { LoadingScreen } from './components/LoadingScreen';
 
-// IMPORT ALL PAGES DIRECTLY
+// IMPORT ALL PAGES
 import { HomePage } from './pages/HomePage';
 import { ServicesPage } from './pages/ServicesPage';
 import { ServiceDetailPage } from './pages/ServiceDetailPage';
@@ -26,7 +26,6 @@ import AdminPage from './pages/AdminPage';
 import { AboutPage } from './pages/AboutPage';
 import { PricingPage } from './pages/PricingPage';
 import { DigitalEcosystemPage } from './pages/DigitalEcosystemPage';
-
 import { WebDevelopmentPage } from './pages/WebDevelopmentPage';
 import { SoftwareSolutionsPage } from './pages/SoftwareSolutionsPage';
 import { AIAutomationPage } from './pages/AIAutomationPage';
@@ -49,7 +48,7 @@ import { BugBountyPage } from './pages/BugBountyPage';
 import { CalculatorPage } from './pages/CalculatorPage';
 
 // ============================================================
-// 🚨 GLOBAL ERROR BOUNDARY
+// ERROR BOUNDARY
 // ============================================================
 class ErrorBoundary extends Component<{ children: ReactNode }> {
   state = { hasError: false, error: null as any };
@@ -70,7 +69,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }> {
           <div className="max-w-2xl rounded-2xl border border-red-500/30 bg-red-500/10 p-8">
             <h1 className="text-2xl font-bold text-red-400">App Crash Detected</h1>
             <p className="mt-2 text-sm text-slate-400">
-              An error occurred while rendering the page. Check your browser console (F12 - Console) to see the exact error.
+              An error occurred while rendering the page. Check your browser console.
             </p>
             <button 
               onClick={() => window.location.reload()} 
