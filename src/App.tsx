@@ -38,6 +38,8 @@ import { SocialMediaMarketingPage } from './pages/SocialMediaMarketingPage';
 import { ContentMarketingPage } from './pages/ContentMarketingPage';
 import { PenetrationTestingPage } from './pages/PenetrationTestingPage';
 import { EcommerceDevelopmentPage } from './pages/EcommerceDevelopmentPage';
+import { ShopifyStoresPage } from './pages/ShopifyStoresPage';      // ✅ ADDED
+import { MarketplacePage } from './pages/MarketplacePage';           // ✅ ADDED
 import { CareersPage } from './pages/CareersPage';
 import { PartnersPage } from './pages/PartnersPage';
 import { ReportsPage } from './pages/ReportsPage';
@@ -92,7 +94,7 @@ function App() {
   const route = useRoute();
   const path = route.path;
 
-  // ✅ This is the CRITICAL FIX: It reads the hash path correctly
+  // ✅ COMPLETE ROUTE MAPPING - ALL PAGES WORKING
   let PageComponent = HomePage;
 
   // Home
@@ -102,19 +104,29 @@ function App() {
   else if (path === '/services') PageComponent = ServicesPage;
   else if (path.startsWith('/services/')) PageComponent = ServiceDetailPage;
 
-  // Marketing & Tech & Dropdown Pages
+  // Technology Pages
   else if (path === '/web-development') PageComponent = WebDevelopmentPage;
   else if (path === '/software-solutions') PageComponent = SoftwareSolutionsPage;
   else if (path === '/ai-automation') PageComponent = AIAutomationPage;
   else if (path === '/cloud-solutions') PageComponent = CloudSolutionsPage;
   else if (path === '/mobile-app-development') PageComponent = MobileAppDevelopmentPage;
+
+  // Marketing Pages
   else if (path === '/digital-marketing') PageComponent = DigitalMarketingPage;
   else if (path === '/seo') PageComponent = SEOPage;
   else if (path === '/social-media-marketing') PageComponent = SocialMediaMarketingPage;
   else if (path === '/content-marketing') PageComponent = ContentMarketingPage;
+
+  // Security Pages
   else if (path === '/cybersecurity') PageComponent = CybersecurityPage;
   else if (path === '/penetration-testing') PageComponent = PenetrationTestingPage;
+
+  // ✅ COMMERCE PAGES - FIXED!
   else if (path === '/ecommerce-development') PageComponent = EcommerceDevelopmentPage;
+  else if (path === '/shopify-stores') PageComponent = ShopifyStoresPage;        // ✅ NOW WORKING
+  else if (path === '/marketplace') PageComponent = MarketplacePage;              // ✅ NOW WORKING
+
+  // Ecosystem
   else if (path === '/ecosystem') PageComponent = DigitalEcosystemPage;
 
   // Standard Pages
