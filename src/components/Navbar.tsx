@@ -5,46 +5,14 @@ import { useAuth } from '../lib/auth';
 import {
   Menu, X, Sun, Moon, ChevronDown, LogIn, Calculator,
   Home, Code2, Globe, Layers, Bot, Cloud, Smartphone, Megaphone,
-  Search, Share2, FileText, Shield, Target, ShoppingBag, FolderKanban,
+  Search, Share2, FileText, Shield, Target, ShoppingBag,
   Store, Tags,
   Users, UserCheck, Briefcase, Handshake, Lightbulb, Newspaper,
   Wrench, ShieldAlert, Gauge, Tag, Mail, type LucideIcon,
 } from 'lucide-react';
 
 // ============================================================
-// 1. IMPORT YOUR EXISTING PAGES
-// ============================================================
-import { HomePage } from '../pages/HomePage';
-import { WebDevelopmentPage } from '../pages/WebDevelopmentPage';
-import { SoftwareSolutionsPage } from '../pages/SoftwareSolutionsPage';
-import { AIAutomationPage } from '../pages/AIAutomationPage';
-import { CloudSolutionsPage } from '../pages/CloudSolutionsPage';
-import { MobileAppDevelopmentPage } from '../pages/MobileAppDevelopmentPage';
-import { DigitalMarketingPage } from '../pages/DigitalMarketingPage';
-import { SEOPage } from '../pages/SEOPage';
-import { SocialMediaMarketingPage } from '../pages/SocialMediaMarketingPage';
-import { ContentMarketingPage } from '../pages/ContentMarketingPage';
-import { CybersecurityPage } from '../pages/CybersecurityPage';
-import { PenetrationTestingPage } from '../pages/PenetrationTestingPage';
-import { EcommerceDevelopmentPage } from '../pages/EcommerceDevelopmentPage';
-import { ShopifyStoresPage } from '../pages/ShopifyStoresPage';
-import { MarketplacePage } from '../pages/MarketplacePage';
-import { DigitalEcosystemPage } from '../pages/DigitalEcosystemPage';
-import { AboutPage } from '../pages/AboutPage';
-import { CareersPage } from '../pages/CareersPage';
-import { PartnersPage } from '../pages/PartnersPage';
-import { BlogPage } from '../pages/BlogPage';
-import { CaseStudyPage } from '../pages/CaseStudyPage';
-import { ReportsPage } from '../pages/ReportsPage';
-import { ToolsPage } from '../pages/ToolsPage';
-import { CalculatorPage } from '../pages/CalculatorPage';
-import { OffersPage } from '../pages/OffersPage';
-import { ContactPage } from '../pages/ContactPage';
-import { PortalPage } from '../pages/PortalPage';
-import { AdminPage } from '../pages/AdminPage';
-
-// ============================================================
-// 2. TYPES
+// 1. TYPES
 // ============================================================
 interface NavLink {
   label: string;
@@ -57,7 +25,7 @@ interface DropdownLink extends NavLink {
 }
 
 // ============================================================
-// 3. NAVIGATION DATA
+// 2. NAVIGATION DATA
 // ============================================================
 const navLinks: DropdownLink[] = [
   { label: 'Home', path: '/', icon: Home },
@@ -106,7 +74,7 @@ const navLinks: DropdownLink[] = [
 ];
 
 // ============================================================
-// 4. COMPONENT
+// 3. COMPONENT
 // ============================================================
 export default function Navbar() {
   const route = useRoute();
@@ -263,7 +231,7 @@ export default function Navbar() {
                   <Calculator className="h-4 w-4 shrink-0" /> Web Cost Calculator
                 </button>
 
-                {/* Sign In / Create Account at bottom of mobile menu */}
+                {/* Sign In / Create Account at bottom */}
                 <div className="mt-3 border-t pt-3" style={{ borderColor: isLight ? '#e2e8f0' : 'rgba(255,255,255,0.1)' }}>
                   <button 
                     onClick={() => { nav('/portal'); setOpen(false); }} 
