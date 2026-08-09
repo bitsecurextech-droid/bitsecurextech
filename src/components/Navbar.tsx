@@ -27,8 +27,8 @@ import { ContentMarketingPage } from '../pages/ContentMarketingPage';
 import { CybersecurityPage } from '../pages/CybersecurityPage';
 import { PenetrationTestingPage } from '../pages/PenetrationTestingPage';
 import { EcommerceDevelopmentPage } from '../pages/EcommerceDevelopmentPage';
-import { ShopifyStoresPage } from '../pages/ShopifyStoresPage'; 
-import { MarketplacePage } from '../pages/MarketplacePage';       
+import { ShopifyStoresPage } from '../pages/ShopifyStoresPage';
+import { MarketplacePage } from '../pages/MarketplacePage';
 import { DigitalEcosystemPage } from '../pages/DigitalEcosystemPage';
 import { AboutPage } from '../pages/AboutPage';
 import { CareersPage } from '../pages/CareersPage';
@@ -108,7 +108,7 @@ const navLinks: DropdownLink[] = [
 // ============================================================
 // 4. COMPONENT
 // ============================================================
-export function Navbar() {
+export default function Navbar() {
   const route = useRoute();
   const nav = useNavigate();
   const { theme, toggle } = useTheme();
@@ -137,7 +137,6 @@ export function Navbar() {
 
   return (
     <>
-      {/* 🛑 HIDE ON DASHBOARD ROUTES */}
       {route.path === '/admin' || route.path === '/portal' ? null : (
         <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
           scrolled
@@ -150,7 +149,7 @@ export function Navbar() {
         }`}>
           <div className="container-x flex items-center justify-between px-4 py-3 sm:px-6 lg:px-12">
             
-            {/* Logo (Shortened on Mobile) */}
+            {/* Logo */}
             <button onClick={() => nav('/')} className="flex items-center gap-2.5 group shrink-0">
               <span className="grid h-9 w-9 place-items-center rounded-lg bg-black ring-1 ring-cyber-500/30 transition-transform group-hover:scale-105">
                 <img src="/icon.png" alt="BSX" className="h-7 w-7 rounded-md object-cover" />
@@ -208,9 +207,8 @@ export function Navbar() {
               })}
             </nav>
 
-            {/* Right actions (With Permanent Sign In on Mobile) */}
+            {/* Right actions */}
             <div className="flex items-center gap-1 sm:gap-2">
-              {/* Hide Calculator button completely on mobile */}
               <button onClick={() => nav('/calculator')} className={`hidden lg:inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${isLight ? 'text-cyber-600 hover:bg-cyber-50' : 'text-cyber-400 hover:bg-cyber-500/10'}`}>
                 <Calculator className="h-4 w-4" /> Web Cost Calculator
               </button>
@@ -218,12 +216,10 @@ export function Navbar() {
                 {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </button>
 
-              {/* ✅ PERMANENT SIGN IN BUTTON - VISIBLE ON MOBILE */}
               <button onClick={() => nav('/portal')} className={`flex items-center gap-1 rounded-lg border px-2 py-1.5 text-xs font-medium transition-colors sm:hidden ${isLight ? 'border-slate-200 text-slate-700 hover:border-cyber-500' : 'border-white/10 text-slate-300 hover:border-cyber-400/50'}`}>
                 <LogIn className="h-3.5 w-3.5" /> Sign In
               </button>
 
-              {/* Desktop Sign In */}
               <button onClick={() => nav('/portal')} className={`hidden sm:inline-flex items-center gap-1.5 rounded-lg border px-3.5 py-2 text-sm font-medium transition-colors ${isLight ? 'border-slate-200 text-slate-700 hover:border-cyber-500 hover:text-cyber-500' : 'border-white/15 text-slate-300 hover:border-cyber-400/50 hover:text-white'}`}>
                 <LogIn className="h-4 w-4" /> Sign In
               </button>
@@ -235,7 +231,7 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* ✅ UPDATED MOBILE MENU WITH SIGN UP AT BOTTOM */}
+          {/* Mobile menu */}
           {open && (
             <div className={`border-t xl:hidden ${isLight ? 'bg-white border-slate-100' : 'bg-navy-950/95 backdrop-blur-xl border-white/10'}`}>
               <div className="flex flex-col gap-1 px-5 py-4 max-h-[70vh] overflow-y-auto">
@@ -267,7 +263,7 @@ export function Navbar() {
                   <Calculator className="h-4 w-4 shrink-0" /> Web Cost Calculator
                 </button>
 
-                {/* ✅ ADD SIGN UP / CREATE ACCOUNT BUTTON AT BOTTOM OF MOBILE MENU */}
+                {/* Sign In / Create Account at bottom of mobile menu */}
                 <div className="mt-3 border-t pt-3" style={{ borderColor: isLight ? '#e2e8f0' : 'rgba(255,255,255,0.1)' }}>
                   <button 
                     onClick={() => { nav('/portal'); setOpen(false); }} 
