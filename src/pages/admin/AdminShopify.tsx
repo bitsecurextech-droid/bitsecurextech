@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { 
   ShoppingBag, Plus, Loader2, Pencil, Trash2, Save, X, 
-  Star, Package, Users, Layers,
-  DollarSign, CheckCircle, Award, Zap, FileText,
-  Calendar, Search, SortAsc, SortDesc, Eye, Image as ImageIcon
+  Star, Package, Users, Layers, DollarSign, CheckCircle, 
+  Award, Zap, FileText, Calendar, Search, SortAsc, SortDesc, 
+  Eye, Image as ImageIcon, Filter, Tag, Clock, TrendingUp,
+  Shield, Code, Palette, Megaphone, Settings, Grip
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
@@ -13,9 +14,11 @@ export function AdminShopify() {
   // ============================================================
   const [pricing, setPricing] = useState<any[]>([]);
   const [caseStudies, setCaseStudies] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<'pricing' | 'studies'>('pricing');
+  const [tab, setTab] = useState<'pricing' | 'studies' | 'categories'>('pricing');
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortField, setSortField] = useState('created_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   // ============================================================
@@ -29,12 +32,18 @@ export function AdminShopify() {
     description: '',
     features: '',
     is_popular: false,
+    discount_label: '',
+    discount_value: '',
     badge_text: '',
-    button_text: 'Get Started'
+    button_text: 'Get Started',
+    button_link: '#',
+    color: 'cyan',
+    featured: false,
+    category: ''
   });
 
   // ============================================================
-  // CASE STUDY FORM
+  // CASE STUDY FORM - FULL VERSION
   // ============================================================
   const [studyOpen, setStudyOpen] = useState(false);
   const [editingStudy, setEditingStudy] = useState<any>(null);
@@ -43,7 +52,34 @@ export function AdminShopify() {
     client: '',
     industry: '',
     description: '',
-    image_url: ''
+    image_url: '',
+    images: [] as string[],
+    challenge: '',
+    strategy: '',
+    design: '',
+    development: '',
+    security: '',
+    results: '',
+    metrics: [{ label: '', value: '' }],
+    technologies: '',
+    categories: [] as string[],
+    featured: false,
+    published: true,
+    date: new Date().toISOString().split('T')[0]
+  });
+
+  // ============================================================
+  // CATEGORY FORM
+  // ============================================================
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [categoryForm, setCategoryForm] = useState({
+    name: '',
+    slug: '',
+    description: '',
+    icon: 'Package',
+    color: 'blue',
+    count: 0
   });
 
   // ============================================================
@@ -52,16 +88,19 @@ export function AdminShopify() {
   const load = async () => {
     setLoading(true);
     try {
-      const [p, c] = await Promise.all([
+      const [p, c, cat] = await Promise.all([
         supabase.from('admin_shopify_pricing').select('*').order('created_at', { ascending: true }),
         supabase.from('admin_case_studies').select('*').order('created_at', { ascending: false }),
+        supabase.from('admin_shopify_categories').select('*').order('name', { ascending: true }),
       ]);
       
       if (p.error) console.error('Pricing error:', p.error);
       if (c.error) console.error('Case studies error:', c.error);
+      if (cat.error) console.error('Categories error:', cat.error);
       
       setPricing(p.data || []);
       setCaseStudies(c.data || []);
+      setCategories(cat.data || []);
     } catch (err) {
       console.error('Load error:', err);
     }
@@ -71,7 +110,7 @@ export function AdminShopify() {
   useEffect(() => { load(); }, []);
 
   // ============================================================
-  // SUBMIT PRICING
+  // SUBMIT PRICING - FULL VERSION
   // ============================================================
   const submitPrice = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,8 +121,14 @@ export function AdminShopify() {
       description: priceForm.description,
       features: featuresArray,
       is_popular: priceForm.is_popular,
+      discount_label: priceForm.discount_label,
+      discount_value: priceForm.discount_value,
       badge_text: priceForm.badge_text,
-      button_text: priceForm.button_text
+      button_text: priceForm.button_text,
+      button_link: priceForm.button_link,
+      color: priceForm.color,
+      featured: priceForm.featured,
+      category: priceForm.category
     };
     
     try {
@@ -109,7 +154,7 @@ export function AdminShopify() {
   };
 
   // ============================================================
-  // SUBMIT CASE STUDY
+  // SUBMIT CASE STUDY - FULL VERSION
   // ============================================================
   const submitStudy = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,8 +164,17 @@ export function AdminShopify() {
         title: studyForm.title,
         client: studyForm.client,
         industry: studyForm.industry || 'E-commerce',
-        challenge: studyForm.description,
-        image_url: studyForm.image_url || ''
+        challenge: studyForm.challenge || studyForm.description,
+        strategy: studyForm.strategy || '',
+        design: studyForm.design || '',
+        development: studyForm.development || '',
+        security: studyForm.security || '',
+        image_url: studyForm.image_url || '',
+        results: studyForm.results || '',
+        technologies: studyForm.technologies || '',
+        featured: studyForm.featured || false,
+        published: studyForm.published !== false,
+        date: studyForm.date || new Date().toISOString().split('T')[0]
       };
 
       console.log('📝 Saving case study:', payload);
@@ -143,6 +197,44 @@ export function AdminShopify() {
       load();
     } catch (err: any) {
       console.error('Submit study error:', err);
+      alert('Error: ' + err.message);
+    }
+  };
+
+  // ============================================================
+  // SUBMIT CATEGORY
+  // ============================================================
+  const submitCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      const payload = {
+        name: categoryForm.name,
+        slug: categoryForm.slug || categoryForm.name.toLowerCase().replace(/\s+/g, '-'),
+        description: categoryForm.description,
+        icon: categoryForm.icon || 'Package',
+        color: categoryForm.color || 'blue',
+        count: categoryForm.count || 0
+      };
+
+      if (editingCategory) {
+        const { error } = await supabase
+          .from('admin_shopify_categories')
+          .update(payload)
+          .eq('id', editingCategory.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('admin_shopify_categories')
+          .insert(payload);
+        if (error) throw error;
+      }
+      
+      setCategoryOpen(false);
+      setEditingCategory(null);
+      load();
+    } catch (err: any) {
+      console.error('Submit category error:', err);
       alert('Error: ' + err.message);
     }
   };
@@ -180,6 +272,21 @@ export function AdminShopify() {
     }
   };
 
+  const delCategory = async (id: string) => {
+    if (!confirm('Delete this category?')) return;
+    try {
+      const { error } = await supabase
+        .from('admin_shopify_categories')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+      load();
+    } catch (err: any) {
+      console.error('Delete category error:', err);
+      alert('Error: ' + err.message);
+    }
+  };
+
   // ============================================================
   // FILTER & SORT
   // ============================================================
@@ -190,9 +297,10 @@ export function AdminShopify() {
   );
 
   const sortedStudies = [...filteredStudies].sort((a, b) => {
-    const aVal = a.created_at || '';
-    const bVal = b.created_at || '';
-    return sortOrder === 'desc' ? aVal < bVal ? 1 : -1 : aVal > bVal ? 1 : -1;
+    const aVal = a[sortField] || '';
+    const bVal = b[sortField] || '';
+    if (sortOrder === 'asc') return aVal > bVal ? 1 : -1;
+    return aVal < bVal ? 1 : -1;
   });
 
   // ============================================================
@@ -204,7 +312,7 @@ export function AdminShopify() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="font-display text-2xl font-bold text-white">Shopify Store Manager</h1>
-          <p className="text-sm text-slate-400">Manage pricing tiers and case studies</p>
+          <p className="text-sm text-slate-400">Manage pricing tiers, case studies, and categories</p>
         </div>
         <div className="flex gap-2 border border-white/10 rounded-xl p-1">
           <button 
@@ -219,11 +327,17 @@ export function AdminShopify() {
           >
             <FileText className="h-4 w-4" /> Case Studies
           </button>
+          <button 
+            onClick={() => setTab('categories')} 
+            className={`px-4 py-2 text-sm rounded-lg transition-colors flex items-center gap-2 ${tab === 'categories' ? 'bg-cyber-500/20 text-cyber-400' : 'text-slate-400'}`}
+          >
+            <Layers className="h-4 w-4" /> Categories
+          </button>
         </div>
       </div>
 
       {/* ============================================================
-          PRICING TAB
+          PRICING TAB - FULL VERSION
           ============================================================ */}
       {tab === 'pricing' && (
         <div className="space-y-4">
@@ -249,10 +363,20 @@ export function AdminShopify() {
                       <Award className="h-3 w-3 inline mr-1" /> Popular
                     </span>
                   )}
+                  {p.featured && (
+                    <span className="absolute -top-2 left-4 bg-purple-500 text-white text-xs px-3 py-0.5 rounded-full font-medium">
+                      <Zap className="h-3 w-3 inline mr-1" /> Featured
+                    </span>
+                  )}
                   <div className="flex justify-between items-start mt-2">
                     <div>
                       <h3 className="font-display text-lg font-bold text-white">{p.title}</h3>
                       <p className="text-2xl font-bold text-cyber-400">{p.price}</p>
+                      {p.discount_label && (
+                        <span className="inline-block mt-1 text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                          {p.discount_label}: {p.discount_value}
+                        </span>
+                      )}
                     </div>
                     <div className="flex gap-1">
                       <button 
@@ -261,8 +385,14 @@ export function AdminShopify() {
                           setPriceForm({
                             ...p, 
                             features: p.features?.join(', ') || '',
+                            discount_label: p.discount_label || '',
+                            discount_value: p.discount_value || '',
                             badge_text: p.badge_text || '',
-                            button_text: p.button_text || 'Get Started'
+                            button_text: p.button_text || 'Get Started',
+                            button_link: p.button_link || '#',
+                            color: p.color || 'cyan',
+                            featured: p.featured || false,
+                            category: p.category || ''
                           }); 
                           setPriceOpen(true); 
                         }} 
@@ -303,11 +433,10 @@ export function AdminShopify() {
       )}
 
       {/* ============================================================
-          CASE STUDIES TAB
+          CASE STUDIES TAB - FULL VERSION
           ============================================================ */}
       {tab === 'studies' && (
         <div className="space-y-4">
-          {/* Toolbar */}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2 flex-1 max-w-sm">
               <Search className="h-4 w-4 text-slate-400" />
@@ -320,10 +449,18 @@ export function AdminShopify() {
               />
             </div>
             <div className="flex items-center gap-2">
+              <select
+                value={sortField}
+                onChange={(e) => setSortField(e.target.value)}
+                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
+              >
+                <option value="created_at">Date</option>
+                <option value="title">Title</option>
+                <option value="client">Client</option>
+              </select>
               <button
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                 className="text-slate-400 hover:text-white p-2 rounded-lg border border-white/10"
-                title={sortOrder === 'asc' ? 'Oldest first' : 'Newest first'}
               >
                 {sortOrder === 'asc' ? <SortAsc className="h-4 w-4" /> : <SortDesc className="h-4 w-4" />}
               </button>
@@ -335,7 +472,20 @@ export function AdminShopify() {
                     client: '',
                     industry: '',
                     description: '',
-                    image_url: ''
+                    image_url: '',
+                    images: [],
+                    challenge: '',
+                    strategy: '',
+                    design: '',
+                    development: '',
+                    security: '',
+                    results: '',
+                    metrics: [{ label: '', value: '' }],
+                    technologies: '',
+                    categories: [],
+                    featured: false,
+                    published: true,
+                    date: new Date().toISOString().split('T')[0]
                   });
                   setStudyOpen(true); 
                 }} 
@@ -349,7 +499,7 @@ export function AdminShopify() {
           {loading ? (
             <div className="flex justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-cyber-400" /></div>
           ) : sortedStudies.length === 0 ? (
-            <div className="text-center py-10 text-slate-400">No case studies yet. Click "Add Case Study" to create one.</div>
+            <div className="text-center py-10 text-slate-400">No case studies yet.</div>
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {sortedStudies.map((cs) => (
@@ -364,6 +514,11 @@ export function AdminShopify() {
                           (e.target as HTMLImageElement).style.display = 'none';
                         }}
                       />
+                      {cs.featured && (
+                        <span className="absolute top-2 right-2 bg-purple-500 text-white text-xs px-2 py-0.5 rounded-full">
+                          <Star className="h-3 w-3 inline" /> Featured
+                        </span>
+                      )}
                     </div>
                   )}
                   <div className="flex justify-between items-start">
@@ -386,8 +541,21 @@ export function AdminShopify() {
                             title: cs.title || '',
                             client: cs.client || '',
                             industry: cs.industry || '',
-                            description: cs.challenge || '',
-                            image_url: cs.image_url || ''
+                            description: cs.challenge || cs.description || '',
+                            image_url: cs.image_url || '',
+                            images: [],
+                            challenge: cs.challenge || '',
+                            strategy: cs.strategy || '',
+                            design: cs.design || '',
+                            development: cs.development || '',
+                            security: cs.security || '',
+                            results: cs.results || '',
+                            metrics: [{ label: '', value: '' }],
+                            technologies: cs.technologies || '',
+                            categories: [],
+                            featured: cs.featured || false,
+                            published: cs.published !== false,
+                            date: cs.date || new Date().toISOString().split('T')[0]
                           });
                           setStudyOpen(true); 
                         }} 
@@ -406,9 +574,23 @@ export function AdminShopify() {
                   <p className="mt-2 text-sm text-slate-400 line-clamp-3">
                     {cs.challenge || cs.description}
                   </p>
+                  {cs.technologies && (
+                    <div className="mt-3 flex flex-wrap gap-1">
+                      {cs.technologies.split(',').map((t: string) => (
+                        <span key={t} className="text-xs bg-cyber-500/10 px-2 py-0.5 rounded-full text-cyber-300">
+                          {t.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-                    <span>{new Date(cs.created_at).toLocaleDateString()}</span>
-                    <span className="text-cyber-400">View →</span>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-3 w-3" />
+                      {cs.date || new Date(cs.created_at).toLocaleDateString()}
+                    </div>
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${cs.published !== false ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                      {cs.published !== false ? 'Published' : 'Draft'}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -418,7 +600,63 @@ export function AdminShopify() {
       )}
 
       {/* ============================================================
-          PRICING MODAL
+          CATEGORIES TAB - FULL VERSION
+          ============================================================ */}
+      {tab === 'categories' && (
+        <div className="space-y-4">
+          <div className="flex justify-end">
+            <button 
+              onClick={() => { setEditingCategory(null); setCategoryOpen(true); }} 
+              className="btn-primary px-4 py-2 text-xs flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" /> Add Category
+            </button>
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-cyber-400" /></div>
+          ) : categories.length === 0 ? (
+            <div className="text-center py-10 text-slate-400">No categories yet. Create your first one!</div>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {categories.map((cat) => (
+                <div key={cat.id} className="rounded-2xl glass p-5 border border-white/5 flex items-start justify-between group hover:border-cyber-500/30 transition-colors">
+                  <div className="flex items-start gap-3">
+                    <div className={`w-10 h-10 rounded-xl bg-${cat.color || 'blue'}-500/20 flex items-center justify-center text-${cat.color || 'blue'}-400`}>
+                      <Package className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-base font-semibold text-white">{cat.name}</h3>
+                      <p className="text-xs text-slate-400">{cat.description}</p>
+                      <div className="mt-2 flex items-center gap-3 text-xs text-slate-500">
+                        <span>Slug: {cat.slug}</span>
+                        <span>{cat.count || 0} items</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button 
+                      onClick={() => { setEditingCategory(cat); setCategoryForm(cat); setCategoryOpen(true); }} 
+                      className="p-1.5 text-slate-400 hover:text-cyber-400 rounded-lg hover:bg-cyber-500/10"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
+                    <button 
+                      onClick={() => delCategory(cat.id)} 
+                      className="p-1.5 text-slate-400 hover:text-red-400 rounded-lg hover:bg-red-500/10"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ============================================================
+          PRICING MODAL - FULL VERSION
           ============================================================ */}
       {priceOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" onClick={() => setPriceOpen(false)}>
@@ -432,25 +670,27 @@ export function AdminShopify() {
               </button>
             </div>
             <form onSubmit={submitPrice} className="space-y-4">
-              <div>
-                <label className="text-xs uppercase tracking-wider text-slate-400">Title *</label>
-                <input 
-                  required
-                  value={priceForm.title} 
-                  onChange={e => setPriceForm({...priceForm, title: e.target.value})} 
-                  className="input-field" 
-                  placeholder="Premium Plan"
-                />
-              </div>
-              <div>
-                <label className="text-xs uppercase tracking-wider text-slate-400">Price *</label>
-                <input 
-                  required
-                  value={priceForm.price} 
-                  onChange={e => setPriceForm({...priceForm, price: e.target.value})} 
-                  className="input-field" 
-                  placeholder="$999"
-                />
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-400">Title *</label>
+                  <input 
+                    required
+                    value={priceForm.title} 
+                    onChange={e => setPriceForm({...priceForm, title: e.target.value})} 
+                    className="input-field" 
+                    placeholder="Premium Plan"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-400">Price *</label>
+                  <input 
+                    required
+                    value={priceForm.price} 
+                    onChange={e => setPriceForm({...priceForm, price: e.target.value})} 
+                    className="input-field" 
+                    placeholder="$999"
+                  />
+                </div>
               </div>
               <div>
                 <label className="text-xs uppercase tracking-wider text-slate-400">Description *</label>
@@ -474,6 +714,26 @@ export function AdminShopify() {
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-400">Discount Label</label>
+                  <input 
+                    value={priceForm.discount_label} 
+                    onChange={e => setPriceForm({...priceForm, discount_label: e.target.value})} 
+                    className="input-field" 
+                    placeholder="Save 20%"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-400">Discount Value</label>
+                  <input 
+                    value={priceForm.discount_value} 
+                    onChange={e => setPriceForm({...priceForm, discount_value: e.target.value})} 
+                    className="input-field" 
+                    placeholder="$200 off"
+                  />
+                </div>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
                   <label className="text-xs uppercase tracking-wider text-slate-400">Badge Text</label>
                   <input 
                     value={priceForm.badge_text} 
@@ -492,15 +752,26 @@ export function AdminShopify() {
                   />
                 </div>
               </div>
-              <label className="flex items-center gap-2 text-sm text-slate-300">
-                <input 
-                  type="checkbox" 
-                  checked={priceForm.is_popular} 
-                  onChange={e => setPriceForm({...priceForm, is_popular: e.target.checked})} 
-                  className="h-4 w-4 rounded border-white/20 bg-white/10"
-                />
-                Most Popular
-              </label>
+              <div className="flex flex-wrap items-center gap-4">
+                <label className="flex items-center gap-2 text-sm text-slate-300">
+                  <input 
+                    type="checkbox" 
+                    checked={priceForm.is_popular} 
+                    onChange={e => setPriceForm({...priceForm, is_popular: e.target.checked})} 
+                    className="h-4 w-4 rounded border-white/20 bg-white/10"
+                  />
+                  Most Popular
+                </label>
+                <label className="flex items-center gap-2 text-sm text-slate-300">
+                  <input 
+                    type="checkbox" 
+                    checked={priceForm.featured} 
+                    onChange={e => setPriceForm({...priceForm, featured: e.target.checked})} 
+                    className="h-4 w-4 rounded border-white/20 bg-white/10"
+                  />
+                  Featured
+                </label>
+              </div>
               <button type="submit" className="btn-primary w-full py-2.5 text-sm flex items-center justify-center gap-2">
                 <Save className="h-4 w-4" /> {editingPrice ? 'Update' : 'Save'} Pricing
               </button>
@@ -510,7 +781,7 @@ export function AdminShopify() {
       )}
       
       {/* ============================================================
-          CASE STUDY MODAL
+          CASE STUDY MODAL - FULL VERSION
           ============================================================ */}
       {studyOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" onClick={() => setStudyOpen(false)}>
@@ -532,7 +803,7 @@ export function AdminShopify() {
                     value={studyForm.title} 
                     onChange={e => setStudyForm({...studyForm, title: e.target.value})} 
                     className="input-field" 
-                    placeholder="The Promise We Make to Your Identity"
+                    placeholder="Project Name"
                   />
                 </div>
                 <div>
@@ -542,18 +813,29 @@ export function AdminShopify() {
                     value={studyForm.client} 
                     onChange={e => setStudyForm({...studyForm, client: e.target.value})} 
                     className="input-field" 
-                    placeholder="GLIDEWITH"
+                    placeholder="Client Name"
                   />
                 </div>
               </div>
-              <div>
-                <label className="text-xs uppercase tracking-wider text-slate-400">Industry</label>
-                <input 
-                  value={studyForm.industry} 
-                  onChange={e => setStudyForm({...studyForm, industry: e.target.value})} 
-                  className="input-field" 
-                  placeholder="E-commerce"
-                />
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-400">Industry</label>
+                  <input 
+                    value={studyForm.industry} 
+                    onChange={e => setStudyForm({...studyForm, industry: e.target.value})} 
+                    className="input-field" 
+                    placeholder="E-commerce"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-400">Date</label>
+                  <input 
+                    type="date" 
+                    value={studyForm.date} 
+                    onChange={e => setStudyForm({...studyForm, date: e.target.value})} 
+                    className="input-field" 
+                  />
+                </div>
               </div>
               <div>
                 <label className="text-xs uppercase tracking-wider text-slate-400">Full Description *</label>
@@ -561,9 +843,82 @@ export function AdminShopify() {
                   required
                   value={studyForm.description} 
                   onChange={e => setStudyForm({...studyForm, description: e.target.value})} 
-                  rows={8} 
+                  rows={6} 
                   className="input-field" 
-                  placeholder="Write the complete case study description here..."
+                  placeholder="Write the complete case study description..."
+                />
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-400">Challenge</label>
+                  <textarea 
+                    value={studyForm.challenge} 
+                    onChange={e => setStudyForm({...studyForm, challenge: e.target.value})} 
+                    rows={2} 
+                    className="input-field" 
+                    placeholder="What was the challenge?"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-400">Strategy</label>
+                  <textarea 
+                    value={studyForm.strategy} 
+                    onChange={e => setStudyForm({...studyForm, strategy: e.target.value})} 
+                    rows={2} 
+                    className="input-field" 
+                    placeholder="What was the strategy?"
+                  />
+                </div>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-400">Design Process</label>
+                  <textarea 
+                    value={studyForm.design} 
+                    onChange={e => setStudyForm({...studyForm, design: e.target.value})} 
+                    rows={2} 
+                    className="input-field" 
+                    placeholder="How was the design done?"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-400">Development</label>
+                  <textarea 
+                    value={studyForm.development} 
+                    onChange={e => setStudyForm({...studyForm, development: e.target.value})} 
+                    rows={2} 
+                    className="input-field" 
+                    placeholder="How was it developed?"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs uppercase tracking-wider text-slate-400">Security Implementation</label>
+                <textarea 
+                  value={studyForm.security} 
+                  onChange={e => setStudyForm({...studyForm, security: e.target.value})} 
+                  rows={2} 
+                  className="input-field" 
+                  placeholder="Security measures taken..."
+                />
+              </div>
+              <div>
+                <label className="text-xs uppercase tracking-wider text-slate-400">Results</label>
+                <textarea 
+                  value={studyForm.results} 
+                  onChange={e => setStudyForm({...studyForm, results: e.target.value})} 
+                  rows={2} 
+                  className="input-field" 
+                  placeholder="Key results and outcomes..."
+                />
+              </div>
+              <div>
+                <label className="text-xs uppercase tracking-wider text-slate-400">Technologies Used</label>
+                <input 
+                  value={studyForm.technologies} 
+                  onChange={e => setStudyForm({...studyForm, technologies: e.target.value})} 
+                  className="input-field" 
+                  placeholder="Shopify, React, Node.js"
                 />
               </div>
               <div>
@@ -579,7 +934,7 @@ export function AdminShopify() {
                     <img 
                       src={studyForm.image_url} 
                       alt="Preview" 
-                      className="w-full h-40 object-cover rounded-lg border border-white/10"
+                      className="w-full h-32 object-cover rounded-lg border border-white/10"
                       onError={(e) => {
                         (e.target as HTMLImageElement).style.display = 'none';
                       }}
@@ -587,8 +942,120 @@ export function AdminShopify() {
                   </div>
                 )}
               </div>
+              <div className="flex flex-wrap items-center gap-4">
+                <label className="flex items-center gap-2 text-sm text-slate-300">
+                  <input 
+                    type="checkbox" 
+                    checked={studyForm.featured} 
+                    onChange={e => setStudyForm({...studyForm, featured: e.target.checked})} 
+                    className="h-4 w-4 rounded border-white/20 bg-white/10"
+                  />
+                  Featured
+                </label>
+                <label className="flex items-center gap-2 text-sm text-slate-300">
+                  <input 
+                    type="checkbox" 
+                    checked={studyForm.published} 
+                    onChange={e => setStudyForm({...studyForm, published: e.target.checked})} 
+                    className="h-4 w-4 rounded border-white/20 bg-white/10"
+                  />
+                  Published
+                </label>
+              </div>
               <button type="submit" className="btn-primary w-full py-2.5 text-sm flex items-center justify-center gap-2">
                 <Save className="h-4 w-4" /> {editingStudy ? 'Update' : 'Save'} Case Study
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================
+          CATEGORY MODAL
+          ============================================================ */}
+      {categoryOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" onClick={() => setCategoryOpen(false)}>
+          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl glass-strong p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-lg font-bold text-white">
+                {editingCategory ? 'Edit Category' : 'Add Category'}
+              </h2>
+              <button onClick={() => setCategoryOpen(false)} className="text-slate-400 hover:text-white transition-colors">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <form onSubmit={submitCategory} className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-400">Name *</label>
+                  <input 
+                    required
+                    value={categoryForm.name} 
+                    onChange={e => setCategoryForm({...categoryForm, name: e.target.value})} 
+                    className="input-field" 
+                    placeholder="Accessories"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-400">Slug</label>
+                  <input 
+                    value={categoryForm.slug} 
+                    onChange={e => setCategoryForm({...categoryForm, slug: e.target.value})} 
+                    className="input-field" 
+                    placeholder="accessories"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs uppercase tracking-wider text-slate-400">Description</label>
+                <input 
+                  value={categoryForm.description} 
+                  onChange={e => setCategoryForm({...categoryForm, description: e.target.value})} 
+                  className="input-field" 
+                  placeholder="Category description"
+                />
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-400">Icon</label>
+                  <select 
+                    value={categoryForm.icon} 
+                    onChange={e => setCategoryForm({...categoryForm, icon: e.target.value})} 
+                    className="input-field"
+                  >
+                    <option value="Package">Package</option>
+                    <option value="ShoppingBag">ShoppingBag</option>
+                    <option value="Tag">Tag</option>
+                    <option value="Star">Star</option>
+                    <option value="Award">Award</option>
+                    <option value="Zap">Zap</option>
+                    <option value="Code">Code</option>
+                    <option value="Palette">Palette</option>
+                    <option value="Megaphone">Megaphone</option>
+                    <option value="Shield">Shield</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-400">Color</label>
+                  <select 
+                    value={categoryForm.color} 
+                    onChange={e => setCategoryForm({...categoryForm, color: e.target.value})} 
+                    className="input-field"
+                  >
+                    <option value="blue">Blue</option>
+                    <option value="cyan">Cyan</option>
+                    <option value="green">Green</option>
+                    <option value="purple">Purple</option>
+                    <option value="red">Red</option>
+                    <option value="orange">Orange</option>
+                    <option value="pink">Pink</option>
+                    <option value="indigo">Indigo</option>
+                    <option value="teal">Teal</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" className="btn-primary w-full py-2.5 text-sm flex items-center justify-center gap-2">
+                <Save className="h-4 w-4" /> {editingCategory ? 'Update' : 'Save'} Category
               </button>
             </form>
           </div>
