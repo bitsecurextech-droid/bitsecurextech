@@ -88,7 +88,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }> {
 }
 
 // ============================================================
-// MAINTENANCE CHECK HOOK
+// MAINTENANCE CHECK HOOK - WITH DEBUGGING
 // ============================================================
 function useMaintenance() {
   const [isMaintenance, setIsMaintenance] = useState(false);
@@ -98,24 +98,32 @@ function useMaintenance() {
   useEffect(() => {
     const checkMaintenance = async () => {
       try {
+        console.log('🔍 Checking maintenance mode...');
+        
         const { data, error } = await supabase
           .from('settings')
           .select('key, value')
           .in('key', ['maintenance_mode', 'maintenance_message']);
 
         if (error) {
-          console.error('Error checking maintenance:', error);
+          console.error('❌ Error checking maintenance:', error);
           setLoading(false);
           return;
         }
 
+        console.log('📊 Settings data:', data);
+
         const mode = data?.find((d: any) => d.key === 'maintenance_mode');
         const message = data?.find((d: any) => d.key === 'maintenance_message');
 
-        setIsMaintenance(mode?.value === 'true' || mode?.value === true);
+        const isOn = mode?.value === 'true' || mode?.value === true;
+        console.log(`🔧 Maintenance mode is: ${isOn ? 'ON ✅' : 'OFF ❌'}`);
+        console.log(`📝 Maintenance message: ${message?.value || 'Default message'}`);
+        
+        setIsMaintenance(isOn);
         setMaintenanceMessage(message?.value || 'We are currently performing maintenance. We will be back soon!');
       } catch (err) {
-        console.error('Maintenance check error:', err);
+        console.error('❌ Maintenance check error:', err);
       } finally {
         setLoading(false);
       }
@@ -123,8 +131,8 @@ function useMaintenance() {
 
     checkMaintenance();
 
-    // Refresh maintenance status every 30 seconds
-    const interval = setInterval(checkMaintenance, 30000);
+    // Check every 10 seconds
+    const interval = setInterval(checkMaintenance, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -140,79 +148,78 @@ function App() {
   const path = route.path;
   const { isMaintenance, maintenanceMessage, loading } = useMaintenance();
 
-  // If maintenance is ON and not on admin/portal pages
+  console.log(`🔄 App rendering - Path: ${path}, Maintenance: ${isMaintenance}, Loading: ${loading}`);
+
+  // ✅ CHECK MAINTENANCE FIRST - BEFORE ANY ROUTE LOGIC
   const showMaintenance = isMaintenance && path !== '/admin' && path !== '/portal';
 
-  let PageComponent = HomePage;
-
-  // Only check routes if NOT in maintenance mode
-  if (!showMaintenance) {
-    // Home
-    if (path === '/') PageComponent = HomePage;
-
-    // Services
-    else if (path === '/services') PageComponent = ServicesPage;
-    else if (path.startsWith('/services/')) PageComponent = ServiceDetailPage;
-
-    // Technology
-    else if (path === '/web-development') PageComponent = WebDevelopmentPage;
-    else if (path === '/software-solutions') PageComponent = SoftwareSolutionsPage;
-    else if (path === '/ai-automation') PageComponent = AIAutomationPage;
-    else if (path === '/cloud-solutions') PageComponent = CloudSolutionsPage;
-    else if (path === '/mobile-app-development') PageComponent = MobileAppDevelopmentPage;
-
-    // Marketing
-    else if (path === '/digital-marketing') PageComponent = DigitalMarketingPage;
-    else if (path === '/seo') PageComponent = SEOPage;
-    else if (path === '/social-media-marketing') PageComponent = SocialMediaMarketingPage;
-    else if (path === '/content-marketing') PageComponent = ContentMarketingPage;
-
-    // Security
-    else if (path === '/cybersecurity') PageComponent = CybersecurityPage;
-    else if (path === '/penetration-testing') PageComponent = PenetrationTestingPage;
-
-    // Commerce
-    else if (path === '/ecommerce-development') PageComponent = EcommerceDevelopmentPage;
-    else if (path === '/shopify-stores') PageComponent = ShopifyStoresPage;
-    else if (path === '/marketplace') PageComponent = MarketplacePage;
-
-    // Ecosystem
-    else if (path === '/ecosystem') PageComponent = DigitalEcosystemPage;
-
-    // About
-    else if (path === '/about') PageComponent = AboutPage;
-    else if (path === '/careers') PageComponent = CareersPage;
-    else if (path === '/partners') PageComponent = PartnersPage;
-
-    // Insights
-    else if (path === '/blog') PageComponent = BlogPage;
-    else if (path === '/case-studies') PageComponent = CaseStudyPage;
-    else if (path === '/reports') PageComponent = ReportsPage;
-
-    // Tools
-    else if (path === '/tools') PageComponent = ToolsPage;
-    else if (path === '/calculator') PageComponent = CalculatorPage;
-
-    // Other
-    else if (path === '/offers') PageComponent = OffersPage;
-    else if (path === '/portfolio') PageComponent = PortfolioPage;
-    else if (path === '/contact') PageComponent = ContactPage;
-    else if (path === '/portal') PageComponent = PortalPage;
-    else if (path === '/admin') PageComponent = AdminPage;
-    else if (path === '/pricing') PageComponent = PricingPage;
-    else if (path === '/reviews') PageComponent = ReviewsPage;
-    else if (path === '/disclosure') PageComponent = DisclosurePage;
-    else if (path === '/bug-bounty') PageComponent = BugBountyPage;
-  }
-
-  // Show maintenance page if enabled
   if (showMaintenance) {
+    console.log('🚧 Showing maintenance page');
     return (
       <ErrorBoundary>
         <MaintenancePage message={maintenanceMessage} />
       </ErrorBoundary>
     );
   }
+
+  let PageComponent = HomePage;
+
+  // Home
+  if (path === '/') PageComponent = HomePage;
+
+  // Services
+  else if (path === '/services') PageComponent = ServicesPage;
+  else if (path.startsWith('/services/')) PageComponent = ServiceDetailPage;
+
+  // Technology
+  else if (path === '/web-development') PageComponent = WebDevelopmentPage;
+  else if (path === '/software-solutions') PageComponent = SoftwareSolutionsPage;
+  else if (path === '/ai-automation') PageComponent = AIAutomationPage;
+  else if (path === '/cloud-solutions') PageComponent = CloudSolutionsPage;
+  else if (path === '/mobile-app-development') PageComponent = MobileAppDevelopmentPage;
+
+  // Marketing
+  else if (path === '/digital-marketing') PageComponent = DigitalMarketingPage;
+  else if (path === '/seo') PageComponent = SEOPage;
+  else if (path === '/social-media-marketing') PageComponent = SocialMediaMarketingPage;
+  else if (path === '/content-marketing') PageComponent = ContentMarketingPage;
+
+  // Security
+  else if (path === '/cybersecurity') PageComponent = CybersecurityPage;
+  else if (path === '/penetration-testing') PageComponent = PenetrationTestingPage;
+
+  // Commerce
+  else if (path === '/ecommerce-development') PageComponent = EcommerceDevelopmentPage;
+  else if (path === '/shopify-stores') PageComponent = ShopifyStoresPage;
+  else if (path === '/marketplace') PageComponent = MarketplacePage;
+
+  // Ecosystem
+  else if (path === '/ecosystem') PageComponent = DigitalEcosystemPage;
+
+  // About
+  else if (path === '/about') PageComponent = AboutPage;
+  else if (path === '/careers') PageComponent = CareersPage;
+  else if (path === '/partners') PageComponent = PartnersPage;
+
+  // Insights
+  else if (path === '/blog') PageComponent = BlogPage;
+  else if (path === '/case-studies') PageComponent = CaseStudyPage;
+  else if (path === '/reports') PageComponent = ReportsPage;
+
+  // Tools
+  else if (path === '/tools') PageComponent = ToolsPage;
+  else if (path === '/calculator') PageComponent = CalculatorPage;
+
+  // Other
+  else if (path === '/offers') PageComponent = OffersPage;
+  else if (path === '/portfolio') PageComponent = PortfolioPage;
+  else if (path === '/contact') PageComponent = ContactPage;
+  else if (path === '/portal') PageComponent = PortalPage;
+  else if (path === '/admin') PageComponent = AdminPage;
+  else if (path === '/pricing') PageComponent = PricingPage;
+  else if (path === '/reviews') PageComponent = ReviewsPage;
+  else if (path === '/disclosure') PageComponent = DisclosurePage;
+  else if (path === '/bug-bounty') PageComponent = BugBountyPage;
 
   return (
     <ErrorBoundary>
