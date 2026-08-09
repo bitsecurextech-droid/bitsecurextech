@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
 export type Route = { path: string; params: Record<string, string> };
 
@@ -9,7 +9,6 @@ interface RouterContextType {
 
 const RouterContext = createContext<RouterContextType | undefined>(undefined);
 
-// 🟢 Handles both Clean URLs and Hash URLs perfectly
 function parsePath(): Route {
   let path = '';
   let query = '';
@@ -67,96 +66,4 @@ export function useNavigate() {
   const context = useContext(RouterContext);
   if (!context) throw new Error('useNavigate must be used within a RouterProvider');
   return context.navigate;
-}
-
-// ============================================================
-// ✅ ROUTER COMPONENT - MAPS PATHS TO COMPONENTS
-// ============================================================
-import { 
-  HomePage,
-  WebDevelopmentPage,
-  SoftwareSolutionsPage,
-  AIAutomationPage,
-  CloudSolutionsPage,
-  MobileAppDevelopmentPage,
-  DigitalMarketingPage,
-  SEOPage,
-  SocialMediaMarketingPage,
-  ContentMarketingPage,
-  CybersecurityPage,
-  PenetrationTestingPage,
-  EcommerceDevelopmentPage,
-  ShopifyStoresPage,      // ✅ FIXED
-  MarketplacePage,         // ✅ FIXED
-  DigitalEcosystemPage,
-  AboutPage,
-  CareersPage,
-  PartnersPage,
-  BlogPage,
-  CaseStudyPage,
-  ReportsPage,
-  ToolsPage,
-  CalculatorPage,
-  OffersPage,
-  ContactPage,
-  PortalPage,
-  AdminPage,
-} from '../pages';
-
-export function Router() {
-  const route = useRoute();
-  
-  // ✅ COMPLETE ROUTE MAPPING - ALL PAGES
-  const routeMap: Record<string, () => JSX.Element> = {
-    '/': () => <HomePage />,
-    
-    // Technology
-    '/web-development': () => <WebDevelopmentPage />,
-    '/software-solutions': () => <SoftwareSolutionsPage />,
-    '/ai-automation': () => <AIAutomationPage />,
-    '/cloud-solutions': () => <CloudSolutionsPage />,
-    '/mobile-app-development': () => <MobileAppDevelopmentPage />,
-    
-    // Marketing
-    '/digital-marketing': () => <DigitalMarketingPage />,
-    '/seo': () => <SEOPage />,
-    '/social-media-marketing': () => <SocialMediaMarketingPage />,
-    '/content-marketing': () => <ContentMarketingPage />,
-    
-    // Security
-    '/cybersecurity': () => <CybersecurityPage />,
-    '/penetration-testing': () => <PenetrationTestingPage />,
-    
-    // Commerce ✅ FIXED - These were missing!
-    '/ecommerce-development': () => <EcommerceDevelopmentPage />,
-    '/shopify-stores': () => <ShopifyStoresPage />,        // ✅ ADDED
-    '/marketplace': () => <MarketplacePage />,              // ✅ ADDED
-    
-    // Ecosystem
-    '/ecosystem': () => <DigitalEcosystemPage />,
-    
-    // About
-    '/about': () => <AboutPage />,
-    '/careers': () => <CareersPage />,
-    '/partners': () => <PartnersPage />,
-    
-    // Insights
-    '/blog': () => <BlogPage />,
-    '/case-studies': () => <CaseStudyPage />,
-    '/reports': () => <ReportsPage />,
-    
-    // Tools
-    '/tools': () => <ToolsPage />,
-    '/calculator': () => <CalculatorPage />,
-    
-    // Other
-    '/offers': () => <OffersPage />,
-    '/contact': () => <ContactPage />,
-    '/portal': () => <PortalPage />,
-    '/admin': () => <AdminPage />,
-  };
-
-  // Get the component or fallback to HomePage
-  const Page = routeMap[route.path] || routeMap['/'];
-  return <Page />;
 }
