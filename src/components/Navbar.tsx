@@ -235,7 +235,7 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* Mobile menu */}
+          {/* ✅ UPDATED MOBILE MENU WITH SIGN UP AT BOTTOM */}
           {open && (
             <div className={`border-t xl:hidden ${isLight ? 'bg-white border-slate-100' : 'bg-navy-950/95 backdrop-blur-xl border-white/10'}`}>
               <div className="flex flex-col gap-1 px-5 py-4 max-h-[70vh] overflow-y-auto">
@@ -266,6 +266,16 @@ export function Navbar() {
                 <button onClick={() => { nav('/calculator'); setOpen(false); }} className={`flex items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium ${isLight ? 'text-cyber-600 hover:bg-cyber-50' : 'text-cyber-400 hover:bg-cyber-500/10'}`}>
                   <Calculator className="h-4 w-4 shrink-0" /> Web Cost Calculator
                 </button>
+
+                {/* ✅ ADD SIGN UP / CREATE ACCOUNT BUTTON AT BOTTOM OF MOBILE MENU */}
+                <div className="mt-3 border-t pt-3" style={{ borderColor: isLight ? '#e2e8f0' : 'rgba(255,255,255,0.1)' }}>
+                  <button 
+                    onClick={() => { nav('/portal'); setOpen(false); }} 
+                    className={`flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium transition-colors ${isLight ? 'bg-cyber-500 text-white hover:bg-cyber-600' : 'bg-cyber-500 text-white hover:bg-cyber-600'}`}
+                  >
+                    <LogIn className="h-4 w-4" /> Sign In / Create Account
+                  </button>
+                </div>
               </div>
             </div>
           )}
