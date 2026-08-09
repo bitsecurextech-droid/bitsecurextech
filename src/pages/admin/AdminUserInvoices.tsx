@@ -9,7 +9,7 @@ export function AdminUserInvoices() {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ 
-    user_profile_id: '', 
+    user_id: '', 
     invoice_number: '', 
     amount: 0, 
     due_date: '', 
@@ -19,14 +19,15 @@ export function AdminUserInvoices() {
   const load = async () => {
     setLoading(true);
     try {
+      // Try with join first
       const [invData, userData] = await Promise.all([
         supabase.from('portal_invoices').select('*, user_profiles(full_name, role)').order('created_at', { ascending: false }),
-        supabase.from('user_profiles').select('id, full_name'),
+        supabase.from('user_profiles').select('*'),
       ]);
       
       if (invData.error) {
         console.error('Invoices error:', invData.error);
-        // If relationship error, try without join
+        // If relationship error, get data without join
         if (invData.error.code === 'PGRST200') {
           const fallbackData = await supabase.from('portal_invoices').select('*').order('created_at', { ascending: false });
           setInvoices(fallbackData.data || []);
@@ -47,7 +48,7 @@ export function AdminUserInvoices() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.user_profile_id) return alert('Please select a user.');
+    if (!form.user_id) return alert('Please select a user.');
     if (!form.invoice_number) return alert('Please enter an invoice number.');
     if (!form.amount || form.amount <= 0) return alert('Please enter a valid amount.');
     
@@ -55,7 +56,7 @@ export function AdminUserInvoices() {
     
     try {
       const payload = {
-        user_profile_id: form.user_profile_id,
+        user_id: form.user_id,
         invoice_number: form.invoice_number,
         amount: form.amount,
         due_date: form.due_date || null,
@@ -64,14 +65,17 @@ export function AdminUserInvoices() {
       
       console.log('📝 Saving invoice:', payload);
       
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('portal_invoices')
-        .insert(payload);
+        .insert(payload)
+        .select();
       
       if (error) throw error;
       
+      console.log('✅ Invoice created:', data);
+      
       setOpen(false);
-      setForm({ user_profile_id: '', invoice_number: '', amount: 0, due_date: '', status: 'pending' });
+      setForm({ user_id: '', invoice_number: '', amount: 0, due_date: '', status: 'pending' });
       load();
     } catch (err: any) {
       console.error('Submit error:', err);
@@ -193,8 +197,8 @@ export function AdminUserInvoices() {
                 <label className="text-xs uppercase tracking-wider text-slate-400">Select User *</label>
                 <select 
                   required 
-                  value={form.user_profile_id} 
-                  onChange={e => setForm({...form, user_profile_id: e.target.value})} 
+                  value={form.user_id} 
+                  onChange={e => setForm({...form, user_id: e.target.value})} 
                   className="input-field"
                   disabled={saving}
                 >
