@@ -38,8 +38,8 @@ import { SocialMediaMarketingPage } from './pages/SocialMediaMarketingPage';
 import { ContentMarketingPage } from './pages/ContentMarketingPage';
 import { PenetrationTestingPage } from './pages/PenetrationTestingPage';
 import { EcommerceDevelopmentPage } from './pages/EcommerceDevelopmentPage';
-import { ShopifyStoresPage } from './pages/ShopifyStoresPage';      // ✅ ADDED
-import { MarketplacePage } from './pages/MarketplacePage';           // ✅ ADDED
+import { ShopifyStoresPage } from './pages/ShopifyStoresPage';
+import { MarketplacePage } from './pages/MarketplacePage';
 import { CareersPage } from './pages/CareersPage';
 import { PartnersPage } from './pages/PartnersPage';
 import { ReportsPage } from './pages/ReportsPage';
@@ -49,7 +49,7 @@ import { BugBountyPage } from './pages/BugBountyPage';
 import { CalculatorPage } from './pages/CalculatorPage';
 
 // ============================================================
-// 🚨 GLOBAL ERROR BOUNDARY (Prints errors to console)
+// 🚨 GLOBAL ERROR BOUNDARY
 // ============================================================
 class ErrorBoundary extends Component<{ children: ReactNode }> {
   state = { hasError: false, error: null as any };
@@ -94,7 +94,6 @@ function App() {
   const route = useRoute();
   const path = route.path;
 
-  // ✅ COMPLETE ROUTE MAPPING - ALL PAGES WORKING
   let PageComponent = HomePage;
 
   // Home
@@ -104,49 +103,55 @@ function App() {
   else if (path === '/services') PageComponent = ServicesPage;
   else if (path.startsWith('/services/')) PageComponent = ServiceDetailPage;
 
-  // Technology Pages
+  // Technology
   else if (path === '/web-development') PageComponent = WebDevelopmentPage;
   else if (path === '/software-solutions') PageComponent = SoftwareSolutionsPage;
   else if (path === '/ai-automation') PageComponent = AIAutomationPage;
   else if (path === '/cloud-solutions') PageComponent = CloudSolutionsPage;
   else if (path === '/mobile-app-development') PageComponent = MobileAppDevelopmentPage;
 
-  // Marketing Pages
+  // Marketing
   else if (path === '/digital-marketing') PageComponent = DigitalMarketingPage;
   else if (path === '/seo') PageComponent = SEOPage;
   else if (path === '/social-media-marketing') PageComponent = SocialMediaMarketingPage;
   else if (path === '/content-marketing') PageComponent = ContentMarketingPage;
 
-  // Security Pages
+  // Security
   else if (path === '/cybersecurity') PageComponent = CybersecurityPage;
   else if (path === '/penetration-testing') PageComponent = PenetrationTestingPage;
 
-  // ✅ COMMERCE PAGES - FIXED!
+  // Commerce
   else if (path === '/ecommerce-development') PageComponent = EcommerceDevelopmentPage;
-  else if (path === '/shopify-stores') PageComponent = ShopifyStoresPage;        // ✅ NOW WORKING
-  else if (path === '/marketplace') PageComponent = MarketplacePage;              // ✅ NOW WORKING
+  else if (path === '/shopify-stores') PageComponent = ShopifyStoresPage;
+  else if (path === '/marketplace') PageComponent = MarketplacePage;
 
   // Ecosystem
   else if (path === '/ecosystem') PageComponent = DigitalEcosystemPage;
 
-  // Standard Pages
+  // About
+  else if (path === '/about') PageComponent = AboutPage;
+  else if (path === '/careers') PageComponent = CareersPage;
+  else if (path === '/partners') PageComponent = PartnersPage;
+
+  // Insights
+  else if (path === '/blog') PageComponent = BlogPage;
+  else if (path === '/case-studies') PageComponent = CaseStudyPage;
+  else if (path === '/reports') PageComponent = ReportsPage;
+
+  // Tools
+  else if (path === '/tools') PageComponent = ToolsPage;
+  else if (path === '/calculator') PageComponent = CalculatorPage;
+
+  // Other
   else if (path === '/offers') PageComponent = OffersPage;
   else if (path === '/portfolio') PageComponent = PortfolioPage;
-  else if (path === '/case-studies') PageComponent = CaseStudyPage;
-  else if (path === '/blog') PageComponent = BlogPage;
-  else if (path === '/tools') PageComponent = ToolsPage;
   else if (path === '/contact') PageComponent = ContactPage;
   else if (path === '/portal') PageComponent = PortalPage;
   else if (path === '/admin') PageComponent = AdminPage;
-  else if (path === '/about') PageComponent = AboutPage;
   else if (path === '/pricing') PageComponent = PricingPage;
-  else if (path === '/careers') PageComponent = CareersPage;
-  else if (path === '/partners') PageComponent = PartnersPage;
-  else if (path === '/reports') PageComponent = ReportsPage;
   else if (path === '/reviews') PageComponent = ReviewsPage;
   else if (path === '/disclosure') PageComponent = DisclosurePage;
   else if (path === '/bug-bounty') PageComponent = BugBountyPage;
-  else if (path === '/calculator') PageComponent = CalculatorPage;
 
   return (
     <ErrorBoundary>
@@ -157,7 +162,6 @@ function App() {
         <CustomCursor />
         <ScrollProgress />
         
-        {/* SHOW NAVBAR EVERYWHERE EXCEPT ADMIN AND PORTAL */}
         {path !== '/admin' && path !== '/portal' && <Navbar />}
         
         <main>
@@ -166,7 +170,6 @@ function App() {
           </Suspense>
         </main>
 
-        {/* HIDE FOOTER ON ADMIN AND PORTAL */}
         {path !== '/admin' && path !== '/portal' && <Footer />}
         
         <AIChat />
