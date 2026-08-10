@@ -1,6 +1,7 @@
-import { Component, ReactNode, Suspense } from 'react';
-import { useRoute } from './lib/router';
-import { useAuth } from './lib/auth';
+import { Component, ReactNode, Suspense, useState, useEffect } from 'react';
+import { useRoute, RouterProvider } from './lib/router';
+import { useAuth, AuthProvider } from './lib/auth';
+import { ThemeProvider } from './lib/useReveal';
 import { Background } from './components/Background';
 import { ParticleBackground } from './components/ParticleBackground';
 import Navbar from './components/Navbar';
@@ -9,6 +10,7 @@ import { AIChat } from './components/AIChat';
 import { ScrollProgress } from './components/ScrollProgress';
 import { CustomCursor } from './components/CustomCursor';
 import { LoadingScreen } from './components/LoadingScreen';
+import { supabase } from './lib/supabase';
 
 // IMPORT ALL PAGES
 import { HomePage } from './pages/HomePage';
@@ -46,6 +48,7 @@ import { ReviewsPage } from './pages/ReviewsPage';
 import { DisclosurePage } from './pages/DisclosurePage';
 import { BugBountyPage } from './pages/BugBountyPage';
 import { CalculatorPage } from './pages/CalculatorPage';
+import { MaintenancePage } from './pages/MaintenancePage';
 
 // ============================================================
 // ERROR BOUNDARY
@@ -86,12 +89,66 @@ class ErrorBoundary extends Component<{ children: ReactNode }> {
 }
 
 // ============================================================
-// MAIN APP
+// MAINTENANCE CHECK HOOK
 // ============================================================
-function App() {
+function useMaintenance() {
+  const [isMaintenance, setIsMaintenance] = useState(false);
+  const [maintenanceMessage, setMaintenanceMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkMaintenance = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('settings')
+          .select('key, value')
+          .in('key', ['maintenance_mode', 'maintenance_message']);
+
+        if (error) {
+          console.error('Error checking maintenance:', error);
+          setLoading(false);
+          return;
+        }
+
+        const mode = data?.find((d: any) => d.key === 'maintenance_mode');
+        const message = data?.find((d: any) => d.key === 'maintenance_message');
+
+        setIsMaintenance(mode?.value === 'true' || mode?.value === true);
+        setMaintenanceMessage(message?.value || 'We are currently performing maintenance. We will be back soon!');
+      } catch (err) {
+        console.error('Maintenance check error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkMaintenance();
+    const interval = setInterval(checkMaintenance, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return { isMaintenance, maintenanceMessage, loading };
+}
+
+// ============================================================
+// APP CONTENT (uses all the hooks)
+// ============================================================
+function AppContent() {
   useAuth();
   const route = useRoute();
   const path = route.path;
+  const { isMaintenance, maintenanceMessage, loading } = useMaintenance();
+
+  // ✅ If maintenance is ON and not on admin/portal pages
+  const showMaintenance = isMaintenance && path !== '/admin' && path !== '/portal';
+
+  if (showMaintenance) {
+    return (
+      <ErrorBoundary>
+        <MaintenancePage message={maintenanceMessage} />
+      </ErrorBoundary>
+    );
+  }
 
   let PageComponent = HomePage;
 
@@ -153,26 +210,41 @@ function App() {
   else if (path === '/bug-bounty') PageComponent = BugBountyPage;
 
   return (
-    <ErrorBoundary>
-      <div className="relative min-h-screen">
-        <LoadingScreen />
-        <Background />
-        <ParticleBackground />
-        <CustomCursor />
-        <ScrollProgress />
-        
-        {path !== '/admin' && path !== '/portal' && <Navbar />}
-        
-        <main>
-          <Suspense fallback={<div className="flex h-[60vh] items-center justify-center text-white">Loading...</div>}>
-            <PageComponent />
-          </Suspense>
-        </main>
+    <>
+      <LoadingScreen />
+      <Background />
+      <ParticleBackground />
+      <CustomCursor />
+      <ScrollProgress />
+      
+      {path !== '/admin' && path !== '/portal' && <Navbar />}
+      
+      <main>
+        <Suspense fallback={<div className="flex h-[60vh] items-center justify-center text-white">Loading...</div>}>
+          <PageComponent />
+        </Suspense>
+      </main>
 
-        {path !== '/admin' && path !== '/portal' && <Footer />}
-        
-        <AIChat />
-      </div>
+      {path !== '/admin' && path !== '/portal' && <Footer />}
+      
+      <AIChat />
+    </>
+  );
+}
+
+// ============================================================
+// MAIN APP WITH PROVIDERS
+// ============================================================
+function App() {
+  return (
+    <ErrorBoundary>
+      <ThemeProvider>
+        <AuthProvider>
+          <RouterProvider>
+            <AppContent />
+          </RouterProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }
