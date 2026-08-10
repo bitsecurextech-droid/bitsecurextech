@@ -1,55 +1,55 @@
-import { Component, ReactNode, Suspense, lazy, useState, useEffect } from 'react';
+import { Component, ReactNode, useState, useEffect } from 'react';
 import { useRoute } from './lib/router';
 import { useAuth } from './lib/auth';
 import { supabase } from './lib/supabase';
 
-// ✅ IMPORT COMPONENTS NORMALLY (NOT LAZY) - Fixes the error
+// ✅ IMPORT ALL COMPONENTS DIRECTLY
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Background from './components/Background';
-import ParticleBackground from './components/ParticleBackground';
-import CustomCursor from './components/CustomCursor';
-import ScrollProgress from './components/ScrollProgress';
-import LoadingScreen from './components/LoadingScreen';
-import AIChat from './components/AIChat';
+import { Background } from './components/Background';
+import { ParticleBackground } from './components/ParticleBackground';
+import { CustomCursor } from './components/CustomCursor';
+import { ScrollProgress } from './components/ScrollProgress';
+import { LoadingScreen } from './components/LoadingScreen';
+import { AIChat } from './components/AIChat';
 
-// ✅ LAZY LOAD ONLY PAGES (with proper default exports)
-const HomePage = lazy(() => import('./pages/HomePage'));
-const ServicesPage = lazy(() => import('./pages/ServicesPage'));
-const ServiceDetailPage = lazy(() => import('./pages/ServiceDetailPage'));
-const OffersPage = lazy(() => import('./pages/OffersPage'));
-const CybersecurityPage = lazy(() => import('./pages/CybersecurityPage'));
-const PortfolioPage = lazy(() => import('./pages/PortfolioPage'));
-const CaseStudyPage = lazy(() => import('./pages/CaseStudyPage'));
-const BlogPage = lazy(() => import('./pages/BlogPage'));
-const ToolsPage = lazy(() => import('./pages/ToolsPage'));
-const ContactPage = lazy(() => import('./pages/ContactPage'));
-const PortalPage = lazy(() => import('./pages/PortalPage'));
-const AdminPage = lazy(() => import('./pages/AdminPage'));
-const AboutPage = lazy(() => import('./pages/AboutPage'));
-const PricingPage = lazy(() => import('./pages/PricingPage'));
-const DigitalEcosystemPage = lazy(() => import('./pages/DigitalEcosystemPage'));
-const WebDevelopmentPage = lazy(() => import('./pages/WebDevelopmentPage'));
-const SoftwareSolutionsPage = lazy(() => import('./pages/SoftwareSolutionsPage'));
-const AIAutomationPage = lazy(() => import('./pages/AIAutomationPage'));
-const CloudSolutionsPage = lazy(() => import('./pages/CloudSolutionsPage'));
-const MobileAppDevelopmentPage = lazy(() => import('./pages/MobileAppDevelopmentPage'));
-const DigitalMarketingPage = lazy(() => import('./pages/DigitalMarketingPage'));
-const SEOPage = lazy(() => import('./pages/SEOPage'));
-const SocialMediaMarketingPage = lazy(() => import('./pages/SocialMediaMarketingPage'));
-const ContentMarketingPage = lazy(() => import('./pages/ContentMarketingPage'));
-const PenetrationTestingPage = lazy(() => import('./pages/PenetrationTestingPage'));
-const EcommerceDevelopmentPage = lazy(() => import('./pages/EcommerceDevelopmentPage'));
-const ShopifyStoresPage = lazy(() => import('./pages/ShopifyStoresPage'));
-const MarketplacePage = lazy(() => import('./pages/MarketplacePage'));
-const CareersPage = lazy(() => import('./pages/CareersPage'));
-const PartnersPage = lazy(() => import('./pages/PartnersPage'));
-const ReportsPage = lazy(() => import('./pages/ReportsPage'));
-const ReviewsPage = lazy(() => import('./pages/ReviewsPage'));
-const DisclosurePage = lazy(() => import('./pages/DisclosurePage'));
-const BugBountyPage = lazy(() => import('./pages/BugBountyPage'));
-const CalculatorPage = lazy(() => import('./pages/CalculatorPage'));
-const MaintenancePage = lazy(() => import('./pages/MaintenancePage'));
+// ✅ IMPORT ALL PAGES DIRECTLY
+import { HomePage } from './pages/HomePage';
+import { ServicesPage } from './pages/ServicesPage';
+import { ServiceDetailPage } from './pages/ServiceDetailPage';
+import { OffersPage } from './pages/OffersPage';
+import { CybersecurityPage } from './pages/CybersecurityPage';
+import { PortfolioPage } from './pages/PortfolioPage';
+import { CaseStudyPage } from './pages/CaseStudyPage';
+import { BlogPage } from './pages/BlogPage';
+import { ToolsPage } from './pages/ToolsPage';
+import { ContactPage } from './pages/ContactPage';
+import { PortalPage } from './pages/PortalPage';
+import AdminPage from './pages/AdminPage';
+import { AboutPage } from './pages/AboutPage';
+import { PricingPage } from './pages/PricingPage';
+import { DigitalEcosystemPage } from './pages/DigitalEcosystemPage';
+import { WebDevelopmentPage } from './pages/WebDevelopmentPage';
+import { SoftwareSolutionsPage } from './pages/SoftwareSolutionsPage';
+import { AIAutomationPage } from './pages/AIAutomationPage';
+import { CloudSolutionsPage } from './pages/CloudSolutionsPage';
+import { MobileAppDevelopmentPage } from './pages/MobileAppDevelopmentPage';
+import { DigitalMarketingPage } from './pages/DigitalMarketingPage';
+import { SEOPage } from './pages/SEOPage';
+import { SocialMediaMarketingPage } from './pages/SocialMediaMarketingPage';
+import { ContentMarketingPage } from './pages/ContentMarketingPage';
+import { PenetrationTestingPage } from './pages/PenetrationTestingPage';
+import { EcommerceDevelopmentPage } from './pages/EcommerceDevelopmentPage';
+import { ShopifyStoresPage } from './pages/ShopifyStoresPage';
+import { MarketplacePage } from './pages/MarketplacePage';
+import { CareersPage } from './pages/CareersPage';
+import { PartnersPage } from './pages/PartnersPage';
+import { ReportsPage } from './pages/ReportsPage';
+import { ReviewsPage } from './pages/ReviewsPage';
+import { DisclosurePage } from './pages/DisclosurePage';
+import { BugBountyPage } from './pages/BugBountyPage';
+import { CalculatorPage } from './pages/CalculatorPage';
+import { MaintenancePage } from './pages/MaintenancePage';
 
 // ============================================================
 // ERROR BOUNDARY
@@ -132,18 +132,6 @@ function useMaintenance() {
 }
 
 // ============================================================
-// LOADING FALLBACK
-// ============================================================
-const PageLoader = () => (
-  <div className="flex h-[60vh] items-center justify-center">
-    <div className="text-center">
-      <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-cyber-500 border-t-transparent" />
-      <p className="mt-4 text-sm text-slate-400">Loading page...</p>
-    </div>
-  </div>
-);
-
-// ============================================================
 // MAIN APP
 // ============================================================
 function App() {
@@ -152,68 +140,44 @@ function App() {
   const path = route.path;
   const { isMaintenance, maintenanceMessage, loading } = useMaintenance();
 
-  // ✅ CHECK MAINTENANCE FIRST
   const showMaintenance = isMaintenance && path !== '/admin' && path !== '/portal';
 
   if (showMaintenance) {
     return (
       <ErrorBoundary>
-        <Suspense fallback={<PageLoader />}>
-          <MaintenancePage message={maintenanceMessage} />
-        </Suspense>
+        <MaintenancePage message={maintenanceMessage} />
       </ErrorBoundary>
     );
   }
 
   let PageComponent = HomePage;
 
-  // Home
   if (path === '/') PageComponent = HomePage;
-
-  // Services
   else if (path === '/services') PageComponent = ServicesPage;
   else if (path.startsWith('/services/')) PageComponent = ServiceDetailPage;
-
-  // Technology
   else if (path === '/web-development') PageComponent = WebDevelopmentPage;
   else if (path === '/software-solutions') PageComponent = SoftwareSolutionsPage;
   else if (path === '/ai-automation') PageComponent = AIAutomationPage;
   else if (path === '/cloud-solutions') PageComponent = CloudSolutionsPage;
   else if (path === '/mobile-app-development') PageComponent = MobileAppDevelopmentPage;
-
-  // Marketing
   else if (path === '/digital-marketing') PageComponent = DigitalMarketingPage;
   else if (path === '/seo') PageComponent = SEOPage;
   else if (path === '/social-media-marketing') PageComponent = SocialMediaMarketingPage;
   else if (path === '/content-marketing') PageComponent = ContentMarketingPage;
-
-  // Security
   else if (path === '/cybersecurity') PageComponent = CybersecurityPage;
   else if (path === '/penetration-testing') PageComponent = PenetrationTestingPage;
-
-  // Commerce
   else if (path === '/ecommerce-development') PageComponent = EcommerceDevelopmentPage;
   else if (path === '/shopify-stores') PageComponent = ShopifyStoresPage;
   else if (path === '/marketplace') PageComponent = MarketplacePage;
-
-  // Ecosystem
   else if (path === '/ecosystem') PageComponent = DigitalEcosystemPage;
-
-  // About
   else if (path === '/about') PageComponent = AboutPage;
   else if (path === '/careers') PageComponent = CareersPage;
   else if (path === '/partners') PageComponent = PartnersPage;
-
-  // Insights
   else if (path === '/blog') PageComponent = BlogPage;
   else if (path === '/case-studies') PageComponent = CaseStudyPage;
   else if (path === '/reports') PageComponent = ReportsPage;
-
-  // Tools
   else if (path === '/tools') PageComponent = ToolsPage;
   else if (path === '/calculator') PageComponent = CalculatorPage;
-
-  // Other
   else if (path === '/offers') PageComponent = OffersPage;
   else if (path === '/portfolio') PageComponent = PortfolioPage;
   else if (path === '/contact') PageComponent = ContactPage;
@@ -236,9 +200,7 @@ function App() {
         {path !== '/admin' && path !== '/portal' && <Navbar />}
         
         <main>
-          <Suspense fallback={<PageLoader />}>
-            <PageComponent />
-          </Suspense>
+          <PageComponent />
         </main>
 
         {path !== '/admin' && path !== '/portal' && <Footer />}
