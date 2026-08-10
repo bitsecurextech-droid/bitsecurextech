@@ -1,4 +1,4 @@
-import { Component, ReactNode, Suspense, useState, useEffect } from 'react';
+import { Component, ReactNode, Suspense } from 'react';
 import { useRoute } from './lib/router';
 import { useAuth } from './lib/auth';
 import { Background } from './components/Background';
@@ -9,7 +9,6 @@ import { AIChat } from './components/AIChat';
 import { ScrollProgress } from './components/ScrollProgress';
 import { CustomCursor } from './components/CustomCursor';
 import { LoadingScreen } from './components/LoadingScreen';
-import { supabase } from './lib/supabase';
 
 // IMPORT ALL PAGES
 import { HomePage } from './pages/HomePage';
@@ -47,7 +46,6 @@ import { ReviewsPage } from './pages/ReviewsPage';
 import { DisclosurePage } from './pages/DisclosurePage';
 import { BugBountyPage } from './pages/BugBountyPage';
 import { CalculatorPage } from './pages/CalculatorPage';
-import { MaintenancePage } from './pages/MaintenancePage';
 
 // ============================================================
 // ERROR BOUNDARY
@@ -88,66 +86,12 @@ class ErrorBoundary extends Component<{ children: ReactNode }> {
 }
 
 // ============================================================
-// MAINTENANCE CHECK HOOK
-// ============================================================
-function useMaintenance() {
-  const [isMaintenance, setIsMaintenance] = useState(false);
-  const [maintenanceMessage, setMaintenanceMessage] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const checkMaintenance = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('settings')
-          .select('key, value')
-          .in('key', ['maintenance_mode', 'maintenance_message']);
-
-        if (error) {
-          console.error('Error checking maintenance:', error);
-          setLoading(false);
-          return;
-        }
-
-        const mode = data?.find((d: any) => d.key === 'maintenance_mode');
-        const message = data?.find((d: any) => d.key === 'maintenance_message');
-
-        setIsMaintenance(mode?.value === 'true' || mode?.value === true);
-        setMaintenanceMessage(message?.value || 'We are currently performing maintenance. We will be back soon!');
-      } catch (err) {
-        console.error('Maintenance check error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkMaintenance();
-    const interval = setInterval(checkMaintenance, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return { isMaintenance, maintenanceMessage, loading };
-}
-
-// ============================================================
 // MAIN APP
 // ============================================================
 function App() {
   useAuth();
   const route = useRoute();
   const path = route.path;
-  const { isMaintenance, maintenanceMessage, loading } = useMaintenance();
-
-  // ✅ If maintenance is ON and not on admin/portal pages
-  const showMaintenance = isMaintenance && path !== '/admin' && path !== '/portal';
-
-  if (showMaintenance) {
-    return (
-      <ErrorBoundary>
-        <MaintenancePage message={maintenanceMessage} />
-      </ErrorBoundary>
-    );
-  }
 
   let PageComponent = HomePage;
 
