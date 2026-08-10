@@ -58,12 +58,13 @@ class ErrorBoundary extends Component<{ children: ReactNode }> {
   state = { hasError: false, error: null as any };
 
   static getDerivedStateFromError(error: any) {
+    console.error('🔥 Error caught by boundary:', error);
     return { hasError: true, error };
   }
 
   componentDidCatch(error: any, info: any) {
-    console.error("🚨 GLOBAL CRASH DETECTED:", error);
-    console.error("📂 Component Stack:", info.componentStack);
+    console.error('🚨 GLOBAL CRASH DETECTED:', error);
+    console.error('📂 Component Stack:', info.componentStack);
   }
 
   render() {
@@ -71,9 +72,9 @@ class ErrorBoundary extends Component<{ children: ReactNode }> {
       return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-navy-950 p-6 text-center">
           <div className="max-w-2xl rounded-2xl border border-red-500/30 bg-red-500/10 p-8">
-            <h1 className="text-2xl font-bold text-red-400">App Crash Detected</h1>
+            <h1 className="text-2xl font-bold text-red-400">Something went wrong</h1>
             <p className="mt-2 text-sm text-slate-400">
-              An error occurred while rendering the page. Check your browser console.
+              Please refresh the page or try again later.
             </p>
             <button 
               onClick={() => window.location.reload()} 
