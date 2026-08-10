@@ -1,10 +1,28 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          supabase: ['@supabase/supabase-js'],
+          lucide: ['lucide-react'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+    minify: 'esbuild',
+    sourcemap: false,
+    cssCodeSplit: true,
+    target: 'es2020',
+  },
   optimizeDeps: {
-    exclude: ['lucide-react'],
+    include: ['react', 'react-dom', '@supabase/supabase-js', 'lucide-react'],
+  },
+  server: {
+    compress: true,
   },
 });
