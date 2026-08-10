@@ -3,7 +3,17 @@ import { useRoute } from './lib/router';
 import { useAuth } from './lib/auth';
 import { supabase } from './lib/supabase';
 
-// ✅ LAZY LOAD ALL PAGES
+// ✅ IMPORT COMPONENTS NORMALLY (NOT LAZY) - Fixes the error
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Background from './components/Background';
+import ParticleBackground from './components/ParticleBackground';
+import CustomCursor from './components/CustomCursor';
+import ScrollProgress from './components/ScrollProgress';
+import LoadingScreen from './components/LoadingScreen';
+import AIChat from './components/AIChat';
+
+// ✅ LAZY LOAD ONLY PAGES (with proper default exports)
 const HomePage = lazy(() => import('./pages/HomePage'));
 const ServicesPage = lazy(() => import('./pages/ServicesPage'));
 const ServiceDetailPage = lazy(() => import('./pages/ServiceDetailPage'));
@@ -40,16 +50,6 @@ const DisclosurePage = lazy(() => import('./pages/DisclosurePage'));
 const BugBountyPage = lazy(() => import('./pages/BugBountyPage'));
 const CalculatorPage = lazy(() => import('./pages/CalculatorPage'));
 const MaintenancePage = lazy(() => import('./pages/MaintenancePage'));
-
-// ✅ LAZY LOAD COMPONENTS
-const Navbar = lazy(() => import('./components/Navbar'));
-const Footer = lazy(() => import('./components/Footer'));
-const Background = lazy(() => import('./components/Background'));
-const ParticleBackground = lazy(() => import('./components/ParticleBackground'));
-const CustomCursor = lazy(() => import('./components/CustomCursor'));
-const ScrollProgress = lazy(() => import('./components/ScrollProgress'));
-const LoadingScreen = lazy(() => import('./components/LoadingScreen'));
-const AIChat = lazy(() => import('./components/AIChat'));
 
 // ============================================================
 // ERROR BOUNDARY
@@ -227,19 +227,13 @@ function App() {
   return (
     <ErrorBoundary>
       <div className="relative min-h-screen">
-        <Suspense fallback={null}>
-          <LoadingScreen />
-          <Background />
-          <ParticleBackground />
-          <CustomCursor />
-          <ScrollProgress />
-        </Suspense>
+        <LoadingScreen />
+        <Background />
+        <ParticleBackground />
+        <CustomCursor />
+        <ScrollProgress />
         
-        {path !== '/admin' && path !== '/portal' && (
-          <Suspense fallback={null}>
-            <Navbar />
-          </Suspense>
-        )}
+        {path !== '/admin' && path !== '/portal' && <Navbar />}
         
         <main>
           <Suspense fallback={<PageLoader />}>
@@ -247,15 +241,9 @@ function App() {
           </Suspense>
         </main>
 
-        {path !== '/admin' && path !== '/portal' && (
-          <Suspense fallback={null}>
-            <Footer />
-          </Suspense>
-        )}
+        {path !== '/admin' && path !== '/portal' && <Footer />}
         
-        <Suspense fallback={null}>
-          <AIChat />
-        </Suspense>
+        <AIChat />
       </div>
     </ErrorBoundary>
   );
