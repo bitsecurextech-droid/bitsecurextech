@@ -8,37 +8,37 @@ const partners = [
   // ===== CLOUD & INFRASTRUCTURE =====
   {
     name: 'Google Cloud',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Google_Cloud_logo.svg/2560px-Google_Cloud_logo.svg.png',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg',
     description: 'Strategic partner for cloud infrastructure and AI solutions.',
     category: 'Cloud & Infrastructure',
   },
   {
     name: 'Microsoft Azure',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Microsoft_Azure.svg/1200px-Microsoft_Azure.svg.png',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg',
     description: 'Partner for enterprise cloud and AI services.',
     category: 'Cloud & Infrastructure',
   },
   {
     name: 'AWS',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/2560px-Amazon_Web_Services_Logo.svg.png',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg',
     description: 'Premier partner for cloud hosting and DevOps solutions.',
     category: 'Cloud & Infrastructure',
   },
   {
     name: 'Cloudflare',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Cloudflare_Logo.svg/2560px-Cloudflare_Logo.svg.png',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cloudflare/cloudflare-original.svg',
     description: 'Partner for CDN, DDoS protection, and edge computing.',
     category: 'Cloud & Infrastructure',
   },
   {
     name: 'DigitalOcean',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/DigitalOcean_logo.svg/2560px-DigitalOcean_logo.svg.png',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/digitalocean/digitalocean-original.svg',
     description: 'Partner for scalable cloud hosting and developer infrastructure.',
     category: 'Cloud & Infrastructure',
   },
   {
     name: 'Vercel',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Vercel_logo_black.svg/2560px-Vercel_logo_black.svg.png',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg',
     description: 'Partner for frontend deployment and serverless hosting.',
     category: 'Cloud & Infrastructure',
   },
@@ -46,13 +46,13 @@ const partners = [
   // ===== TECHNOLOGY & DEVELOPMENT =====
   {
     name: 'GitHub',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/2560px-Octicons-mark-github.svg.png',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg',
     description: 'Partner for version control, CI/CD, and open source collaboration.',
     category: 'Technology',
   },
   {
     name: 'Supabase',
-    logo: 'https://supabase.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fsupabase-logo-wordmark--dark.779c70b0.png&w=384&q=75',
+    logo: 'https://supabase.com/images/logo-dark.svg',
     description: 'Preferred partner for database and backend solutions.',
     category: 'Technology',
   },
@@ -60,19 +60,19 @@ const partners = [
   // ===== ECOMMERCE & PAYMENTS =====
   {
     name: 'Shopify',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Shopify_logo_2018.svg/2560px-Shopify_logo_2018.svg.png',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/shopify/shopify-original.svg',
     description: 'Certified Shopify partner for ecommerce development and store optimization.',
     category: 'Ecommerce',
   },
   {
     name: 'Stripe',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Stripe_Logo%2C_revised_2018.svg/2560px-Stripe_Logo%2C_revised_2018.svg.png',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/stripe/stripe-original.svg',
     description: 'Partner for payment processing, subscription billing, and fintech solutions.',
     category: 'Fintech',
   },
   {
     name: 'PayPal',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/2560px-PayPal.svg.png',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/paypal/paypal-original.svg',
     description: 'Partner for secure payment processing and global money transfers.',
     category: 'Fintech',
   },
@@ -104,7 +104,7 @@ const partners = [
   },
   {
     name: 'Microsoft AI Cloud Partner Program',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Microsoft_logo_%282012%29.svg/2560px-Microsoft_logo_%282012%29.svg.png',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/microsoft/microsoft-original.svg',
     description: 'Partner for AI-powered cloud solutions and enterprise intelligence.',
     category: 'Cloud & Infrastructure',
   },
@@ -140,7 +140,6 @@ export function PartnersPage() {
 
   return (
     <>
-      {/* ✅ SEO – FIRST CHILD INSIDE THE FRAGMENT */}
       <SEO
         title="Partners | Technology & Security Partnerships | BitSecureX Tech"
         description="Meet our trusted partners at BitSecureX Tech. We collaborate with industry leaders including Google Cloud, Shopify, Stripe, EC-Council, and more to deliver world-class solutions."
@@ -171,7 +170,7 @@ export function PartnersPage() {
           </div>
         </section>
 
-        {/* Trust & Ratings */}
+        {/* Trust & Ratings - Same as before */}
         <section className="section-dark section-pad py-6">
           <div className="container-x">
             <div className="flex flex-wrap items-center justify-center gap-8">
@@ -243,7 +242,7 @@ export function PartnersPage() {
           </div>
         </section>
 
-        {/* Technology Partners Section - New Heading */}
+        {/* Technology Partners Section */}
         <section className="section-pad py-6">
           <div className="container-x">
             <div className="text-center">
@@ -326,6 +325,16 @@ export function PartnersPage() {
                           src={partner.logo}
                           alt={partner.name}
                           className="max-h-12 w-auto object-contain opacity-80 transition-opacity hover:opacity-100"
+                          onError={(e) => {
+                            // Fallback if image fails to load
+                            (e.target as HTMLImageElement).style.display = 'none';
+                            // Show placeholder
+                            const parent = e.target as HTMLElement;
+                            const placeholder = document.createElement('div');
+                            placeholder.className = 'flex h-12 w-12 items-center justify-center rounded-full bg-cyber-500/15 ring-1 ring-cyber-500/30';
+                            placeholder.innerHTML = '<span class="text-2xl font-bold text-cyber-400">' + partner.name.charAt(0) + '</span>';
+                            parent.parentNode?.replaceChild(placeholder, parent);
+                          }}
                         />
                       ) : (
                         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyber-500/15 ring-1 ring-cyber-500/30">
