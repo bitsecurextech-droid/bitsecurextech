@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { Mail, MapPin, Phone, ArrowUpRight, Share2, Send, ShieldCheck, Zap, Globe, CheckCircle2, Briefcase, Users, BookOpen, Shield, Lock, Award, Clock, TrendingUp, Instagram, Facebook, Twitter } from 'lucide-react';
+import { 
+  Mail, Phone, ArrowUpRight, Share2, Send, 
+  ShieldCheck, Zap, Globe, CheckCircle2, 
+  Briefcase, Users, BookOpen, Shield, Lock, 
+  Award, Clock, TrendingUp, Instagram, Facebook, Twitter 
+} from 'lucide-react';
 import { useNavigate } from '../lib/router';
 import { supabase } from '../lib/supabase';
 
@@ -132,7 +137,7 @@ export default function Footer() {
       <div className="pointer-events-none absolute bottom-0 left-0 h-48 w-48 rounded-full bg-cyber-500/5 blur-[80px]" />
 
       <div className="container-x relative px-5 py-16 sm:px-8 lg:px-12">
-        {/* TOP SECTION: Brand + CTA + Newsletter */}
+        {/* TOP SECTION */}
         <div className="mb-14 grid gap-8 rounded-2xl border border-slate-200/80 bg-gradient-to-br from-slate-50 to-white p-8 shadow-sm dark:border-white/10 dark:from-navy-800/50 dark:to-navy-900/50 lg:grid-cols-2 lg:items-center">
           <div>
             <div className="flex items-center gap-3">
@@ -148,7 +153,6 @@ export default function Footer() {
             </div>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-slate-600 dark:text-slate-400">
               We build, market, automate, and secure digital solutions for businesses worldwide.
-              From web development to cybersecurity, we deliver enterprise-grade excellence.
             </p>
             <div className="mt-4 flex flex-wrap gap-4">
               {trustBadges.map((b) => (
@@ -229,7 +233,7 @@ export default function Footer() {
           })}
         </div>
 
-        {/* BOTTOM SECTION: Social + Legal + Stats */}
+        {/* BOTTOM SECTION */}
         <div className="mt-14 flex flex-col items-center justify-between gap-6 border-t border-slate-200/80 pt-8 dark:border-white/10 sm:flex-row">
           <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-4">
             <p className="text-xs text-slate-400 dark:text-slate-500">
@@ -241,7 +245,7 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* SOCIAL LINKS – Using Lucide Icons */}
+          {/* SOCIAL ICONS - Simple SVG Icons (No external dependencies) */}
           <div className="flex items-center gap-3">
             <a
               href="https://www.instagram.com/bitsecurextech"
@@ -261,16 +265,6 @@ export default function Footer() {
               aria-label="Facebook"
             >
               <Facebook className="h-5 w-5" />
-            </a>
-
-            <a
-              href="https://www.tiktok.com/@bitsecurex.tech"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200/80 text-slate-500 transition-all hover:border-cyber-500/50 hover:bg-cyber-50 hover:text-cyber-600 dark:border-white/10 dark:text-slate-400 dark:hover:border-cyber-400/50 dark:hover:bg-cyber-500/10 dark:hover:text-cyber-400"
-              aria-label="TikTok"
-            >
-              <span className="text-lg font-bold">♬</span>
             </a>
 
             <a
