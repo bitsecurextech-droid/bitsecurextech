@@ -1,31 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
 
-// ---------- REVEAL HOOK (Intersection Observer) ----------
+// ---------- REVEAL HOOK ----------
 export function useReveal<T extends HTMLElement = HTMLDivElement>() {
   const ref = useRef<T>(null);
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
-    // ✅ Use requestAnimationFrame to avoid forced reflow
-    const timer = requestAnimationFrame(() => {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setShown(true);
-            observer.disconnect();
-          }
-        },
-        { threshold: 0.1, rootMargin: '50px' }
-      );
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShown(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
 
-      if (ref.current) {
-        observer.observe(ref.current);
-      }
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
 
-      return () => observer.disconnect();
-    });
-
-    return () => cancelAnimationFrame(timer);
+    return () => observer.disconnect();
   }, []);
 
   return { ref, shown };
