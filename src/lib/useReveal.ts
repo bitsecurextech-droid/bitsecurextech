@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, ReactNode } from 'react';
 
 // ---------- REVEAL HOOK ----------
 export function useReveal<T extends HTMLElement = HTMLDivElement>() {
@@ -63,6 +63,24 @@ export function useCountUp(target: number, duration: number = 2000, trigger: boo
   return count;
 }
 
+// ---------- VISITOR COUNT HOOK ----------
+export function useVisitorCount() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const baseCount = Math.floor(Math.random() * 500) + 100;
+    setCount(baseCount);
+
+    const interval = setInterval(() => {
+      setCount((prev) => prev + Math.floor(Math.random() * 3));
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return count;
+}
+
 // ---------- SCROLL PROGRESS HOOK ----------
 export function useScrollProgress() {
   const [progress, setProgress] = useState(0);
@@ -82,26 +100,6 @@ export function useScrollProgress() {
   }, []);
 
   return progress;
-}
-
-// ---------- VISITOR COUNT HOOK (FIXED) ----------
-export function useVisitorCount() {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    // Start with a random base count
-    const baseCount = Math.floor(Math.random() * 500) + 100;
-    setCount(baseCount);
-
-    // Simulate real-time visitor updates
-    const interval = setInterval(() => {
-      setCount((prev) => prev + Math.floor(Math.random() * 3));
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return count;
 }
 
 // ---------- THEME HOOK ----------
@@ -141,4 +139,15 @@ export function useTheme() {
   }, [theme]);
 
   return { theme, toggle };
+}
+
+// ---------- THEME PROVIDER (ADDED FOR main.tsx) ----------
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const { theme, toggle } = useTheme();
+
+  return (
+    <div className={`${theme === 'light' ? 'light' : 'dark'}`}>
+      {children}
+    </div>
+  );
 }
