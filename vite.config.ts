@@ -4,22 +4,26 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   build: {
+    // ✅ Disable manual chunks to reduce complexity
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          supabase: ['@supabase/supabase-js'],
-          ui: ['lucide-react'],
-        },
+        // Simple output without manual chunks
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/[name].[ext]',
       },
     },
-    chunkSizeWarningLimit: 1000,
-    minify: false, // ✅ Disable minification for faster build
+    // ✅ Increase chunk size limit
+    chunkSizeWarningLimit: 2000,
+    // ✅ Disable minification for faster build
+    minify: false,
+    // ✅ No source maps
     sourcemap: false,
-    cssCodeSplit: true,
+    // ✅ Target modern browsers
     target: 'es2020',
   },
+  // ✅ Simplify optimize deps
   optimizeDeps: {
-    include: ['react', 'react-dom', '@supabase/supabase-js', 'lucide-react'],
+    include: ['react', 'react-dom'],
   },
 });
