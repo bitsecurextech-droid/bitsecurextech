@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+// ---------- REVEAL HOOK ----------
 export function useReveal<T extends HTMLElement = HTMLDivElement>() {
   const ref = useRef<T>(null);
   const [shown, setShown] = useState(false);
@@ -31,6 +32,28 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>() {
   return { ref, shown };
 }
 
+// ---------- SCROLL PROGRESS HOOK ----------
+export function useScrollProgress() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const updateProgress = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      setProgress(Math.min(scrollPercent, 100));
+    };
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    return () => window.removeEventListener('scroll', updateProgress);
+  }, []);
+
+  return progress;
+}
+
+// ---------- THEME HOOK ----------
 export function useTheme() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
