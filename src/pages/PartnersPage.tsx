@@ -14,13 +14,13 @@ const partners = [
   },
   {
     name: 'Microsoft Azure',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg',
+    logo: 'https://res.cloudinary.com/db5b2bks8/image/upload/v1786709034/download_eyrzjn.png',
     description: 'Partner for enterprise cloud and AI services.',
     category: 'Cloud & Infrastructure',
   },
   {
     name: 'AWS',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg',
+    logo: 'https://res.cloudinary.com/db5b2bks8/image/upload/v1786709034/AWS_gah0l1.png',
     description: 'Premier partner for cloud hosting and DevOps solutions.',
     category: 'Cloud & Infrastructure',
   },
@@ -60,19 +60,19 @@ const partners = [
   // ===== ECOMMERCE & PAYMENTS =====
   {
     name: 'Shopify',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/shopify/shopify-original.svg',
+    logo: 'https://res.cloudinary.com/db5b2bks8/image/upload/v1786709035/shopify_de2joz.svg',
     description: 'Certified Shopify partner for ecommerce development and store optimization.',
     category: 'Ecommerce',
   },
   {
     name: 'Stripe',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/stripe/stripe-original.svg',
+    logo: 'https://res.cloudinary.com/db5b2bks8/image/upload/v1786709036/Stripe-Emblem_tzgep9.png',
     description: 'Partner for payment processing, subscription billing, and fintech solutions.',
     category: 'Fintech',
   },
   {
     name: 'PayPal',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/paypal/paypal-original.svg',
+    logo: 'https://res.cloudinary.com/db5b2bks8/image/upload/v1786709034/paypal-logo-png_seeklogo-249214_wcutxn.png',
     description: 'Partner for secure payment processing and global money transfers.',
     category: 'Fintech',
   },
@@ -80,13 +80,13 @@ const partners = [
   // ===== SECURITY & CERTIFICATIONS =====
   {
     name: 'EC-Council',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/EC-Council_Logo.svg/2560px-EC-Council_Logo.svg.png',
+    logo: 'https://res.cloudinary.com/db5b2bks8/image/upload/v1786709036/eccouncilcehbadge_zkiuhi.jpg',
     description: 'Partner for CEH and ethical hacking certifications.',
     category: 'Security',
   },
   {
     name: 'CompTIA',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/CompTIA_logo.svg/2560px-CompTIA_logo.svg.png',
+    logo: 'https://res.cloudinary.com/db5b2bks8/image/upload/v1786709035/How_to_get_CompTIA_Certifications1_uvy6p4.webp',
     description: 'Certification partner for cybersecurity and IT training.',
     category: 'Security',
   },
@@ -98,13 +98,13 @@ const partners = [
   },
   {
     name: 'Ghost-Shell',
-    logo: '',
+    logo: 'https://res.cloudinary.com/db5b2bks8/image/upload/v1786709200/logo_2_vuy2vo.png',
     description: 'CEH partnership for advanced ethical hacking and penetration testing.',
     category: 'Security',
   },
   {
     name: 'Microsoft AI Cloud Partner Program',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/microsoft/microsoft-original.svg',
+    logo: 'https://res.cloudinary.com/db5b2bks8/image/upload/v1786709034/download_eyrzjn.png',
     description: 'Partner for AI-powered cloud solutions and enterprise intelligence.',
     category: 'Cloud & Infrastructure',
   },
@@ -170,7 +170,7 @@ export function PartnersPage() {
           </div>
         </section>
 
-        {/* Trust & Ratings - Same as before */}
+        {/* Trust & Ratings */}
         <section className="section-dark section-pad py-6">
           <div className="container-x">
             <div className="flex flex-wrap items-center justify-center gap-8">
@@ -319,26 +319,26 @@ export function PartnersPage() {
               {filteredPartners.map((partner, i) => (
                 <Reveal key={i} delay={i * 60}>
                   <div className="glass rounded-2xl p-6 card-hover text-center">
-                    <div className="h-16 flex items-center justify-center">
+                    {/* Circular Logo */}
+                    <div className="h-20 w-20 mx-auto rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
                       {partner.logo ? (
                         <img
                           src={partner.logo}
                           alt={partner.name}
-                          className="max-h-12 w-auto object-contain opacity-80 transition-opacity hover:opacity-100"
+                          className="h-16 w-16 object-contain"
                           onError={(e) => {
                             // Fallback if image fails to load
                             (e.target as HTMLImageElement).style.display = 'none';
-                            // Show placeholder
                             const parent = e.target as HTMLElement;
                             const placeholder = document.createElement('div');
-                            placeholder.className = 'flex h-12 w-12 items-center justify-center rounded-full bg-cyber-500/15 ring-1 ring-cyber-500/30';
+                            placeholder.className = 'flex h-16 w-16 items-center justify-center rounded-full bg-cyber-500/20';
                             placeholder.innerHTML = '<span class="text-2xl font-bold text-cyber-400">' + partner.name.charAt(0) + '</span>';
                             parent.parentNode?.replaceChild(placeholder, parent);
                           }}
                         />
                       ) : (
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyber-500/15 ring-1 ring-cyber-500/30">
-                          <Handshake className="h-6 w-6 text-cyber-400" />
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-cyber-500/20">
+                          <Handshake className="h-8 w-8 text-cyber-400" />
                         </div>
                       )}
                     </div>
