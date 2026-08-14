@@ -14,7 +14,7 @@ export default defineConfig({
       },
     },
     chunkSizeWarningLimit: 1000,
-    minify: 'esbuild', // ✅ Use esbuild (built-in, no extra package)
+    minify: 'esbuild',
     sourcemap: false,
     cssCodeSplit: true,
     target: 'es2020',
