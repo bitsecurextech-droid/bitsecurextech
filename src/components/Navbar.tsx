@@ -124,7 +124,7 @@ export default function Navbar() {
               aria-label="Go to homepage"
             >
               <span className="grid h-9 w-9 place-items-center rounded-lg bg-black ring-1 ring-cyber-500/30 transition-transform group-hover:scale-105">
-                <img src="/icon.png" alt="BSX" className="h-7 w-7 rounded-md object-cover" />
+                <img src="/icon.webp" alt="BSX" className="h-7 w-7 rounded-md object-cover" />
               </span>
               <span className={`font-display text-xl font-bold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
                 <span className="hidden sm:inline">BITSECURE</span>
