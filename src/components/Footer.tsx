@@ -167,7 +167,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-3">
               <span className="grid h-10 w-10 place-items-center rounded-lg bg-slate-900 ring-1 ring-cyber-500/30">
-                <img src="/icon.png" alt="BitSecureX" className="h-7 w-7 rounded-md object-cover" />
+                <img src="/icon.webp" alt="BitSecureX" className="h-7 w-7 rounded-md object-cover" />
               </span>
               <div>
                 <h3 className="font-display text-xl font-bold text-slate-900 dark:text-white">
