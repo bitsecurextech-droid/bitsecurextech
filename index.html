@@ -20,9 +20,8 @@
       rel="stylesheet" 
     />
 
-    <!-- ✅ CRITICAL CSS (Inlined for first paint) -->
+    <!-- ✅ CRITICAL CSS (Inlined) -->
     <style>
-      /* Critical styles for above-the-fold content */
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { 
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -49,42 +48,7 @@
         font-family: 'Inter', sans-serif;
       }
       .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,230,118,0.3); }
-      .btn-ghost {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px 24px;
-        border-radius: 12px;
-        border: 1px solid rgba(255,255,255,0.15);
-        background: transparent;
-        color: #cbd5e1;
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.3s;
-        font-family: 'Inter', sans-serif;
-      }
-      .btn-ghost:hover { background: rgba(255,255,255,0.05); color: #ffffff; }
-      .eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: #94a3b8;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-      }
     </style>
-
-    <!-- ✅ DEFER NON-CRITICAL CSS -->
-    <link 
-      rel="preload" 
-      as="style" 
-      href="/assets/index.css" 
-      onload="this.onload=null;this.rel='stylesheet'" 
-    />
-    <noscript><link rel="stylesheet" href="/assets/index.css" /></noscript>
 
     <!-- ✅ META TAGS -->
     <meta name="theme-color" content="#0a0a1a" />
