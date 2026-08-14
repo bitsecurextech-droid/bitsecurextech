@@ -32,7 +32,7 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>() {
   return { ref, shown };
 }
 
-// ---------- SCROLL PROGRESS HOOK ----------
+// ---------- SCROLL PROGRESS HOOK (ADD THIS) ----------
 export function useScrollProgress() {
   const [progress, setProgress] = useState(0);
 
