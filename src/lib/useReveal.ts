@@ -32,7 +32,7 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>() {
   return { ref, shown };
 }
 
-// ---------- COUNT UP HOOK (ADD THIS) ----------
+// ---------- COUNT UP HOOK ----------
 export function useCountUp(target: number, duration: number = 2000, trigger: boolean = true) {
   const [count, setCount] = useState(0);
 
@@ -82,6 +82,26 @@ export function useScrollProgress() {
   }, []);
 
   return progress;
+}
+
+// ---------- VISITOR COUNT HOOK (FIXED) ----------
+export function useVisitorCount() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    // Start with a random base count
+    const baseCount = Math.floor(Math.random() * 500) + 100;
+    setCount(baseCount);
+
+    // Simulate real-time visitor updates
+    const interval = setInterval(() => {
+      setCount((prev) => prev + Math.floor(Math.random() * 3));
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return count;
 }
 
 // ---------- THEME HOOK ----------
