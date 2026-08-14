@@ -1,5 +1,5 @@
-import { Component, ReactNode, Suspense, useState, useEffect } from 'react';
-import { useRoute, RouterProvider } from './lib/router';
+import { Component, ReactNode, Suspense, useState, useEffect, lazy } from 'react';
+import { useRoute } from './lib/router';
 import { useAuth } from './lib/auth';
 import { Background } from './components/Background';
 import { ParticleBackground } from './components/ParticleBackground';
@@ -11,7 +11,11 @@ import { CustomCursor } from './components/CustomCursor';
 import { LoadingScreen } from './components/LoadingScreen';
 import { supabase } from './lib/supabase';
 
-// IMPORT ALL PAGES
+// ✅ LAZY LOAD ADMIN PAGES (Only loaded when needed)
+const AdminPage = lazy(() => import('./pages/AdminPage'));
+const PortalPage = lazy(() => import('./pages/PortalPage'));
+
+// ✅ IMPORT ALL OTHER PAGES DIRECTLY
 import { HomePage } from './pages/HomePage';
 import { ServicesPage } from './pages/ServicesPage';
 import { ServiceDetailPage } from './pages/ServiceDetailPage';
@@ -22,8 +26,6 @@ import { CaseStudyPage } from './pages/CaseStudyPage';
 import { BlogPage } from './pages/BlogPage';
 import { ToolsPage } from './pages/ToolsPage';
 import { ContactPage } from './pages/ContactPage';
-import { PortalPage } from './pages/PortalPage';
-import AdminPage from './pages/AdminPage';
 import { AboutPage } from './pages/AboutPage';
 import { PricingPage } from './pages/PricingPage';
 import { DigitalEcosystemPage } from './pages/DigitalEcosystemPage';
@@ -130,6 +132,15 @@ function useMaintenance() {
 }
 
 // ============================================================
+// LOADING FALLBACK
+// ============================================================
+const PageLoader = () => (
+  <div className="flex h-[60vh] items-center justify-center">
+    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-cyber-500 border-t-transparent" />
+  </div>
+);
+
+// ============================================================
 // MAIN APP
 // ============================================================
 function App() {
@@ -138,7 +149,6 @@ function App() {
   const path = route.path;
   const { isMaintenance, maintenanceMessage, loading } = useMaintenance();
 
-  // ✅ If maintenance is ON and not on admin/portal pages
   const showMaintenance = isMaintenance && path !== '/admin' && path !== '/portal';
 
   if (showMaintenance) {
@@ -151,53 +161,32 @@ function App() {
 
   let PageComponent = HomePage;
 
-  // Home
   if (path === '/') PageComponent = HomePage;
-
-  // Services
   else if (path === '/services') PageComponent = ServicesPage;
   else if (path.startsWith('/services/')) PageComponent = ServiceDetailPage;
-
-  // Technology
   else if (path === '/web-development') PageComponent = WebDevelopmentPage;
   else if (path === '/software-solutions') PageComponent = SoftwareSolutionsPage;
   else if (path === '/ai-automation') PageComponent = AIAutomationPage;
   else if (path === '/cloud-solutions') PageComponent = CloudSolutionsPage;
   else if (path === '/mobile-app-development') PageComponent = MobileAppDevelopmentPage;
-
-  // Marketing
   else if (path === '/digital-marketing') PageComponent = DigitalMarketingPage;
   else if (path === '/seo') PageComponent = SEOPage;
   else if (path === '/social-media-marketing') PageComponent = SocialMediaMarketingPage;
   else if (path === '/content-marketing') PageComponent = ContentMarketingPage;
-
-  // Security
   else if (path === '/cybersecurity') PageComponent = CybersecurityPage;
   else if (path === '/penetration-testing') PageComponent = PenetrationTestingPage;
-
-  // Commerce
   else if (path === '/ecommerce-development') PageComponent = EcommerceDevelopmentPage;
   else if (path === '/shopify-stores') PageComponent = ShopifyStoresPage;
   else if (path === '/marketplace') PageComponent = MarketplacePage;
-
-  // Ecosystem
   else if (path === '/ecosystem') PageComponent = DigitalEcosystemPage;
-
-  // About
   else if (path === '/about') PageComponent = AboutPage;
   else if (path === '/careers') PageComponent = CareersPage;
   else if (path === '/partners') PageComponent = PartnersPage;
-
-  // Insights
   else if (path === '/blog') PageComponent = BlogPage;
   else if (path === '/case-studies') PageComponent = CaseStudyPage;
   else if (path === '/reports') PageComponent = ReportsPage;
-
-  // Tools
   else if (path === '/tools') PageComponent = ToolsPage;
   else if (path === '/calculator') PageComponent = CalculatorPage;
-
-  // Other
   else if (path === '/offers') PageComponent = OffersPage;
   else if (path === '/portfolio') PageComponent = PortfolioPage;
   else if (path === '/contact') PageComponent = ContactPage;
@@ -220,7 +209,7 @@ function App() {
         {path !== '/admin' && path !== '/portal' && <Navbar />}
         
         <main>
-          <Suspense fallback={<div className="flex h-[60vh] items-center justify-center text-white">Loading...</div>}>
+          <Suspense fallback={<PageLoader />}>
             <PageComponent />
           </Suspense>
         </main>
