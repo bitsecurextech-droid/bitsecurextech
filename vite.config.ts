@@ -4,25 +4,34 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   build: {
+    // Skip minification to speed up build
+    minify: false,
+    // Increase chunk size limit
+    chunkSizeWarningLimit: 2000,
+    // No source maps
+    sourcemap: false,
+    // Target modern browsers
+    target: 'es2020',
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          supabase: ['@supabase/supabase-js'],
-          lucide: ['lucide-react'],
-        },
+        // Simple output format
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/[name].[ext]',
+        // Manual chunks to reduce memory
+        manualChunks: undefined,
       },
     },
-    chunkSizeWarningLimit: 1000,
-    minify: 'esbuild',
-    sourcemap: false,
-    cssCodeSplit: true,
-    target: 'es2020',
   },
+  // Optimize deps
   optimizeDeps: {
-    include: ['react', 'react-dom', '@supabase/supabase-js', 'lucide-react'],
+    include: ['react', 'react-dom'],
+    esbuildOptions: {
+      target: 'es2020',
+    },
   },
-  server: {
-    compress: true,
+  // Use esbuild for faster builds
+  esbuild: {
+    logLevel: 'error',
   },
 });
