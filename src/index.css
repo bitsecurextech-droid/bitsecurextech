@@ -1,4 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+/* ============================================================
+   GOOGLE FONTS - MOVED TO index.html (remove @import)
+   ============================================================ */
+/* ❌ REMOVE THIS LINE:
+   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+*/
 
 @tailwind base;
 @tailwind components;
@@ -27,7 +32,9 @@ html.light body {
 html.light ::-webkit-scrollbar-track { background: #f1f5f9; }
 ::-webkit-scrollbar-thumb { background: linear-gradient(#0066ff, #00e676); border-radius: 8px; }
 
-/* Custom cursor - NO cursor:none on body to avoid navigation issues */
+/* ============================================================
+   FIX: CUSTOM CURSOR - Reduced animation
+   ============================================================ */
 .neon-cursor {
   position: fixed; top: 0; left: 0;
   width: 20px; height: 20px;
@@ -36,7 +43,8 @@ html.light ::-webkit-scrollbar-track { background: #f1f5f9; }
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
-  transition: width 0.2s, height 0.2s, background 0.2s, border-color 0.2s, opacity 0.2s;
+  /* ✅ Only transition opacity, not width/height */
+  transition: opacity 0.2s;
   mix-blend-mode: screen;
 }
 .neon-cursor-dot {
@@ -48,30 +56,29 @@ html.light ::-webkit-scrollbar-track { background: #f1f5f9; }
   z-index: 9999;
   transform: translate(-50%, -50%);
 }
-.neon-cursor.hover { width: 40px; height: 40px; background: rgba(0, 230, 118, 0.1); border-color: #0066ff; }
+/* ✅ Remove hover state animation */
+.neon-cursor.hover { 
+  opacity: 0.7;
+}
 @media (hover: none) { .neon-cursor, .neon-cursor-dot { display: none; } }
 
 @layer base {
-  /* Section background helpers */
   .section-dark { @apply bg-navy-950; }
   .section-dark-alt { background-color: #070b1d; }
   .section-white { background-color: #ffffff; }
   .section-light { background-color: #f8fafc; }
   .section-navy { background-color: #0a1029; }
-  /* Text on white sections */
   .on-white h1, .on-white h2, .on-white h3 { color: #0f172a; }
   .on-white p { color: #475569; }
 }
 
 @layer components {
-  /* Glass - dark context */
   .glass {
     background: rgba(10, 16, 41, 0.55);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.08);
   }
-  /* Glass - white/light context */
   .glass-light {
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(0, 102, 255, 0.12);
@@ -83,14 +90,12 @@ html.light ::-webkit-scrollbar-track { background: #f1f5f9; }
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  /* Cards on white background */
   .card-white {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
   }
   .card-white:hover { box-shadow: 0 8px 32px rgba(0, 102, 255, 0.12); border-color: rgba(0, 102, 255, 0.3); }
-  /* Cards on light bg */
   .card-light {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
@@ -135,16 +140,16 @@ html.light ::-webkit-scrollbar-track { background: #f1f5f9; }
   .input-field-light {
     @apply w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-cyber-500 focus:ring-2 focus:ring-cyber-500/20;
   }
-  /* Section heading on white */
   .section-title-dark { @apply font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl; }
-  /* Section heading on dark */
   .section-title-light { @apply font-display text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl; }
-  /* Underline accent like UI reference */
   .underline-accent {
     @apply relative after:absolute after:-bottom-2 after:left-0 after:h-1 after:w-16 after:rounded-full after:bg-cyber-500;
   }
 }
 
+/* ============================================================
+   REVEAL ANIMATIONS - Only when visible
+   ============================================================ */
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
 .reveal.in { opacity: 1; transform: translateY(0); }
 
@@ -154,8 +159,16 @@ html.light ::-webkit-scrollbar-track { background: #f1f5f9; }
   background: radial-gradient(circle, rgba(0,102,255,0.18) 0%, rgba(0,230,118,0.08) 40%, transparent 70%);
 }
 
-.terminal-line { opacity: 0; animation: termFadeIn 0.3s ease forwards; }
-@keyframes termFadeIn { to { opacity: 1; } }
+/* ============================================================
+   TERMINAL - Single animation only
+   ============================================================ */
+.terminal-line { 
+  opacity: 0; 
+  animation: termFadeIn 0.3s ease forwards; 
+}
+@keyframes termFadeIn { 
+  to { opacity: 1; } 
+}
 
 .scroll-progress {
   position: fixed; top: 0; left: 0; height: 3px;
@@ -163,7 +176,6 @@ html.light ::-webkit-scrollbar-track { background: #f1f5f9; }
   z-index: 200; transition: width 0.1s;
 }
 
-/* Navbar underline active style from UI/UX reference */
 .nav-link-active {
   position: relative;
   color: #0f172a;
@@ -179,28 +191,101 @@ html.light ::-webkit-scrollbar-track { background: #f1f5f9; }
 html.dark .nav-link-active { color: #ffffff; }
 
 /* ============================================================
-   MARQUEE ANIMATION
+   MARQUEE - Only one animation
    ============================================================ */
 @keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .animate-marquee {
   animation: marquee 30s linear infinite;
   width: max-content;
+  will-change: transform;
 }
 
 /* ============================================================
-   GRID BACKGROUND (For dark sections)
+   FIX: CONTRAST - Darker text on light backgrounds
+   ============================================================ */
+/* ✅ Keep these for dark backgrounds */
+.dark .text-slate-400 {
+  color: #94a3b8;
+}
+.dark .text-slate-500 {
+  color: #64748b;
+}
+
+/* ✅ Darker for light backgrounds (better contrast) */
+html.light .text-slate-400 {
+  color: #64748b; /* Was #94a3b8 */
+}
+html.light .text-slate-500 {
+  color: #475569; /* Was #64748b */
+}
+html.light .text-slate-600 {
+  color: #334155;
+}
+
+/* ============================================================
+   FIX: DECORATIVE ELEMENTS (Accessibility)
    ============================================================ */
 .bg-grid {
   background-image: 
     linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
+}
+/* ✅ Decorative elements should not affect contrast */
+.bg-radial-glow {
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ============================================================
+   FIX: FOCUS STATES (Accessibility)
+   ============================================================ */
+:focus-visible {
+  outline: 3px solid #00e676;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ============================================================
+   FIX: REDUCE ANIMATIONS (Performance)
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-marquee {
+    animation: none !important;
+  }
+  .terminal-line {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* ============================================================
+   SKIP LINK (Accessibility)
+   ============================================================ */
+.skip-link {
+  position: absolute;
+  top: -9999px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #00e676;
+  color: #0a0a1a;
+  padding: 12px 24px;
+  z-index: 9999;
+  border-radius: 8px;
+  font-weight: 600;
+}
+.skip-link:focus {
+  top: 20px;
 }
