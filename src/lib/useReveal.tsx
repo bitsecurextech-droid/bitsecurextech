@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, ReactNode } from 'react';
 
-// ---------- REVEAL HOOK (Intersection Observer) ----------
+// ---------- REVEAL HOOK ----------
 export function useReveal<T extends HTMLElement = HTMLDivElement>() {
   const ref = useRef<T>(null);
   const [shown, setShown] = useState(false);
@@ -8,7 +8,7 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry && entry.isIntersecting) {
           setShown(true);
           observer.disconnect();
         }
@@ -16,17 +16,101 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>() {
       { threshold: 0.1 }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    const current = ref.current;
+    if (current) {
+      observer.observe(current);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      if (current) {
+        observer.unobserve(current);
+      }
+      observer.disconnect();
+    };
   }, []);
 
   return { ref, shown };
 }
 
-// ---------- THEME ----------
+// ---------- COUNT UP HOOK ----------
+export function useCountUp(target: number, duration: number = 2000, trigger: boolean = true) {
+  const [count, setCount] = useState(0);
+  const animationRef = useRef<number>();
+
+  useEffect(() => {
+    if (!trigger) {
+      setCount(0);
+      return;
+    }
+
+    const startTime = performance.now();
+    const startValue = 0;
+
+    const update = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(eased * target);
+
+      setCount(current);
+
+      if (progress < 1) {
+        animationRef.current = requestAnimationFrame(update);
+      }
+    };
+
+    animationRef.current = requestAnimationFrame(update);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [target, duration, trigger]);
+
+  return count;
+}
+
+// ---------- VISITOR COUNT HOOK ----------
+export function useVisitorCount() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const baseCount = Math.floor(Math.random() * 500) + 100;
+    setCount(baseCount);
+
+    const interval = setInterval(() => {
+      setCount((prev) => prev + Math.floor(Math.random() * 3));
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return count;
+}
+
+// ---------- SCROLL PROGRESS HOOK ----------
+export function useScrollProgress() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const updateProgress = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      setProgress(Math.min(scrollPercent, 100));
+    };
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    return () => window.removeEventListener('scroll', updateProgress);
+  }, []);
+
+  return progress;
+}
+
+// ---------- THEME HOOK ----------
 export function useTheme() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
@@ -53,7 +137,6 @@ export function useTheme() {
   };
 
   useEffect(() => {
-    // Apply theme on mount
     if (theme === 'light') {
       document.documentElement.classList.add('light');
       document.documentElement.classList.remove('dark');
@@ -64,4 +147,15 @@ export function useTheme() {
   }, [theme]);
 
   return { theme, toggle };
+}
+
+// ---------- THEME PROVIDER (For main.tsx) ----------
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const { theme } = useTheme();
+
+  return (
+    <div className={`${theme === 'light' ? 'light' : 'dark'}`}>
+      {children}
+    </div>
+  );
 }
