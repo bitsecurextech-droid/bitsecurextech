@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BitSecureX Tech – We Build. We Automate. We Secure.</title>
     
-    <!-- ✅ PRELOAD LCP IMAGE -->
+    <!-- ✅ ONLY PRELOAD THE LCP IMAGE -->
     <link rel="preload" as="image" href="/bitsecureux_uiux%20copy.png" fetchpriority="high" />
 
     <!-- ✅ PRELOAD FONTS -->
@@ -17,7 +17,7 @@
       rel="stylesheet" 
     />
 
-    <!-- ✅ CRITICAL CSS -->
+    <!-- ✅ CRITICAL CSS (NO preload for index.css) -->
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { 
@@ -30,19 +30,12 @@
       #root { min-height: 100vh; }
     </style>
 
-    <!-- ✅ DEFER CSS -->
-    <link rel="preload" as="style" href="/assets/index.css" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="/assets/index.css" /></noscript>
-
     <!-- ✅ META TAGS -->
     <meta name="theme-color" content="#0a0a1a" />
     <meta name="description" content="Web development, cybersecurity, AI automation, and cloud solutions for businesses worldwide." />
     <meta property="og:title" content="BitSecureX Tech – We Build. We Automate. We Secure." />
     <meta property="og:description" content="Web development, cybersecurity, AI automation, and cloud solutions for businesses worldwide." />
     <meta name="robots" content="index, follow" />
-    
-    <!-- ✅ PREFETCH -->
-    <link rel="prefetch" href="/assets/vendor.js" />
   </head>
   <body>
     <div id="root"></div>
