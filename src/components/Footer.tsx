@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, MapPin, Phone, ArrowUpRight, Share2, Send, ShieldCheck, Zap, Globe, CheckCircle2, Briefcase, Users, BookOpen, Shield, Lock, Award, Clock, TrendingUp } from 'lucide-react';
+import { Mail, MapPin, Phone, ArrowUpRight, Share2, Send, ShieldCheck, Zap, Globe, CheckCircle2, Briefcase, Users, BookOpen, Shield, Lock, Award, Clock, TrendingUp, Instagram, Facebook, Twitter, Youtube } from 'lucide-react';
 import { useNavigate } from '../lib/router';
 import { supabase } from '../lib/supabase';
 
@@ -88,7 +88,6 @@ export default function Footer() {
     setSubscribing(true);
     
     try {
-      // 1. Save to Supabase
       const { error } = await supabase
         .from('email_subscribers')
         .insert({ 
@@ -100,14 +99,11 @@ export default function Footer() {
       if (error) {
         console.error('Subscription error:', error);
         setSubscribed(true);
-        // Show error briefly
         setTimeout(() => setSubscribed(false), 4000);
         setSubscribing(false);
         return;
       }
 
-      // 2. Send Telegram notification via the backend function
-      // Since we are in a browser component, we import the function you already have set up.
       const { sendTelegram, formatLeadMessage } = await import('../lib/telegram');
       
       const message = formatLeadMessage('Newsletter Subscription', {
@@ -117,7 +113,6 @@ export default function Footer() {
       });
       await sendTelegram(message);
 
-      // 3. Update UI
       setSubscribed(true);
       setEmail('');
     } catch (err) {
@@ -177,6 +172,8 @@ export default function Footer() {
                 <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
                   type="email"
+                  id="footer-email"
+                  name="footer-email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
@@ -244,7 +241,7 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* SOCIAL LINKS – Font Awesome */}
+          {/* SOCIAL LINKS – Using Lucide Icons (Fixed!) */}
           <div className="flex items-center gap-3">
             <a
               href="https://www.instagram.com/bitsecurextech"
@@ -253,7 +250,7 @@ export default function Footer() {
               className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200/80 text-slate-500 transition-all hover:border-cyber-500/50 hover:bg-cyber-50 hover:text-cyber-600 dark:border-white/10 dark:text-slate-400 dark:hover:border-cyber-400/50 dark:hover:bg-cyber-500/10 dark:hover:text-cyber-400"
               aria-label="Instagram"
             >
-              <i className="fa-brands fa-instagram text-lg"></i>
+              <Instagram className="h-5 w-5" />
             </a>
 
             <a
@@ -263,7 +260,7 @@ export default function Footer() {
               className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200/80 text-slate-500 transition-all hover:border-cyber-500/50 hover:bg-cyber-50 hover:text-cyber-600 dark:border-white/10 dark:text-slate-400 dark:hover:border-cyber-400/50 dark:hover:bg-cyber-500/10 dark:hover:text-cyber-400"
               aria-label="Facebook"
             >
-              <i className="fa-brands fa-facebook-f text-lg"></i>
+              <Facebook className="h-5 w-5" />
             </a>
 
             <a
@@ -273,7 +270,7 @@ export default function Footer() {
               className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200/80 text-slate-500 transition-all hover:border-cyber-500/50 hover:bg-cyber-50 hover:text-cyber-600 dark:border-white/10 dark:text-slate-400 dark:hover:border-cyber-400/50 dark:hover:bg-cyber-500/10 dark:hover:text-cyber-400"
               aria-label="TikTok"
             >
-              <i className="fa-brands fa-tiktok text-lg"></i>
+              <span className="text-lg font-bold">♬</span>
             </a>
 
             <a
@@ -283,7 +280,7 @@ export default function Footer() {
               className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200/80 text-slate-500 transition-all hover:border-cyber-500/50 hover:bg-cyber-50 hover:text-cyber-600 dark:border-white/10 dark:text-slate-400 dark:hover:border-cyber-400/50 dark:hover:bg-cyber-500/10 dark:hover:text-cyber-400"
               aria-label="X (Twitter)"
             >
-              <i className="fa-brands fa-x-twitter text-lg"></i>
+              <Twitter className="h-5 w-5" />
             </a>
 
             <button
