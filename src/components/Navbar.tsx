@@ -124,7 +124,7 @@ export default function Navbar() {
               </span>
               <span className={`font-display text-xl font-bold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
                 <span className="hidden sm:inline">BITSECURE</span>
-                <span className="sm:hidden">BSX</span>
+                <span className="sm:hidden">BS</span>
                 <span className="text-cyber-500">X</span>
                 <span className={`block text-[10px] font-medium tracking-widest ${isLight ? 'text-slate-500' : 'text-slate-400'}`} style={{ marginTop: '-4px' }}>TECH</span>
               </span>
