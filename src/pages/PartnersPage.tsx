@@ -52,7 +52,7 @@ const partners = [
   },
 {
   name: 'Supabase',
-  logo: 'https://raw.githubusercontent.com/supabase/supabase/master/packages/common/assets/images/logo.svg',
+  logo: 'https://res.cloudinary.com/db5b2bks8/image/upload/v1786709034/logo-preview_1_xczxfa.webp',
   description: 'Preferred partner for database and backend solutions.',
   category: 'Technology',
 },
