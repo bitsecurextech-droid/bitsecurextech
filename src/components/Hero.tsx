@@ -91,8 +91,8 @@ function StatCounter({ value, suffix, label, delay }: { value: number; suffix: s
   );
 }
 
-const heroScreenshot = '/bitsecurex_uiux copy.webp';
-const phoneScreenshot = '/bitsecurex_uiux copy.webp';
+const heroScreenshot = '/bitsecurex_uiux.webp';
+const phoneScreenshot = '/bitsecurex_uiux.webp';
 
 function HeroVisual() {
   return (
@@ -112,7 +112,7 @@ function HeroVisual() {
             <div className="relative flex items-center gap-2 border-b border-white/10 bg-navy-950 px-3 py-2">
               <div className="flex items-center gap-1.5">
                 <span className="grid h-5 w-5 place-items-center rounded bg-black">
-                  <img src="/icon.png" alt="" className="h-3.5 w-3.5 rounded-sm object-cover" />
+                  <img src="/icon.webp" alt="" className="h-3.5 w-3.5 rounded-sm object-cover" />
                 </span>
                 <span className="font-display text-[11px] font-bold text-white">bitsecurex.tech</span>
               </div>
@@ -153,7 +153,7 @@ function HeroVisual() {
               {/* Mobile browser bar */}
               <div className="flex items-center gap-1 border-b border-white/10 bg-navy-950 px-1.5 py-1">
                 <span className="grid h-3 w-3 place-items-center rounded bg-black">
-                  <img src="/icon.png" alt="" className="h-2 w-2 rounded-sm object-cover" />
+                  <img src="/icon.webp" alt="" className="h-2 w-2 rounded-sm object-cover" />
                 </span>
                 <span className="text-[5px] font-bold text-white">bitsecurex.tech</span>
               </div>
