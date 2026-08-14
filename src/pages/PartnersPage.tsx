@@ -50,12 +50,12 @@ const partners = [
     description: 'Partner for version control, CI/CD, and open source collaboration.',
     category: 'Technology',
   },
-  {
-    name: 'Supabase',
-    logo: 'https://supabase.com/images/logo-dark.svg',
-    description: 'Preferred partner for database and backend solutions.',
-    category: 'Technology',
-  },
+{
+  name: 'Supabase',
+  logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Supabase_logo.svg/2560px-Supabase_logo.svg.png',
+  description: 'Preferred partner for database and backend solutions.',
+  category: 'Technology',
+},
 
   // ===== ECOMMERCE & PAYMENTS =====
   {
