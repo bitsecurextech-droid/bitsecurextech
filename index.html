@@ -9,20 +9,12 @@
     <!-- ✅ PRELOAD CRITICAL HERO IMAGE -->
     <link rel="preload" as="image" href="/bitsecurex_uiux.webp" fetchpriority="high" />
     
-    <!-- ✅ PRECONNECT TO SUPABASE (Fixed crossorigin) -->
+    <!-- ✅ PRECONNECT -->
     <link rel="preconnect" href="https://jimvardgmzketmyrmtwr.supabase.co" />
-    
-    <!-- ✅ PRECONNECT TO GOOGLE FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     
-    <!-- ✅ CRITICAL FONTS (Only weights needed for first paint) -->
-    <link 
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" 
-      rel="stylesheet" 
-    />
-    
-    <!-- ✅ DEFER FULL FONT FAMILY -->
+    <!-- ✅ DEFER ALL FONTS (No blocking) -->
     <link 
       rel="preload" 
       as="style" 
@@ -38,7 +30,6 @@
 
     <!-- ✅ CRITICAL CSS (Inlined) -->
     <style>
-      /* Reset and critical styles */
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { 
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
