@@ -1,58 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/icon.webp" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BitSecureX Tech – We Build. We Automate. We Secure.</title>
-    
-    <!-- ✅ PRELOAD HERO IMAGE -->
-    <link rel="preload" as="image" href="/bitsecurex_uiux.webp" fetchpriority="high" />
-    
-    <!-- ✅ PRECONNECT -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    
-    <!-- ✅ DEFER FONTS (Non-blocking) -->
-    <link 
-      rel="preload" 
-      as="style" 
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" 
-      onload="this.onload=null;this.rel='stylesheet'" 
-    />
-    <noscript>
-      <link 
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" 
-        rel="stylesheet" 
-      />
-    </noscript>
-
-    <!-- ✅ CRITICAL CSS -->
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { 
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        background-color: #0a0a1a;
-        color: #ffffff;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-      #root { min-height: 100vh; }
-      .container-x { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
-      .gradient-text { background: linear-gradient(135deg, #00e676, #00b0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    </style>
-
-    <!-- ✅ META TAGS -->
-    <meta name="theme-color" content="#0a0a1a" />
-    <meta name="description" content="Web development, cybersecurity, AI automation, and cloud solutions for businesses worldwide." />
-    <meta property="og:title" content="BitSecureX Tech" />
-    <meta property="og:description" content="Web development, cybersecurity, AI automation, and cloud solutions for businesses worldwide." />
-    <meta name="robots" content="index, follow" />
-    
-    <!-- ✅ REMOVED X-Frame-Options meta (now in vercel.json) -->
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+      ]
+    }
+  ]
+}
