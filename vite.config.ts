@@ -7,9 +7,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'supabase-vendor': ['@supabase/supabase-js'],
-          'ui-vendor': ['lucide-react'],
+          vendor: ['react', 'react-dom'],
+          supabase: ['@supabase/supabase-js'],
+          ui: ['lucide-react'],
         },
       },
     },
@@ -21,8 +21,5 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['react', 'react-dom', '@supabase/supabase-js', 'lucide-react'],
-  },
-  server: {
-    compress: true,
   },
 });
