@@ -134,7 +134,15 @@ function useMaintenance() {
 // APP CONTENT
 // ============================================================
 function AppContent() {
-  useAuth();
+  // ✅ Wrap useAuth in try-catch to prevent errors when not authenticated
+  let auth;
+  try {
+    auth = useAuth();
+  } catch (e) {
+    // If not in AuthProvider, use a safe fallback
+    auth = { session: null, user: null };
+  }
+  
   const route = useRoute();
   const path = route.path;
   const { isMaintenance, maintenanceMessage, loading } = useMaintenance();
