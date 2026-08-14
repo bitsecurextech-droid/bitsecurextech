@@ -363,6 +363,7 @@ export function HomePage() {
                   src={logo.logo_url}
                   alt={logo.name}
                   className="max-h-10 w-auto object-contain"
+                  loading="lazy"
                 />
               ))
             ) : (
