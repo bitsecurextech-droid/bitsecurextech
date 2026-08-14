@@ -1,13 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { RouterProvider } from './lib/router';
 import { AuthProvider } from './lib/auth';
+import { ThemeProvider } from './lib/useReveal';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import App from './App';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <RouterProvider>
+          <App />
+          <Analytics />
+          <SpeedInsights />
+        </RouterProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );
