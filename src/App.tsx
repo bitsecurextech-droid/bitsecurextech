@@ -11,9 +11,32 @@ import { CustomCursor } from './components/CustomCursor';
 import { LoadingScreen } from './components/LoadingScreen';
 import { supabase } from './lib/supabase';
 
-// ✅ LAZY LOAD ADMIN PAGES (Only loaded when needed)
+// ✅ LAZY LOAD ADMIN PAGES
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const PortalPage = lazy(() => import('./pages/PortalPage'));
+const AdminABTesting = lazy(() => import('./pages/admin/AdminABTesting'));
+const AdminAgents = lazy(() => import('./pages/admin/AdminAgents'));
+const AdminAuditLogs = lazy(() => import('./pages/admin/AdminAuditLogs'));
+const AdminBlog = lazy(() => import('./pages/admin/AdminBlog'));
+const AdminCaseStudies = lazy(() => import('./pages/admin/AdminCaseStudies'));
+const AdminCerts = lazy(() => import('./pages/admin/AdminCerts'));
+const AdminLeads = lazy(() => import('./pages/admin/AdminLeads'));
+const AdminMedia = lazy(() => import('./pages/admin/AdminMedia'));
+const AdminProjects = lazy(() => import('./pages/admin/AdminProjects'));
+const AdminResources = lazy(() => import('./pages/admin/AdminResources'));
+const AdminReviews = lazy(() => import('./pages/admin/AdminReviews'));
+const AdminSecurityCenter = lazy(() => import('./pages/admin/AdminSecurityCenter'));
+const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
+const AdminShopify = lazy(() => import('./pages/admin/AdminShopify'));
+const AdminSiteContent = lazy(() => import('./pages/admin/AdminSiteContent'));
+const AdminSubscribers = lazy(() => import('./pages/admin/AdminSubscribers'));
+const AdminTeam = lazy(() => import('./pages/admin/AdminTeam'));
+const AdminTestimonials = lazy(() => import('./pages/admin/AdminTestimonials'));
+const AdminUserFiles = lazy(() => import('./pages/admin/AdminUserFiles'));
+const AdminUserInvoices = lazy(() => import('./pages/admin/AdminUserInvoices'));
+const AdminUserManagement = lazy(() => import('./pages/admin/AdminUserManagement'));
+const AdminUserProjects = lazy(() => import('./pages/admin/AdminUserProjects'));
+const AdminUserTickets = lazy(() => import('./pages/admin/AdminUserTickets'));
 
 // ✅ IMPORT ALL OTHER PAGES DIRECTLY
 import { HomePage } from './pages/HomePage';
