@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm run build",
+  "ignoreCommand": "echo 'Skipping lint...'",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "outputDirectory": "dist",
+  "env": {
+    "NODE_OPTIONS": "--max-old-space-size=4096"
+  }
+}
