@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, MapPin, Phone, ArrowUpRight, Share2, Send, ShieldCheck, Zap, Globe, CheckCircle2, Briefcase, Users, BookOpen, Shield, Lock, Award, Clock, TrendingUp, Instagram, Facebook, Twitter, Youtube } from 'lucide-react';
+import { Mail, MapPin, Phone, ArrowUpRight, Share2, Send, ShieldCheck, Zap, Globe, CheckCircle2, Briefcase, Users, BookOpen, Shield, Lock, Award, Clock, TrendingUp, Instagram, Facebook, Twitter } from 'lucide-react';
 import { useNavigate } from '../lib/router';
 import { supabase } from '../lib/supabase';
 
@@ -241,7 +241,7 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* SOCIAL LINKS – Using Lucide Icons (Fixed!) */}
+          {/* SOCIAL LINKS – Using Lucide Icons */}
           <div className="flex items-center gap-3">
             <a
               href="https://www.instagram.com/bitsecurextech"
