@@ -6,9 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BitSecureX Tech – We Build. We Automate. We Secure.</title>
     
-    <!-- ✅ PRELOAD HERO IMAGE (LCP) -->
-    <link rel="preload" as="image" href="/bitsecureux_uiux%20copy.png" fetchpriority="high" />
-    
     <!-- ✅ FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,9 +14,8 @@
       rel="stylesheet" 
     />
 
-    <!-- ✅ CRITICAL CSS (Inlined for first paint) -->
+    <!-- ✅ CRITICAL CSS -->
     <style>
-      /* Critical styles for above-the-fold content */
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { 
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -29,27 +25,7 @@
         -moz-osx-font-smoothing: grayscale;
       }
       #root { min-height: 100vh; }
-      .container-x { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
-      .gradient-text { background: linear-gradient(135deg, #00e676, #00b0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-      .btn-primary { 
-        display: inline-flex; 
-        align-items: center; 
-        gap: 8px; 
-        background: linear-gradient(135deg, #00e676, #00b0ff); 
-        color: #0a0a1a; 
-        font-weight: 600; 
-        padding: 12px 24px; 
-        border-radius: 12px; 
-        border: none; 
-        cursor: pointer;
-        transition: all 0.3s;
-      }
-      .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,230,118,0.3); }
     </style>
-
-    <!-- ✅ DEFER NON-CRITICAL CSS -->
-    <link rel="preload" as="style" href="/assets/index.css" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="/assets/index.css" /></noscript>
 
     <!-- ✅ META TAGS -->
     <meta name="theme-color" content="#0a0a1a" />
