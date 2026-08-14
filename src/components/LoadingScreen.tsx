@@ -4,7 +4,6 @@ export function LoadingScreen() {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    // ✅ Hide after 300ms - enough to flash but not delay FCP
     const timer = setTimeout(() => {
       setIsVisible(false);
     }, 300);
