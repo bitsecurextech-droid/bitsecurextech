@@ -1,6 +1,7 @@
 import { Component, ReactNode, Suspense, useState, useEffect } from 'react';
-import { useRoute } from './lib/router';
+import { useRoute, RouterProvider } from './lib/router';
 import { useAuth } from './lib/auth';
+import { ThemeProvider } from './lib/useReveal';
 import { Background } from './components/Background';
 import { ParticleBackground } from './components/ParticleBackground';
 import Navbar from './components/Navbar';
@@ -130,16 +131,14 @@ function useMaintenance() {
 }
 
 // ============================================================
-// MAIN APP
+// APP CONTENT
 // ============================================================
-function App() {
-  // ✅ useAuth() must be INSIDE AuthProvider (which is in main.tsx)
+function AppContent() {
   useAuth();
   const route = useRoute();
   const path = route.path;
   const { isMaintenance, maintenanceMessage, loading } = useMaintenance();
 
-  // ✅ If maintenance is ON and not on admin/portal pages
   const showMaintenance = isMaintenance && path !== '/admin' && path !== '/portal';
 
   if (showMaintenance) {
@@ -152,53 +151,32 @@ function App() {
 
   let PageComponent = HomePage;
 
-  // Home
   if (path === '/') PageComponent = HomePage;
-
-  // Services
   else if (path === '/services') PageComponent = ServicesPage;
   else if (path.startsWith('/services/')) PageComponent = ServiceDetailPage;
-
-  // Technology
   else if (path === '/web-development') PageComponent = WebDevelopmentPage;
   else if (path === '/software-solutions') PageComponent = SoftwareSolutionsPage;
   else if (path === '/ai-automation') PageComponent = AIAutomationPage;
   else if (path === '/cloud-solutions') PageComponent = CloudSolutionsPage;
   else if (path === '/mobile-app-development') PageComponent = MobileAppDevelopmentPage;
-
-  // Marketing
   else if (path === '/digital-marketing') PageComponent = DigitalMarketingPage;
   else if (path === '/seo') PageComponent = SEOPage;
   else if (path === '/social-media-marketing') PageComponent = SocialMediaMarketingPage;
   else if (path === '/content-marketing') PageComponent = ContentMarketingPage;
-
-  // Security
   else if (path === '/cybersecurity') PageComponent = CybersecurityPage;
   else if (path === '/penetration-testing') PageComponent = PenetrationTestingPage;
-
-  // Commerce
   else if (path === '/ecommerce-development') PageComponent = EcommerceDevelopmentPage;
   else if (path === '/shopify-stores') PageComponent = ShopifyStoresPage;
   else if (path === '/marketplace') PageComponent = MarketplacePage;
-
-  // Ecosystem
   else if (path === '/ecosystem') PageComponent = DigitalEcosystemPage;
-
-  // About
   else if (path === '/about') PageComponent = AboutPage;
   else if (path === '/careers') PageComponent = CareersPage;
   else if (path === '/partners') PageComponent = PartnersPage;
-
-  // Insights
   else if (path === '/blog') PageComponent = BlogPage;
   else if (path === '/case-studies') PageComponent = CaseStudyPage;
   else if (path === '/reports') PageComponent = ReportsPage;
-
-  // Tools
   else if (path === '/tools') PageComponent = ToolsPage;
   else if (path === '/calculator') PageComponent = CalculatorPage;
-
-  // Other
   else if (path === '/offers') PageComponent = OffersPage;
   else if (path === '/portfolio') PageComponent = PortfolioPage;
   else if (path === '/contact') PageComponent = ContactPage;
@@ -210,26 +188,39 @@ function App() {
   else if (path === '/bug-bounty') PageComponent = BugBountyPage;
 
   return (
-    <ErrorBoundary>
-      <div className="relative min-h-screen">
-        <LoadingScreen />
-        <Background />
-        <ParticleBackground />
-        <CustomCursor />
-        <ScrollProgress />
-        
-        {path !== '/admin' && path !== '/portal' && <Navbar />}
-        
-        <main>
-          <Suspense fallback={<div className="flex h-[60vh] items-center justify-center text-white">Loading...</div>}>
-            <PageComponent />
-          </Suspense>
-        </main>
+    <>
+      <LoadingScreen />
+      <Background />
+      <ParticleBackground />
+      <CustomCursor />
+      <ScrollProgress />
+      
+      {path !== '/admin' && path !== '/portal' && <Navbar />}
+      
+      <main>
+        <Suspense fallback={<div className="flex h-[60vh] items-center justify-center text-white">Loading...</div>}>
+          <PageComponent />
+        </Suspense>
+      </main>
 
-        {path !== '/admin' && path !== '/portal' && <Footer />}
-        
-        <AIChat />
-      </div>
+      {path !== '/admin' && path !== '/portal' && <Footer />}
+      
+      <AIChat />
+    </>
+  );
+}
+
+// ============================================================
+// MAIN APP
+// ============================================================
+function App() {
+  return (
+    <ErrorBoundary>
+      <ThemeProvider>
+        <RouterProvider>
+          <AppContent />
+        </RouterProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }
