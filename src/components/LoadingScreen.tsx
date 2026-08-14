@@ -52,7 +52,7 @@ export function LoadingScreen() {
 
         {/* Logo center */}
         <div className="relative grid h-20 w-20 place-items-center rounded-2xl bg-black shadow-2xl shadow-cyber-500/40 animate-pulse-slow overflow-hidden ring-2 ring-cyber-500/50">
-          <img src="/icon.png" alt="BitSecureX" className="h-14 w-14 rounded-xl object-cover" />
+          <img src="/icon.webp" alt="BitSecureX" className="h-14 w-14 rounded-xl object-cover" />
         </div>
 
         {/* Orbiting dots */}
