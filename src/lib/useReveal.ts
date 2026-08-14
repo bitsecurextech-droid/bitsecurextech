@@ -32,7 +32,38 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>() {
   return { ref, shown };
 }
 
-// ---------- SCROLL PROGRESS HOOK (ADD THIS) ----------
+// ---------- COUNT UP HOOK (ADD THIS) ----------
+export function useCountUp(target: number, duration: number = 2000, trigger: boolean = true) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!trigger) return;
+
+    const startTime = Date.now();
+    const startValue = 0;
+
+    const update = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(eased * target);
+
+      setCount(current);
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      }
+    };
+
+    requestAnimationFrame(update);
+
+    return () => {};
+  }, [target, duration, trigger]);
+
+  return count;
+}
+
+// ---------- SCROLL PROGRESS HOOK ----------
 export function useScrollProgress() {
   const [progress, setProgress] = useState(0);
 
