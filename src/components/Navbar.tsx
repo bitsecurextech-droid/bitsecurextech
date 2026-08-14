@@ -118,7 +118,11 @@ export default function Navbar() {
           <div className="container-x flex items-center justify-between px-4 py-3 sm:px-6 lg:px-12">
             
             {/* Logo */}
-            <button onClick={() => nav('/')} className="flex items-center gap-2.5 group shrink-0">
+            <button 
+              onClick={() => nav('/')} 
+              className="flex items-center gap-2.5 group shrink-0"
+              aria-label="Go to homepage"
+            >
               <span className="grid h-9 w-9 place-items-center rounded-lg bg-black ring-1 ring-cyber-500/30 transition-transform group-hover:scale-105">
                 <img src="/icon.png" alt="BSX" className="h-7 w-7 rounded-md object-cover" />
               </span>
@@ -177,23 +181,49 @@ export default function Navbar() {
 
             {/* Right actions */}
             <div className="flex items-center gap-1 sm:gap-2">
-              <button onClick={() => nav('/calculator')} className={`hidden lg:inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${isLight ? 'text-cyber-600 hover:bg-cyber-50' : 'text-cyber-400 hover:bg-cyber-500/10'}`}>
+              <button 
+                onClick={() => nav('/calculator')} 
+                className={`hidden lg:inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${isLight ? 'text-cyber-600 hover:bg-cyber-50' : 'text-cyber-400 hover:bg-cyber-500/10'}`}
+                aria-label="Web Cost Calculator"
+              >
                 <Calculator className="h-4 w-4" /> Web Cost Calculator
               </button>
-              <button onClick={toggle} className={`grid h-9 w-9 place-items-center rounded-lg border transition-colors ${isLight ? 'border-slate-200 text-slate-600 hover:border-cyber-500 hover:text-cyber-500' : 'border-white/10 text-slate-400 hover:border-cyber-400/50 hover:text-white'}`}>
+              <button 
+                onClick={toggle} 
+                className={`grid h-9 w-9 place-items-center rounded-lg border transition-colors ${isLight ? 'border-slate-200 text-slate-600 hover:border-cyber-500 hover:text-cyber-500' : 'border-white/10 text-slate-400 hover:border-cyber-400/50 hover:text-white'}`}
+                aria-label="Toggle theme"
+              >
                 {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </button>
 
-              <button onClick={() => nav('/portal')} className={`flex items-center gap-1 rounded-lg border px-2 py-1.5 text-xs font-medium transition-colors sm:hidden ${isLight ? 'border-slate-200 text-slate-700 hover:border-cyber-500' : 'border-white/10 text-slate-300 hover:border-cyber-400/50'}`}>
+              <button 
+                onClick={() => nav('/portal')} 
+                className={`flex items-center gap-1 rounded-lg border px-2 py-1.5 text-xs font-medium transition-colors sm:hidden ${isLight ? 'border-slate-200 text-slate-700 hover:border-cyber-500' : 'border-white/10 text-slate-300 hover:border-cyber-400/50'}`}
+                aria-label="Sign in"
+              >
                 <LogIn className="h-3.5 w-3.5" /> Sign In
               </button>
 
-              <button onClick={() => nav('/portal')} className={`hidden sm:inline-flex items-center gap-1.5 rounded-lg border px-3.5 py-2 text-sm font-medium transition-colors ${isLight ? 'border-slate-200 text-slate-700 hover:border-cyber-500 hover:text-cyber-500' : 'border-white/15 text-slate-300 hover:border-cyber-400/50 hover:text-white'}`}>
+              <button 
+                onClick={() => nav('/portal')} 
+                className={`hidden sm:inline-flex items-center gap-1.5 rounded-lg border px-3.5 py-2 text-sm font-medium transition-colors ${isLight ? 'border-slate-200 text-slate-700 hover:border-cyber-500 hover:text-cyber-500' : 'border-white/15 text-slate-300 hover:border-cyber-400/50 hover:text-white'}`}
+                aria-label="Sign in"
+              >
                 <LogIn className="h-4 w-4" /> Sign In
               </button>
 
-              <button onClick={() => nav('/contact')} className="hidden lg:inline-flex btn-primary text-sm">Get a Quote →</button>
-              <button className={`grid h-9 w-9 place-items-center rounded-lg border transition-colors xl:hidden ${isLight ? 'border-slate-200 text-slate-700' : 'border-white/10 text-white'}`} onClick={() => setOpen((v) => !v)}>
+              <button 
+                onClick={() => nav('/contact')} 
+                className="hidden lg:inline-flex btn-primary text-sm"
+                aria-label="Get a quote"
+              >
+                Get a Quote →
+              </button>
+              <button 
+                className={`grid h-9 w-9 place-items-center rounded-lg border transition-colors xl:hidden ${isLight ? 'border-slate-200 text-slate-700' : 'border-white/10 text-white'}`} 
+                onClick={() => setOpen((v) => !v)}
+                aria-label={open ? 'Close menu' : 'Open menu'}
+              >
                 {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
             </div>
@@ -236,6 +266,7 @@ export default function Navbar() {
                   <button 
                     onClick={() => { nav('/portal'); setOpen(false); }} 
                     className={`flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium transition-colors ${isLight ? 'bg-cyber-500 text-white hover:bg-cyber-600' : 'bg-cyber-500 text-white hover:bg-cyber-600'}`}
+                    aria-label="Sign in or create account"
                   >
                     <LogIn className="h-4 w-4" /> Sign In / Create Account
                   </button>
