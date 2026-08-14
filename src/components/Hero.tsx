@@ -112,7 +112,7 @@ function HeroVisual() {
             <div className="relative flex items-center gap-2 border-b border-white/10 bg-navy-950 px-3 py-2">
               <div className="flex items-center gap-1.5">
                 <span className="grid h-5 w-5 place-items-center rounded bg-black">
-                  <img src="/icon.webp" alt="" className="h-3.5 w-3.5 rounded-sm object-cover" />
+                  <img src="/icon.webp" alt="" className="h-3.5 w-3.5 rounded-sm object-cover" loading="eager" fetchpriority="high" />
                 </span>
                 <span className="font-display text-[11px] font-bold text-white">bitsecurex.tech</span>
               </div>
@@ -126,6 +126,11 @@ function HeroVisual() {
                 src={heroScreenshot}
                 alt="Website preview"
                 className="h-full w-full object-cover object-top"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+                width="800"
+                height="400"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 via-transparent to-transparent" />
               {/* Floating UI overlay elements */}
@@ -153,7 +158,7 @@ function HeroVisual() {
               {/* Mobile browser bar */}
               <div className="flex items-center gap-1 border-b border-white/10 bg-navy-950 px-1.5 py-1">
                 <span className="grid h-3 w-3 place-items-center rounded bg-black">
-                  <img src="/icon.webp" alt="" className="h-2 w-2 rounded-sm object-cover" />
+                  <img src="/icon.webp" alt="" className="h-2 w-2 rounded-sm object-cover" loading="lazy" />
                 </span>
                 <span className="text-[5px] font-bold text-white">bitsecurex.tech</span>
               </div>
@@ -162,6 +167,10 @@ function HeroVisual() {
                   src={phoneScreenshot}
                   alt="Mobile website preview"
                   className="h-full w-full object-cover object-top"
+                  loading="lazy"
+                  decoding="async"
+                  width="200"
+                  height="300"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy-950/50 to-transparent" />
                 <div className="absolute bottom-2 left-2 flex items-center gap-1">
@@ -223,7 +232,15 @@ function TerminalBox() {
         {bootDone && (
           <form onSubmit={(e) => { e.preventDefault(); runCommand(input); setInput(''); }} className="mt-1 flex">
             <span className="text-electric-500">$</span>
-            <input value={input} onChange={(e) => setInput(e.target.value)} className="ml-1.5 flex-1 bg-transparent text-slate-200 outline-none" placeholder="type help…" />
+            <input 
+              value={input} 
+              onChange={(e) => setInput(e.target.value)} 
+              className="ml-1.5 flex-1 bg-transparent text-slate-200 outline-none" 
+              placeholder="type help…"
+              aria-label="Terminal command input"
+              id="terminal-input"
+              name="terminal-input"
+            />
           </form>
         )}
       </div>
