@@ -91,8 +91,8 @@ function StatCounter({ value, suffix, label, delay }: { value: number; suffix: s
   );
 }
 
-const heroScreenshot = '/bitsecurex_uiux copy.png';
-const phoneScreenshot = '/bitsecurex_uiux copy.png';
+const heroScreenshot = '/bitsecurex_uiux copy.webp';
+const phoneScreenshot = '/bitsecurex_uiux copy.webp';
 
 function HeroVisual() {
   return (
