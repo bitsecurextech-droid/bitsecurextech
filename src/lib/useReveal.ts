@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
-// ---------- REVEAL HOOK ----------
 export function useReveal<T extends HTMLElement = HTMLDivElement>() {
   const ref = useRef<T>(null);
-  const [shown, setShown] = useState<boolean>(false);
+  const [shown, setShown] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -13,14 +12,18 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>() {
           observer.disconnect();
         }
       },
-      { threshold: 0.1, rootMargin: '50px' }
+      { threshold: 0.1 }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    const current = ref.current;
+    if (current) {
+      observer.observe(current);
     }
 
     return () => {
+      if (current) {
+        observer.unobserve(current);
+      }
       observer.disconnect();
     };
   }, []);
@@ -28,7 +31,6 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>() {
   return { ref, shown };
 }
 
-// ---------- THEME HOOK ----------
 export function useTheme() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
@@ -39,7 +41,7 @@ export function useTheme() {
     return 'dark';
   });
 
-  const toggle = (): void => {
+  const toggle = () => {
     setTheme((prev) => {
       const newTheme = prev === 'dark' ? 'light' : 'dark';
       localStorage.setItem('theme', newTheme);
