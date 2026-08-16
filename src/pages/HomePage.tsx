@@ -115,7 +115,7 @@ const trustStats = [
 ];
 
 // ============================================================
-// SKILL RADAR COMPONENT (MOVED UP HERE SO IT'S DEFINED FIRST)
+// SKILL RADAR COMPONENT
 // ============================================================
 function SkillRadar() {
   const { ref, shown } = useReveal<HTMLDivElement>();
@@ -246,13 +246,13 @@ export function HomePage() {
       <Hero />
 
       {/* ============================================================
-      SECTION 1: STATS (Animated Counters)
+      SECTION 1: STATS (Animated Counters) - FIXED CLS with min-h-[80px]
       ============================================================ */}
       <section className="section-dark section-pad py-8 border-t border-white/5">
         <div className="container-x">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <Reveal>
-              <div className="text-center">
+              <div className="text-center min-h-[80px]">
                 <p className="font-display text-4xl font-bold gradient-text sm:text-5xl">
                   {counters.projects}+
                 </p>
@@ -260,7 +260,7 @@ export function HomePage() {
               </div>
             </Reveal>
             <Reveal delay={100}>
-              <div className="text-center">
+              <div className="text-center min-h-[80px]">
                 <p className="font-display text-4xl font-bold gradient-text sm:text-5xl">
                   {counters.seo}+
                 </p>
@@ -268,7 +268,7 @@ export function HomePage() {
               </div>
             </Reveal>
             <Reveal delay={200}>
-              <div className="text-center">
+              <div className="text-center min-h-[80px]">
                 <p className="font-display text-4xl font-bold gradient-text sm:text-5xl">
                   {counters.audits}+
                 </p>
@@ -276,7 +276,7 @@ export function HomePage() {
               </div>
             </Reveal>
             <Reveal delay={300}>
-              <div className="text-center">
+              <div className="text-center min-h-[80px]">
                 <p className="font-display text-4xl font-bold gradient-text sm:text-5xl">
                   {counters.clients}%
                 </p>
@@ -348,7 +348,7 @@ export function HomePage() {
       </section>
 
       {/* ============================================================
-      SECTION 3: CLIENT LOGOS (Trust Strip)
+      SECTION 3: CLIENT LOGOS
       ============================================================ */}
       <section className="section-white section-pad py-6">
         <div className="container-x">
@@ -586,7 +586,6 @@ export function HomePage() {
             </div>
             <Reveal delay={200}>
               <div className="flex justify-center">
-                {/* ✅ SAFELY RENDER THE COMPONENT */}
                 <SkillRadar />
               </div>
             </Reveal>
