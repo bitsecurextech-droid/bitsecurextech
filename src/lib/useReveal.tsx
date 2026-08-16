@@ -1,32 +1,37 @@
 import { useEffect, useRef, useState, ReactNode } from 'react';
 
-// ---------- REVEAL HOOK ----------
+// ---------- REVEAL HOOK (Fixed Forced Reflow) ----------
 export function useReveal<T extends HTMLElement = HTMLDivElement>() {
   const ref = useRef<T>(null);
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry && entry.isIntersecting) {
-          setShown(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
+    // ✅ Use requestAnimationFrame to avoid forced reflow
+    const timer = requestAnimationFrame(() => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry && entry.isIntersecting) {
+            setShown(true);
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.1, rootMargin: '50px' }
+      );
 
-    const current = ref.current;
-    if (current) {
-      observer.observe(current);
-    }
-
-    return () => {
+      const current = ref.current;
       if (current) {
-        observer.unobserve(current);
+        observer.observe(current);
       }
-      observer.disconnect();
-    };
+
+      return () => {
+        if (current) {
+          observer.unobserve(current);
+        }
+        observer.disconnect();
+      };
+    });
+
+    return () => cancelAnimationFrame(timer);
   }, []);
 
   return { ref, shown };
@@ -44,7 +49,6 @@ export function useCountUp(target: number, duration: number = 2000, trigger: boo
     }
 
     const startTime = performance.now();
-    const startValue = 0;
 
     const update = (currentTime: number) => {
       const elapsed = currentTime - startTime;
@@ -149,7 +153,7 @@ export function useTheme() {
   return { theme, toggle };
 }
 
-// ---------- THEME PROVIDER (For main.tsx) ----------
+// ---------- THEME PROVIDER ----------
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const { theme } = useTheme();
 
