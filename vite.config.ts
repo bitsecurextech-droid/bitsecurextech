@@ -10,8 +10,8 @@ export default defineConfig({
           'vendor': ['react', 'react-dom'],
           'supabase': ['@supabase/supabase-js'],
           'ui': ['lucide-react'],
-          // ✅ Split tiptap separately (only loads on admin pages)
-          'tiptap': ['@tiptap/react', '@tiptap/starter-kit', '@tiptap/extension-image', '@tiptap/extension-youtube'],
+          // ✅ Split tiptap into separate chunk (only loads on admin pages)
+          'tiptap': ['@tiptap/react', '@tiptap/starter-kit'],
         },
       },
     },
