@@ -11,11 +11,45 @@ import { CustomCursor } from './components/CustomCursor';
 import { LoadingScreen } from './components/LoadingScreen';
 import { supabase } from './lib/supabase';
 
-// ✅ LAZY LOAD ADMIN & PORTAL PAGES (Only load when visited)
+// ✅ LAZY LOAD ALL PAGES
+const HomePage = lazy(() => import('./pages/HomePage'));
+const ServicesPage = lazy(() => import('./pages/ServicesPage'));
+const ServiceDetailPage = lazy(() => import('./pages/ServiceDetailPage'));
+const OffersPage = lazy(() => import('./pages/OffersPage'));
+const CybersecurityPage = lazy(() => import('./pages/CybersecurityPage'));
+const PortfolioPage = lazy(() => import('./pages/PortfolioPage'));
+const CaseStudyPage = lazy(() => import('./pages/CaseStudyPage'));
+const BlogPage = lazy(() => import('./pages/BlogPage'));
+const ToolsPage = lazy(() => import('./pages/ToolsPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const PricingPage = lazy(() => import('./pages/PricingPage'));
+const DigitalEcosystemPage = lazy(() => import('./pages/DigitalEcosystemPage'));
+const WebDevelopmentPage = lazy(() => import('./pages/WebDevelopmentPage'));
+const SoftwareSolutionsPage = lazy(() => import('./pages/SoftwareSolutionsPage'));
+const AIAutomationPage = lazy(() => import('./pages/AIAutomationPage'));
+const CloudSolutionsPage = lazy(() => import('./pages/CloudSolutionsPage'));
+const MobileAppDevelopmentPage = lazy(() => import('./pages/MobileAppDevelopmentPage'));
+const DigitalMarketingPage = lazy(() => import('./pages/DigitalMarketingPage'));
+const SEOPage = lazy(() => import('./pages/SEOPage'));
+const SocialMediaMarketingPage = lazy(() => import('./pages/SocialMediaMarketingPage'));
+const ContentMarketingPage = lazy(() => import('./pages/ContentMarketingPage'));
+const PenetrationTestingPage = lazy(() => import('./pages/PenetrationTestingPage'));
+const EcommerceDevelopmentPage = lazy(() => import('./pages/EcommerceDevelopmentPage'));
+const ShopifyStoresPage = lazy(() => import('./pages/ShopifyStoresPage'));
+const MarketplacePage = lazy(() => import('./pages/MarketplacePage'));
+const CareersPage = lazy(() => import('./pages/CareersPage'));
+const PartnersPage = lazy(() => import('./pages/PartnersPage'));
+const ReportsPage = lazy(() => import('./pages/ReportsPage'));
+const ReviewsPage = lazy(() => import('./pages/ReviewsPage'));
+const DisclosurePage = lazy(() => import('./pages/DisclosurePage'));
+const BugBountyPage = lazy(() => import('./pages/BugBountyPage'));
+const CalculatorPage = lazy(() => import('./pages/CalculatorPage'));
+const MaintenancePage = lazy(() => import('./pages/MaintenancePage'));
+
+// ✅ LAZY LOAD ADMIN PAGES
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const PortalPage = lazy(() => import('./pages/PortalPage'));
-
-// ✅ LAZY LOAD ALL ADMIN SUB-PAGES
 const AdminABTesting = lazy(() => import('./pages/admin/AdminABTesting'));
 const AdminAgents = lazy(() => import('./pages/admin/AdminAgents'));
 const AdminAuditLogs = lazy(() => import('./pages/admin/AdminAuditLogs'));
@@ -39,42 +73,6 @@ const AdminUserInvoices = lazy(() => import('./pages/admin/AdminUserInvoices'));
 const AdminUserManagement = lazy(() => import('./pages/admin/AdminUserManagement'));
 const AdminUserProjects = lazy(() => import('./pages/admin/AdminUserProjects'));
 const AdminUserTickets = lazy(() => import('./pages/admin/AdminUserTickets'));
-
-// ✅ IMPORT ALL OTHER PAGES DIRECTLY (Homepage & public pages)
-import { HomePage } from './pages/HomePage';
-import { ServicesPage } from './pages/ServicesPage';
-import { ServiceDetailPage } from './pages/ServiceDetailPage';
-import { OffersPage } from './pages/OffersPage';
-import { CybersecurityPage } from './pages/CybersecurityPage';
-import { PortfolioPage } from './pages/PortfolioPage';
-import { CaseStudyPage } from './pages/CaseStudyPage';
-import { BlogPage } from './pages/BlogPage';
-import { ToolsPage } from './pages/ToolsPage';
-import { ContactPage } from './pages/ContactPage';
-import { AboutPage } from './pages/AboutPage';
-import { PricingPage } from './pages/PricingPage';
-import { DigitalEcosystemPage } from './pages/DigitalEcosystemPage';
-import { WebDevelopmentPage } from './pages/WebDevelopmentPage';
-import { SoftwareSolutionsPage } from './pages/SoftwareSolutionsPage';
-import { AIAutomationPage } from './pages/AIAutomationPage';
-import { CloudSolutionsPage } from './pages/CloudSolutionsPage';
-import { MobileAppDevelopmentPage } from './pages/MobileAppDevelopmentPage';
-import { DigitalMarketingPage } from './pages/DigitalMarketingPage';
-import { SEOPage } from './pages/SEOPage';
-import { SocialMediaMarketingPage } from './pages/SocialMediaMarketingPage';
-import { ContentMarketingPage } from './pages/ContentMarketingPage';
-import { PenetrationTestingPage } from './pages/PenetrationTestingPage';
-import { EcommerceDevelopmentPage } from './pages/EcommerceDevelopmentPage';
-import { ShopifyStoresPage } from './pages/ShopifyStoresPage';
-import { MarketplacePage } from './pages/MarketplacePage';
-import { CareersPage } from './pages/CareersPage';
-import { PartnersPage } from './pages/PartnersPage';
-import { ReportsPage } from './pages/ReportsPage';
-import { ReviewsPage } from './pages/ReviewsPage';
-import { DisclosurePage } from './pages/DisclosurePage';
-import { BugBountyPage } from './pages/BugBountyPage';
-import { CalculatorPage } from './pages/CalculatorPage';
-import { MaintenancePage } from './pages/MaintenancePage';
 
 // ============================================================
 // ERROR BOUNDARY
@@ -179,7 +177,9 @@ function App() {
   if (showMaintenance) {
     return (
       <ErrorBoundary>
-        <MaintenancePage message={maintenanceMessage} />
+        <Suspense fallback={<PageLoader />}>
+          <MaintenancePage message={maintenanceMessage} />
+        </Suspense>
       </ErrorBoundary>
     );
   }
