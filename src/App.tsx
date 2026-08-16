@@ -11,9 +11,11 @@ import { CustomCursor } from './components/CustomCursor';
 import { LoadingScreen } from './components/LoadingScreen';
 import { supabase } from './lib/supabase';
 
-// ✅ LAZY LOAD ADMIN PAGES
+// ✅ LAZY LOAD ADMIN & PORTAL PAGES (Only load when visited)
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const PortalPage = lazy(() => import('./pages/PortalPage'));
+
+// ✅ LAZY LOAD ALL ADMIN SUB-PAGES
 const AdminABTesting = lazy(() => import('./pages/admin/AdminABTesting'));
 const AdminAgents = lazy(() => import('./pages/admin/AdminAgents'));
 const AdminAuditLogs = lazy(() => import('./pages/admin/AdminAuditLogs'));
@@ -38,7 +40,7 @@ const AdminUserManagement = lazy(() => import('./pages/admin/AdminUserManagement
 const AdminUserProjects = lazy(() => import('./pages/admin/AdminUserProjects'));
 const AdminUserTickets = lazy(() => import('./pages/admin/AdminUserTickets'));
 
-// ✅ IMPORT ALL OTHER PAGES DIRECTLY
+// ✅ IMPORT ALL OTHER PAGES DIRECTLY (Homepage & public pages)
 import { HomePage } from './pages/HomePage';
 import { ServicesPage } from './pages/ServicesPage';
 import { ServiceDetailPage } from './pages/ServiceDetailPage';
