@@ -237,7 +237,10 @@ export default function Navbar() {
                   const hasSub = l.sub && l.sub.length > 0;
                   return (
                     <div key={l.path} className="space-y-1">
-                      <button onClick={() => { if (!hasSub) { nav(l.path); setOpen(false); } }} className={`flex items-center justify-between w-full rounded-lg px-4 py-3 text-left text-sm font-medium transition-colors ${isActive(l.path) ? 'bg-cyber-500/15 text-cyber-400' : isLight ? 'text-slate-700 hover:bg-slate-50' : 'text-slate-300 hover:bg-white/5'}`}>
+                      <button 
+                        onClick={() => { if (!hasSub) { nav(l.path); setOpen(false); } }} 
+                        className={`flex items-center justify-between w-full rounded-lg px-4 py-3 text-left text-sm font-medium transition-colors ${isActive(l.path) ? 'bg-cyber-500/15 text-cyber-400' : isLight ? 'text-slate-700 hover:bg-slate-50' : 'text-slate-300 hover:bg-white/5'}`}
+                      >
                         <span className="flex items-center gap-3">
                           <l.icon className={`h-4 w-4 shrink-0 ${isActive(l.path) ? 'text-cyber-400' : 'text-slate-400'}`} /> {l.label}
                         </span>
@@ -246,7 +249,11 @@ export default function Navbar() {
                       {hasSub && (
                         <div className="ml-4 space-y-1 border-l-2 border-cyber-500/30 pl-3">
                           {l.sub!.map((subItem) => (
-                            <button key={subItem.path} onClick={() => { nav(subItem.path); setOpen(false); }} className={`flex items-center gap-3 w-full rounded-lg px-4 py-2 text-left text-sm transition-colors ${isActive(subItem.path) ? 'bg-cyber-500/10 text-cyber-500' : isLight ? 'text-slate-600 hover:bg-cyber-50 hover:text-cyber-600' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}>
+                            <button 
+                              key={subItem.path} 
+                              onClick={() => { nav(subItem.path); setOpen(false); }} 
+                              className={`flex items-center gap-3 w-full rounded-lg px-4 py-2 text-left text-sm transition-colors ${isActive(subItem.path) ? 'bg-cyber-500/10 text-cyber-500' : isLight ? 'text-slate-600 hover:bg-cyber-50 hover:text-cyber-600' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                            >
                               <subItem.icon className="h-4 w-4 shrink-0 text-cyber-400" /> {subItem.label}
                             </button>
                           ))}
@@ -257,7 +264,10 @@ export default function Navbar() {
                 })}
                 
                 {/* Calculator inside Mobile Menu */}
-                <button onClick={() => { nav('/calculator'); setOpen(false); }} className={`flex items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium ${isLight ? 'text-cyber-600 hover:bg-cyber-50' : 'text-cyber-400 hover:bg-cyber-500/10'}`}>
+                <button 
+                  onClick={() => { nav('/calculator'); setOpen(false); }} 
+                  className={`flex items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium ${isLight ? 'text-cyber-600 hover:bg-cyber-50' : 'text-cyber-400 hover:bg-cyber-500/10'}`}
+                >
                   <Calculator className="h-4 w-4 shrink-0" /> Web Cost Calculator
                 </button>
 
