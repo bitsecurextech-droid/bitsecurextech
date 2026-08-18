@@ -395,7 +395,7 @@ export function BlogPage() {
       ============================================================ */}
       {activePost && (
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-navy-950/80 p-4 backdrop-blur-sm sm:p-8" onClick={() => setActivePost(null)}>
-          <div className="relative my-8 w-full max-w-2xl rounded-2xl glass p-8 sm:p-10" onClick={(e) => e.stopPropagation()}>
+          <div className="relative my-8 w-full max-w-3xl rounded-2xl glass p-8 sm:p-10" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setActivePost(null)} className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-slate-400 transition hover:text-white">
               <X className="h-4 w-4" />
             </button>
@@ -424,7 +424,47 @@ export function BlogPage() {
       )}
 
       {/* ============================================================
-      WRITE / EDIT POST MODAL - ✅ WITH PREVIEW
+      PREVIEW MODAL - ✅ RENDERS HTML
+      ============================================================ */}
+      {previewContent && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm overflow-y-auto"
+          onClick={() => setPreviewContent(null)}
+        >
+          <div 
+            className="w-full max-w-3xl rounded-2xl bg-white p-8 text-gray-900 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-xl font-bold text-gray-900">🔍 Preview</h2>
+              <button 
+                onClick={() => setPreviewContent(null)} 
+                className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-900"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            
+            {/* ✅ RENDER HTML PREVIEW */}
+            <div 
+              className="prose prose-lg max-w-none"
+              dangerouslySetInnerHTML={{ __html: previewContent }} 
+            />
+            
+            <div className="mt-6 flex justify-end">
+              <button 
+                onClick={() => setPreviewContent(null)} 
+                className="btn-primary"
+              >
+                Close Preview
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================
+      WRITE / EDIT POST MODAL - ✅ WITH LIVE PREVIEW
       ============================================================ */}
       {showEditor && isAdmin && (
         <div
@@ -437,7 +477,7 @@ export function BlogPage() {
           >
             <div className="flex items-center justify-between">
               <h2 className="font-display text-xl font-bold text-white">
-                {editingPost ? 'Edit Post' : 'Write New Post'}
+                {editingPost ? '✏️ Edit Post' : '✏️ Write New Post'}
               </h2>
               <button
                 onClick={() => setShowEditor(false)}
@@ -508,7 +548,7 @@ export function BlogPage() {
                     placeholder="Write your blog post content here... (Use HTML tags like &lt;p&gt;, &lt;h2&gt;, &lt;strong&gt;, etc.)"
                   />
                   
-                  {/* Live Preview */}
+                  {/* ✅ Live Preview */}
                   <div className="rounded-lg border border-white/10 bg-white/5 p-4 overflow-y-auto min-h-[300px] max-h-[500px]">
                     <p className="text-xs text-slate-400 mb-2">🔍 Live Preview</p>
                     {formData.content ? (
@@ -564,12 +604,21 @@ export function BlogPage() {
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                   className="input-field"
                 >
-                  <option className="bg-navy-900" value="Draft">Draft</option>
-                  <option className="bg-navy-900" value="Published">Published</option>
+                  <option className="bg-navy-900" value="Draft">📝 Draft</option>
+                  <option className="bg-navy-900" value="Published">🚀 Published</option>
                 </select>
               </div>
 
               <div className="flex gap-3 pt-2">
+                {/* ✅ Preview Button */}
+                <button
+                  type="button"
+                  onClick={() => setPreviewContent(formData.content)}
+                  className="btn-ghost flex-1 py-2.5 text-sm flex items-center justify-center gap-2"
+                >
+                  <Eye className="h-4 w-4" /> Preview
+                </button>
+                
                 <button
                   type="button"
                   onClick={() => setShowEditor(false)}
@@ -577,6 +626,7 @@ export function BlogPage() {
                 >
                   Cancel
                 </button>
+                
                 <button
                   type="submit"
                   disabled={isSubmitting}
