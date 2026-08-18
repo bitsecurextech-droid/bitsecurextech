@@ -11,7 +11,7 @@ import { CustomCursor } from './components/CustomCursor';
 import { LoadingScreen } from './components/LoadingScreen';
 import { supabase } from './lib/supabase';
 
-// ✅ IMPORT PUBLIC PAGES DIRECTLY (Fastest load)
+// ✅ IMPORT PUBLIC PAGES DIRECTLY
 import { HomePage } from './pages/HomePage';
 import { ServicesPage } from './pages/ServicesPage';
 import { ServiceDetailPage } from './pages/ServiceDetailPage';
@@ -47,11 +47,11 @@ import { BugBountyPage } from './pages/BugBountyPage';
 import { CalculatorPage } from './pages/CalculatorPage';
 import { MaintenancePage } from './pages/MaintenancePage';
 
-// ✅ ONLY ADMIN PAGES LAZY LOADED
-const AdminPage = lazy(() => import('./pages/AdminPage'));
-const PortalPage = lazy(() => import('./pages/PortalPage'));
+// ✅ IMPORT PORTAL AND ADMIN PAGES DIRECTLY (Fixes React error #306)
+import { PortalPage } from './pages/PortalPage';
+import AdminPage from './pages/AdminPage';
 
-// ✅ LAZY LOAD ADMIN SUB-PAGES
+// ✅ LAZY LOAD ADMIN SUB-PAGES ONLY
 const AdminABTesting = lazy(() => import('./pages/admin/AdminABTesting'));
 const AdminAgents = lazy(() => import('./pages/admin/AdminAgents'));
 const AdminAuditLogs = lazy(() => import('./pages/admin/AdminAuditLogs'));
