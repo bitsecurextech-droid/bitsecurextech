@@ -231,7 +231,8 @@ function App() {
         <CustomCursor />
         <ScrollProgress />
         
-        {path !== '/admin' && path !== '/portal' && <Navbar />}
+        {/* ✅ Show Navbar on Portal, hide only on Admin */}
+        {path !== '/admin' && <Navbar />}
         
         <main>
           <Suspense fallback={<PageLoader />}>
@@ -239,7 +240,8 @@ function App() {
           </Suspense>
         </main>
 
-        {path !== '/admin' && path !== '/portal' && <Footer />}
+        {/* ✅ Show Footer on Portal, hide only on Admin */}
+        {path !== '/admin' && <Footer />}
         
         <AIChat />
       </div>
