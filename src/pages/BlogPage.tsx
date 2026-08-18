@@ -43,6 +43,7 @@ export function BlogPage() {
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showMediaPicker, setShowMediaPicker] = useState(false);
+  const [previewContent, setPreviewContent] = useState<string | null>(null);
 
   // ✅ Check if user is admin
   const isAdmin = session?.user?.email === 'admin@bitsecurex.tech' || false;
@@ -115,13 +116,11 @@ export function BlogPage() {
 
     let result;
     if (editingPost?.id) {
-      // ✅ UPDATE existing post
       result = await supabase
         .from('admin_blog_posts')
         .update(payload)
         .eq('id', editingPost.id);
     } else {
-      // ✅ CREATE new post
       result = await supabase
         .from('admin_blog_posts')
         .insert(payload);
@@ -133,7 +132,6 @@ export function BlogPage() {
       return;
     }
 
-    // Reset form and refresh
     setFormData({ title: '', category: 'Cybersecurity', excerpt: '', content: '', image_url: '', status: 'Draft' });
     setEditingPost(null);
     setShowEditor(false);
@@ -203,7 +201,6 @@ export function BlogPage() {
   // ============================================================
   const allPosts = [...dbPosts, ...blogPosts];
   
-  // ✅ ULTIMATE FIX: Use a Map to guarantee strictly unique keys
   const uniqueCategories = Array.from(new Set(blogCategories));
   const dbCategories = Array.from(new Set(dbPosts.map((p) => p.category)));
   const allCats = ['All', ...uniqueCategories, ...dbCategories].filter(
@@ -269,7 +266,13 @@ export function BlogPage() {
                 <div className="p-8 lg:p-10">
                   <span className="text-xs font-medium uppercase tracking-wider text-cyber-400">{featured.category}</span>
                   <h2 className="mt-3 font-display text-2xl font-bold text-white sm:text-3xl">{featured.title}</h2>
-                  <p className="mt-3 text-slate-400">{featured.excerpt}</p>
+                  
+                  {/* ✅ RENDER EXCERPT WITH HTML */}
+                  <div 
+                    className="mt-3 text-slate-400 prose prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{ __html: featured.excerpt || '' }}
+                  />
+                  
                   <div className="mt-5 flex items-center gap-4 text-sm text-slate-500">
                     <span>{featured.date}</span>
                     <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {featured.readTime}</span>
@@ -290,7 +293,6 @@ export function BlogPage() {
           <div className="flex flex-wrap justify-center gap-2">
             {allCats.map((c) => (
               <button
-                // ✅ GUARANTEED UNIQUE KEY
                 key={c}
                 onClick={() => setCat(c)}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
@@ -360,7 +362,13 @@ export function BlogPage() {
                       </div>
                       <div className="flex flex-1 flex-col p-6">
                         <h3 className="font-display text-lg font-semibold text-white">{p.title}</h3>
-                        <p className="mt-2 flex-1 text-sm text-slate-400">{p.excerpt}</p>
+                        
+                        {/* ✅ RENDER EXCERPT WITH HTML */}
+                        <div 
+                          className="mt-2 flex-1 text-sm text-slate-400 prose prose-invert max-w-none line-clamp-3"
+                          dangerouslySetInnerHTML={{ __html: p.excerpt || '' }}
+                        />
+                        
                         <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
                           <span>{p.date}</span>
                           <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {p.readTime}</span>
@@ -383,7 +391,7 @@ export function BlogPage() {
       </section>
 
       {/* ============================================================
-      BLOG POST MODAL (Reader)
+      BLOG POST MODAL (Reader) - ✅ RENDERS HTML
       ============================================================ */}
       {activePost && (
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-navy-950/80 p-4 backdrop-blur-sm sm:p-8" onClick={() => setActivePost(null)}>
@@ -398,19 +406,25 @@ export function BlogPage() {
               <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {activePost.readTime}</span>
             </div>
             {activePost.image && <img src={activePost.image} alt={activePost.title} className="mt-6 h-56 w-full rounded-xl object-cover" />}
+            
+            {/* ✅ RENDER FULL CONTENT WITH HTML */}
             {activePost.content ? (
-              <div className="mt-6 space-y-4 text-sm leading-relaxed text-slate-300">
-                {activePost.content.split('\n').filter((p) => p.trim()).map((p, i) => <p key={i}>{p}</p>)}
-              </div>
+              <div 
+                className="mt-6 prose prose-invert max-w-none text-slate-300"
+                dangerouslySetInnerHTML={{ __html: activePost.content }}
+              />
             ) : (
-              <p className="mt-6 text-sm text-slate-400">{activePost.excerpt}</p>
+              <div 
+                className="mt-6 text-sm text-slate-400 prose prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: activePost.excerpt || '' }}
+              />
             )}
           </div>
         </div>
       )}
 
       {/* ============================================================
-      WRITE / EDIT POST MODAL
+      WRITE / EDIT POST MODAL - ✅ WITH PREVIEW
       ============================================================ */}
       {showEditor && isAdmin && (
         <div
@@ -418,7 +432,7 @@ export function BlogPage() {
           onClick={() => setShowEditor(false)}
         >
           <div
-            className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl glass-strong p-6 shadow-2xl"
+            className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl glass-strong p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
@@ -479,19 +493,34 @@ export function BlogPage() {
                 />
               </div>
 
-              {/* Content */}
+              {/* Content with Live Preview */}
               <div>
                 <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
                   Content *
                 </label>
-                <textarea
-                  required
-                  value={formData.content}
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  className="input-field resize-none"
-                  rows={8}
-                  placeholder="Write your blog post content here..."
-                />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Editor */}
+                  <textarea
+                    required
+                    value={formData.content}
+                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                    className="input-field resize-none min-h-[300px] font-mono text-sm"
+                    placeholder="Write your blog post content here... (Use HTML tags like &lt;p&gt;, &lt;h2&gt;, &lt;strong&gt;, etc.)"
+                  />
+                  
+                  {/* Live Preview */}
+                  <div className="rounded-lg border border-white/10 bg-white/5 p-4 overflow-y-auto min-h-[300px] max-h-[500px]">
+                    <p className="text-xs text-slate-400 mb-2">🔍 Live Preview</p>
+                    {formData.content ? (
+                      <div 
+                        className="prose prose-invert max-w-none text-white"
+                        dangerouslySetInnerHTML={{ __html: formData.content }}
+                      />
+                    ) : (
+                      <p className="text-sm text-slate-500 italic">Start typing to see preview...</p>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {/* Image URL */}
