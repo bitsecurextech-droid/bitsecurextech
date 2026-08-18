@@ -130,7 +130,7 @@ export function PortalPage() {
       <div className="flex min-h-screen items-center justify-center bg-navy-950 p-4">
         <div className="w-full max-w-md rounded-3xl glass-strong p-8 shadow-2xl shadow-cyber-500/10">
           <div className="text-center">
-            <img src="/icon.png" alt="BitSecureX" className="mx-auto h-16 w-16 rounded-2xl ring-2 ring-cyber-500/50" />
+            <img src="/icon.webp" alt="BitSecureX" className="mx-auto h-16 w-16 rounded-2xl ring-2 ring-cyber-500/50" />
             <h1 className="mt-4 font-display text-2xl font-bold text-white">
               {mode === 'signin' ? 'Welcome Back' : 'Create Account'}
             </h1>
@@ -280,7 +280,7 @@ function Dashboard({ user, onSignOut, isAdmin }: { user: { email?: string | null
         <div className="flex h-full flex-col border-r border-white/5">
           <div className="flex items-center justify-between border-b border-white/10 p-6">
             <div className="flex items-center gap-3">
-              <img src="/icon.png" alt="BSX" className="h-10 w-10 rounded-lg" />
+              <img src="/icon.webp" alt="BSX" className="h-10 w-10 rounded-lg" />
               <div><p className="font-display text-lg font-bold text-white">BSX</p><p className="text-[10px] text-slate-500">CLIENT DASHBOARD</p></div>
             </div>
             <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden text-slate-400 hover:text-white"><X className="h-6 w-6" /></button>
