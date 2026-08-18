@@ -45,12 +45,8 @@ export function BlogPage() {
   const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [previewContent, setPreviewContent] = useState<string | null>(null);
 
-  // ✅ Check if user is admin
   const isAdmin = session?.user?.email === 'admin@bitsecurex.tech' || false;
 
-  // ============================================================
-  // FORM STATE
-  // ============================================================
   const [formData, setFormData] = useState({
     title: '',
     category: 'Cybersecurity',
@@ -60,9 +56,6 @@ export function BlogPage() {
     status: 'Draft',
   });
 
-  // ============================================================
-  // LOAD POSTS
-  // ============================================================
   const fetchPosts = async () => {
     setLoading(true);
     const { data } = await supabase
@@ -96,9 +89,6 @@ export function BlogPage() {
     fetchPosts();
   }, []);
 
-  // ============================================================
-  // CREATE / UPDATE POST
-  // ============================================================
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -139,9 +129,6 @@ export function BlogPage() {
     fetchPosts();
   };
 
-  // ============================================================
-  // DELETE POST
-  // ============================================================
   const deletePost = async (id: string, title: string) => {
     if (!confirm(`Delete "${title}"? This action cannot be undone.`)) return;
     const { error } = await supabase
@@ -155,9 +142,6 @@ export function BlogPage() {
     fetchPosts();
   };
 
-  // ============================================================
-  // TOGGLE PUBLISH STATUS
-  // ============================================================
   const togglePublish = async (post: Post) => {
     const newStatus = post.status === 'Published' ? 'Draft' : 'Published';
     const { error } = await supabase
@@ -175,9 +159,6 @@ export function BlogPage() {
     fetchPosts();
   };
 
-  // ============================================================
-  // OPEN EDITOR FOR EDITING
-  // ============================================================
   const openEditor = (post?: Post) => {
     if (post) {
       setEditingPost(post);
@@ -196,9 +177,6 @@ export function BlogPage() {
     setShowEditor(true);
   };
 
-  // ============================================================
-  // RENDER
-  // ============================================================
   const allPosts = [...dbPosts, ...blogPosts];
   
   const uniqueCategories = Array.from(new Set(blogCategories));
@@ -212,7 +190,6 @@ export function BlogPage() {
 
   return (
     <div className="pt-28">
-      {/* ===== HERO ===== */}
       <section className="section-pad pb-8">
         <div className="container-x text-center">
           <Reveal><span className="eyebrow">Insights</span></Reveal>
@@ -229,7 +206,6 @@ export function BlogPage() {
         </div>
       </section>
 
-      {/* ===== ADMIN CONTROLS ===== */}
       {isAdmin && (
         <section className="section-pad py-4">
           <div className="container-x">
@@ -249,7 +225,6 @@ export function BlogPage() {
         </section>
       )}
 
-      {/* ===== FEATURED POST ===== */}
       {featured && (
         <section className="section-pad py-6">
           <div className="container-x">
@@ -287,7 +262,6 @@ export function BlogPage() {
         </section>
       )}
 
-      {/* ===== CATEGORY FILTERS ===== */}
       <section className="section-pad py-6">
         <div className="container-x">
           <div className="flex flex-wrap justify-center gap-2">
@@ -306,7 +280,6 @@ export function BlogPage() {
             ))}
           </div>
 
-          {/* ===== POSTS GRID ===== */}
           {loading ? (
             <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {[0, 1, 2].map((i) => <div key={i} className="h-72 animate-pulse rounded-2xl glass" />)}
@@ -316,7 +289,6 @@ export function BlogPage() {
               {filtered.map((p, i) => (
                 <Reveal key={p.slug + i} delay={i * 70}>
                   <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl glass card-hover">
-                    {/* Admin Controls on Card */}
                     {isAdmin && p.isAdmin && (
                       <div className="absolute right-2 top-2 z-10 flex gap-1">
                         <button
@@ -343,7 +315,6 @@ export function BlogPage() {
                       </div>
                     )}
 
-                    {/* Status Badge */}
                     {p.status && p.status !== 'Published' && (
                       <span className="absolute left-2 top-2 z-10 rounded-full bg-yellow-500/80 px-2 py-0.5 text-[10px] font-bold text-navy-950">
                         Draft
@@ -488,7 +459,6 @@ export function BlogPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-              {/* Title */}
               <div>
                 <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
                   Title *
@@ -503,7 +473,6 @@ export function BlogPage() {
                 />
               </div>
 
-              {/* Category */}
               <div>
                 <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
                   Category
@@ -519,7 +488,6 @@ export function BlogPage() {
                 </select>
               </div>
 
-              {/* Excerpt */}
               <div>
                 <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
                   Excerpt / Summary
@@ -533,13 +501,12 @@ export function BlogPage() {
                 />
               </div>
 
-              {/* Content with Live Preview */}
+              {/* ✅ CONTENT WITH LIVE PREVIEW */}
               <div>
                 <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
                   Content *
                 </label>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {/* Editor */}
                   <textarea
                     required
                     value={formData.content}
@@ -548,7 +515,7 @@ export function BlogPage() {
                     placeholder="Write your blog post content here... (Use HTML tags like &lt;p&gt;, &lt;h2&gt;, &lt;strong&gt;, etc.)"
                   />
                   
-                  {/* ✅ Live Preview */}
+                  {/* ✅ LIVE PREVIEW (Renders HTML) */}
                   <div className="rounded-lg border border-white/10 bg-white/5 p-4 overflow-y-auto min-h-[300px] max-h-[500px]">
                     <p className="text-xs text-slate-400 mb-2">🔍 Live Preview</p>
                     {formData.content ? (
@@ -563,7 +530,6 @@ export function BlogPage() {
                 </div>
               </div>
 
-              {/* Image URL */}
               <div>
                 <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
                   Image URL
@@ -594,7 +560,6 @@ export function BlogPage() {
                 )}
               </div>
 
-              {/* Status */}
               <div>
                 <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
                   Status
@@ -610,7 +575,6 @@ export function BlogPage() {
               </div>
 
               <div className="flex gap-3 pt-2">
-                {/* ✅ Preview Button */}
                 <button
                   type="button"
                   onClick={() => setPreviewContent(formData.content)}
@@ -641,9 +605,6 @@ export function BlogPage() {
         </div>
       )}
 
-      {/* ============================================================
-      MEDIA PICKER MODAL
-      ============================================================ */}
       <MediaPickerModal
         open={showMediaPicker}
         onClose={() => setShowMediaPicker(false)}
