@@ -1,13 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { 
-  // Core Icons
   Newspaper, Plus, Loader2, Pencil, Trash2, Copy, Save, X, 
   Eye, CheckCircle, AlertCircle, Image, Video, Calendar, 
   Tag, User, Link2, Bold, Italic, Underline, List, ListOrdered,
   Quote, Code, Upload, FileImage, Clock, EyeOff, Search,
   Filter, ArrowUpDown, ChevronDown, ChevronUp, 
-  
-  // Premium Features Icons
   Layout, Columns, Grid3x3, Type, Palette, Sparkles, 
   Share2, Mail, MessageCircle, ThumbsUp, Award, BarChart3,
   TrendingUp, Users, Globe, Languages, Shield, Lock,
@@ -31,10 +28,17 @@ import {
   Monitor, Tablet, Smartphone, Laptop, Wifi, WifiOff,
   Bluetooth, Battery, BatteryFull, BatteryCharging,
   Signal, SignalHigh, SignalLow, SignalMedium,
-  // Admin Icons
   Settings2, ShieldCheck, Users2, FileCheck, FileX,
   Star as StarIcon, Heart, Zap as ZapIcon, Flame,
   Crown, Medal, Trophy, Award as AwardIcon,
+  Minus, Plus as PlusIcon, Maximize2, Minimize2, 
+  CornerDownLeft, CornerDownRight, CornerUpLeft, CornerUpRight,
+  AlignHorizontalJustifyCenter, AlignHorizontalJustifyEnd,
+  AlignHorizontalJustifyStart, AlignVerticalJustifyCenter,
+  AlignVerticalJustifyEnd, AlignVerticalJustifyStart,
+  Baseline, CaseSensitive, CaseUpper, CaseLower, 
+  Delete, Backspace, Enter, Shift, CapsLock, Tab,
+  Command, Option, Control, Alt, Meta,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
@@ -96,6 +100,7 @@ export function AdminBlog() {
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [expandedPost, setExpandedPost] = useState<string | null>(null);
   const [authors, setAuthors] = useState<string[]>([]);
+  const [textareaRef, setTextareaRef] = useState<HTMLTextAreaElement | null>(null);
 
   // ============================================================
   // FORM STATE
@@ -122,6 +127,77 @@ export function AdminBlog() {
   });
 
   // ============================================================
+  // TEXT EDITING FUNCTIONS
+  // ============================================================
+  const insertText = (before: string, after: string = '') => {
+    if (!textareaRef) return;
+    
+    const start = textareaRef.selectionStart;
+    const end = textareaRef.selectionEnd;
+    const text = form.content;
+    const selectedText = text.substring(start, end);
+    
+    const newText = text.substring(0, start) + before + selectedText + after + text.substring(end);
+    setForm({...form, content: newText});
+    
+    // Set cursor position after the inserted text
+    setTimeout(() => {
+      if (textareaRef) {
+        textareaRef.focus();
+        textareaRef.selectionStart = start + before.length;
+        textareaRef.selectionEnd = start + before.length + selectedText.length;
+      }
+    }, 10);
+  };
+
+  const wrapText = (before: string, after: string) => {
+    insertText(before, after);
+  };
+
+  const insertHTML = (html: string) => {
+    if (!textareaRef) return;
+    const start = textareaRef.selectionStart;
+    const end = textareaRef.selectionEnd;
+    const text = form.content;
+    const newText = text.substring(0, start) + html + text.substring(end);
+    setForm({...form, content: newText});
+  };
+
+  // ============================================================
+  // KEYBOARD SHORTCUTS
+  // ============================================================
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!textareaRef || !open) return;
+      
+      // Ctrl+B = Bold
+      if (e.ctrlKey && e.key === 'b') {
+        e.preventDefault();
+        wrapText('<strong>', '</strong>');
+      }
+      // Ctrl+I = Italic
+      if (e.ctrlKey && e.key === 'i') {
+        e.preventDefault();
+        wrapText('<em>', '</em>');
+      }
+      // Ctrl+U = Underline
+      if (e.ctrlKey && e.key === 'u') {
+        e.preventDefault();
+        wrapText('<u>', '</u>');
+      }
+      // Ctrl+K = Link
+      if (e.ctrlKey && e.key === 'k') {
+        e.preventDefault();
+        const url = prompt('Enter URL:');
+        if (url) wrapText(`<a href="${url}">`, '</a>');
+      }
+    };
+    
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [textareaRef, form.content, open]);
+
+  // ============================================================
   // LOAD POSTS
   // ============================================================
   const load = async () => {
@@ -138,7 +214,6 @@ export function AdminBlog() {
     const { data } = await query;
     setPosts(data || []);
     
-    // Extract unique authors
     const uniqueAuthors = [...new Set(data?.map(p => p.author).filter(Boolean) || [])];
     setAuthors(uniqueAuthors);
     
@@ -533,7 +608,6 @@ export function AdminBlog() {
                   )}
                 </div>
                 <div className="flex items-center gap-1">
-                  {/* Expand/View More */}
                   <button 
                     onClick={() => setExpandedPost(expandedPost === p.id ? null : p.id)}
                     className="rounded-lg p-1.5 text-slate-400 hover:bg-cyber-500/15 hover:text-cyber-300"
@@ -541,8 +615,6 @@ export function AdminBlog() {
                   >
                     <ChevronDown className={`h-4 w-4 transition-transform ${expandedPost === p.id ? 'rotate-180' : ''}`} />
                   </button>
-
-                  {/* Preview Button */}
                   <button 
                     onClick={() => setPreview(p.content)} 
                     className="rounded-lg p-1.5 text-slate-400 hover:bg-cyber-500/15 hover:text-cyber-300"
@@ -550,8 +622,6 @@ export function AdminBlog() {
                   >
                     <Eye className="h-4 w-4" />
                   </button>
-
-                  {/* Duplicate Button */}
                   <button 
                     onClick={() => duplicate(p)} 
                     className="rounded-lg p-1.5 text-slate-400 hover:bg-cyber-500/15 hover:text-cyber-300"
@@ -559,8 +629,6 @@ export function AdminBlog() {
                   >
                     <Copy className="h-4 w-4" />
                   </button>
-
-                  {/* Edit Button */}
                   <button 
                     onClick={() => openEditor(p)} 
                     className="rounded-lg p-1.5 text-slate-400 hover:bg-cyber-500/15 hover:text-cyber-300"
@@ -568,8 +636,6 @@ export function AdminBlog() {
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
-
-                  {/* Delete Button */}
                   <button 
                     onClick={() => del(p.id, p.title)} 
                     className="rounded-lg p-1.5 text-slate-400 hover:bg-red-500/15 hover:text-red-400"
@@ -637,7 +703,7 @@ export function AdminBlog() {
       )}
 
       {/* ============================================================
-      EDITOR MODAL (Premium)
+      EDITOR MODAL (Premium with Working Toolbar)
       ============================================================ */}
       {open && (
         <div 
@@ -805,34 +871,217 @@ export function AdminBlog() {
               <div>
                 <label className="text-xs uppercase tracking-wider text-slate-400">Content *</label>
                 
-                {/* Toolbar - Premium */}
+                {/* Toolbar - FULLY WORKING */}
                 <div className="flex flex-wrap gap-1 p-2 border border-white/10 rounded-t-lg bg-white/5">
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><Bold className="h-4 w-4" /></button>
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><Italic className="h-4 w-4" /></button>
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><Underline className="h-4 w-4" /></button>
+                  {/* Bold */}
+                  <button 
+                    type="button" 
+                    onClick={() => wrapText('<strong>', '</strong>')}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Bold (Ctrl+B)"
+                  >
+                    <Bold className="h-4 w-4" />
+                  </button>
+                  
+                  {/* Italic */}
+                  <button 
+                    type="button" 
+                    onClick={() => wrapText('<em>', '</em>')}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Italic (Ctrl+I)"
+                  >
+                    <Italic className="h-4 w-4" />
+                  </button>
+                  
+                  {/* Underline */}
+                  <button 
+                    type="button" 
+                    onClick={() => wrapText('<u>', '</u>')}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Underline (Ctrl+U)"
+                  >
+                    <Underline className="h-4 w-4" />
+                  </button>
+                  
                   <div className="w-px bg-white/10 mx-1" />
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><List className="h-4 w-4" /></button>
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><ListOrdered className="h-4 w-4" /></button>
+                  
+                  {/* Bullet List */}
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      const lines = form.content.split('\n');
+                      const newLines = lines.map(line => {
+                        if (line.trim().startsWith('<li>')) return line;
+                        return `  <li>${line}</li>`;
+                      });
+                      setForm({...form, content: `<ul>\n${newLines.join('\n')}\n</ul>`});
+                    }}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Bullet List"
+                  >
+                    <List className="h-4 w-4" />
+                  </button>
+                  
+                  {/* Numbered List */}
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      const lines = form.content.split('\n');
+                      const newLines = lines.map((line, i) => `  <li>${line}</li>`);
+                      setForm({...form, content: `<ol>\n${newLines.join('\n')}\n</ol>`});
+                    }}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Numbered List"
+                  >
+                    <ListOrdered className="h-4 w-4" />
+                  </button>
+                  
                   <div className="w-px bg-white/10 mx-1" />
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><Quote className="h-4 w-4" /></button>
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><Code className="h-4 w-4" /></button>
+                  
+                  {/* Blockquote */}
+                  <button 
+                    type="button" 
+                    onClick={() => wrapText('<blockquote>\n  ', '\n</blockquote>')}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Blockquote"
+                  >
+                    <Quote className="h-4 w-4" />
+                  </button>
+                  
+                  {/* Code Block */}
+                  <button 
+                    type="button" 
+                    onClick={() => wrapText('<pre><code>\n  ', '\n</code></pre>')}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Code Block"
+                  >
+                    <Code className="h-4 w-4" />
+                  </button>
+                  
                   <div className="w-px bg-white/10 mx-1" />
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><Link2 className="h-4 w-4" /></button>
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><Image className="h-4 w-4" /></button>
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><Video className="h-4 w-4" /></button>
+                  
+                  {/* Link */}
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      const url = prompt('Enter URL:');
+                      if (url) wrapText(`<a href="${url}" target="_blank">`, '</a>');
+                    }}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Insert Link (Ctrl+K)"
+                  >
+                    <Link2 className="h-4 w-4" />
+                  </button>
+                  
+                  {/* Image */}
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      const url = prompt('Enter image URL:');
+                      if (url) insertHTML(`<img src="${url}" alt="Image" class="w-full rounded-lg my-4" />`);
+                    }}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Insert Image"
+                  >
+                    <Image className="h-4 w-4" />
+                  </button>
+                  
+                  {/* Video */}
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      const url = prompt('Enter YouTube/Vimeo URL:');
+                      if (url) {
+                        const embedUrl = url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
+                        insertHTML(`<iframe src="${embedUrl}" width="100%" height="400" allowFullScreen class="rounded-lg my-4"></iframe>`);
+                      }
+                    }}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Insert Video"
+                  >
+                    <Video className="h-4 w-4" />
+                  </button>
+                  
                   <div className="w-px bg-white/10 mx-1" />
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><AlignLeft className="h-4 w-4" /></button>
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><AlignCenter className="h-4 w-4" /></button>
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><AlignRight className="h-4 w-4" /></button>
+                  
+                  {/* Heading 2 */}
+                  <button 
+                    type="button" 
+                    onClick={() => wrapText('<h2 class="text-2xl font-bold mt-6 mb-3">', '</h2>')}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Heading 2"
+                  >
+                    <Type className="h-4 w-4" /> H2
+                  </button>
+                  
+                  {/* Heading 3 */}
+                  <button 
+                    type="button" 
+                    onClick={() => wrapText('<h3 class="text-xl font-semibold mt-5 mb-2">', '</h3>')}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Heading 3"
+                  >
+                    <Type className="h-4 w-4" /> H3
+                  </button>
+                  
+                  {/* Heading 4 */}
+                  <button 
+                    type="button" 
+                    onClick={() => wrapText('<h4 class="text-lg font-semibold mt-4 mb-2">', '</h4>')}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Heading 4"
+                  >
+                    <Type className="h-4 w-4" /> H4
+                  </button>
+                  
                   <div className="w-px bg-white/10 mx-1" />
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><Undo className="h-4 w-4" /></button>
-                  <button type="button" className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"><Redo className="h-4 w-4" /></button>
+                  
+                  {/* Paragraph */}
+                  <button 
+                    type="button" 
+                    onClick={() => wrapText('<p class="mb-4">', '</p>')}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Paragraph"
+                  >
+                    <AlignLeft className="h-4 w-4" /> P
+                  </button>
+                  
+                  {/* Horizontal Rule */}
+                  <button 
+                    type="button" 
+                    onClick={() => insertHTML('<hr class="my-8 border-white/10" />')}
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                    title="Horizontal Rule"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  
+                  <div className="w-px bg-white/10 mx-1" />
+                  
+                  {/* Undo */}
+                  <button 
+                    type="button" 
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white opacity-50 cursor-not-allowed"
+                    title="Undo (Coming soon)"
+                  >
+                    <Undo className="h-4 w-4" />
+                  </button>
+                  
+                  {/* Redo */}
+                  <button 
+                    type="button" 
+                    className="p-1.5 rounded hover:bg-white/10 text-slate-400 hover:text-white opacity-50 cursor-not-allowed"
+                    title="Redo (Coming soon)"
+                  >
+                    <Redo className="h-4 w-4" />
+                  </button>
                 </div>
 
                 {/* Editor + Live Preview */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 border border-white/10 rounded-b-lg p-4 bg-white/5">
                   <div>
                     <textarea
+                      ref={(el) => setTextareaRef(el)}
                       required
                       value={form.content}
                       onChange={(e) => setForm({...form, content: e.target.value})}
@@ -843,6 +1092,7 @@ export function AdminBlog() {
                       <span>📝 {form.content.split(/\s+/).filter(w => w.length > 0).length} words</span>
                       <span>⏱️ {Math.max(1, Math.ceil(form.content.split(/\s+/).filter(w => w.length > 0).length / 200))} min read</span>
                       <span>📊 {form.content.length} characters</span>
+                      <span className="text-cyber-400">Ctrl+B (bold) · Ctrl+I (italic) · Ctrl+U (underline)</span>
                     </div>
                   </div>
                   
