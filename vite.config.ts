@@ -16,10 +16,10 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 1000,
     minify: 'esbuild',
-    sourcemap: true,          // ✅ CHANGED: was false — enables source maps for debugging
+    sourcemap: true,
     cssCodeSplit: true,
     target: 'es2020',
-    reportCompressedSize: false, // ✅ ADDED: speeds up builds
+    reportCompressedSize: false,
   },
   optimizeDeps: {
     include: ['react', 'react-dom', '@supabase/supabase-js', 'lucide-react'],
