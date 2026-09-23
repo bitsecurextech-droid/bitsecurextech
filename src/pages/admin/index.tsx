@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Mail, FolderKanban, FileText, Star, Award, Users, BookOpen,
   ShieldAlert, FlaskConical, Settings, Activity, Image as ImageIcon, LogOut,
   AlertCircle, Loader2, Newspaper, MessageSquare, Ticket, Receipt, X, Menu,
-  ShoppingBag, // ✅ ADDED SHOPPING BAG
+  ShoppingBag, Tag, // ✅ ADDED Tag FOR OFFERS
 } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
@@ -31,14 +31,15 @@ import { AdminAgents } from './AdminAgents';
 import { AdminUserProjects } from './AdminUserProjects';
 import { AdminUserFiles } from './AdminUserFiles';
 import { AdminUserInvoices } from './AdminUserInvoices';
-import { AdminShopify } from './AdminShopify'; // ✅ ADDED SHOPIFY
+import { AdminShopify } from './AdminShopify';
+import { AdminOffers } from './AdminOffers'; // ✅ ADDED OFFERS
 
 type AdminTab =
   | 'overview' | 'leads' | 'projects' | 'caseStudies' | 'blog' | 'testimonials' | 'reviews'
   | 'certs' | 'team' | 'resources' | 'security' | 'abtesting' | 'settings'
   | 'siteContent' | 'subscribers' | 'media' | 'audit' | 'users'
   | 'userProjects' | 'userTickets' | 'userFiles' | 'userInvoices'
-  | 'agents' | 'shopify'; // ✅ ADDED SHOPIFY TAB
+  | 'agents' | 'shopify' | 'offers'; // ✅ ADDED OFFERS TAB
 
 export default function AdminPage() {
   const { session, loading, signOut } = useAuth();
@@ -83,9 +84,10 @@ export default function AdminPage() {
       { id: 'agents', label: 'Support Agents', icon: Users },
     ]},
     { label: 'Marketing', tabs: [
+      { id: 'offers', label: 'Offers & Deals', icon: Tag }, // ✅ ADDED OFFERS TAB
       { id: 'subscribers', label: 'Subscribers', icon: Mail },
       { id: 'media', label: 'Media Library', icon: ImageIcon },
-      { id: 'shopify', label: 'Shopify Manager', icon: ShoppingBag }, // ✅ ADDED SHOPIFY TAB
+      { id: 'shopify', label: 'Shopify Manager', icon: ShoppingBag },
     ]},
     { label: 'System', tabs: [
       { id: 'security', label: 'Security Center', icon: ShieldAlert },
@@ -120,7 +122,7 @@ export default function AdminPage() {
       <aside className={`fixed inset-y-0 left-0 z-40 h-full w-64 transform border-r border-white/5 bg-navy-900 transition-transform duration-300 ease-in-out lg:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex h-full flex-col p-6">
           <div className="mb-8 flex items-center gap-3">
-            <img src="/icon.png" alt="BSX" className="h-10 w-10 rounded-lg" />
+            <img src="/icon.webp" alt="BSX" className="h-10 w-10 rounded-lg" />
             <div>
               <h1 className="text-lg font-bold text-white">BITSECURE<span className="text-cyber-500">X</span></h1>
               <p className="text-[10px] text-slate-500">ADMIN CONSOLE</p>
@@ -176,9 +178,9 @@ export default function AdminPage() {
           {tab === 'audit' && <AdminAuditLogs />}
           {tab === 'users' && <AdminUserManagement />}
           {tab === 'agents' && <AdminAgents />}
-          {tab === 'shopify' && <AdminShopify />} {/* ✅ SHOPIFY ROUTE */}
+          {tab === 'shopify' && <AdminShopify />}
+          {tab === 'offers' && <AdminOffers />} {/* ✅ OFFERS ROUTE */}
           
-          {/* ✅ USER MONITOR ROUTES - NOW FULLY CONNECTED */}
           {tab === 'userProjects' && <AdminUserProjects />}
           {tab === 'userTickets' && <div className="rounded-2xl glass p-8 text-center text-slate-400">User Support Tickets view will be added here.</div>}
           {tab === 'userFiles' && <AdminUserFiles />}
