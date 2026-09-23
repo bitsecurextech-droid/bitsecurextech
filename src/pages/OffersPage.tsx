@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { useOffers, useFeaturedOffers } from '../lib/hooks';
+import { useState, useEffect } from 'react';
+import { Loader2, Clock, Sparkles, ArrowRight, Filter, Star, Users, Award } from 'lucide-react';
 import { Reveal } from '../components/Reveal';
 import { SEO } from '../components/SEO';
-import { Loader2, Clock, Sparkles, Tag, ArrowRight, Filter, Zap, Star, Users, Award } from 'lucide-react';
 import { useNavigate } from '../lib/router';
+import { supabase } from '../lib/supabase';
 
 const categories = [
   'All',
@@ -15,15 +15,102 @@ const categories = [
   'Seasonal',
 ];
 
+type Offer = {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string | null;
+  image_url: string | null;
+  original_price: number | null;
+  sale_price: number | null;
+  discount_percentage: number | null;
+  deadline: string | null;
+  cta_text: string | null;
+  cta_link: string | null;
+  is_featured: boolean | null;
+  is_active: boolean | null;
+};
+
 export function OffersPage() {
   const nav = useNavigate();
   const [category, setCategory] = useState('All');
-  const { data: allOffers, isLoading, error } = useOffers(category === 'All' ? undefined : category);
-  const { data: featured } = useFeaturedOffers();
+  const [offers, setOffers] = useState<Offer[]>([]);
+  const [featured, setFeatured] = useState<Offer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredOffers = allOffers || [];
+  // ============================================================
+  // LOAD OFFERS DIRECTLY FROM SUPABASE
+  // ============================================================
+  useEffect(() => {
+    let mounted = true;
 
-  if (isLoading) {
+    const fetchOffers = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        // Base query
+        let query = supabase
+          .from('offers')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        // Add filters safely
+        query = query.eq('is_active', true);
+
+        if (category !== 'All') {
+          query = query.eq('category', category);
+        }
+
+        const { data, error: err } = await query;
+
+        if (!mounted) return;
+
+        if (err) {
+          console.error('Offers fetch error:', err);
+          setError(err.message);
+          setOffers([]);
+        } else {
+          setOffers(data || []);
+        }
+
+        // Fetch featured offers separately
+        const { data: featData, error: featErr } = await supabase
+          .from('offers')
+          .select('*')
+          .eq('is_active', true)
+          .eq('is_featured', true)
+          .order('created_at', { ascending: false })
+          .limit(3);
+
+        if (!mounted) return;
+
+        if (!featErr) {
+          setFeatured(featData || []);
+        }
+      } catch (err: any) {
+        if (!mounted) return;
+        console.error('Offers exception:', err);
+        setError(err?.message || 'Failed to load offers');
+        setOffers([]);
+        setFeatured([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+
+    fetchOffers();
+
+    return () => {
+      mounted = false;
+    };
+  }, [category]);
+
+  // ============================================================
+  // LOADING
+  // ============================================================
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-28">
         <Loader2 className="h-10 w-10 animate-spin text-cyber-400" />
@@ -33,7 +120,6 @@ export function OffersPage() {
 
   return (
     <>
-      {/* ✅ SEO – FIRST CHILD INSIDE THE FRAGMENT */}
       <SEO
         title="Growth Offers | Exclusive Deals on Web Development & Digital Marketing | BitSecureX Tech"
         description="Exclusive digital growth opportunities from BitSecureX Tech. Get special offers on web development, cybersecurity, SEO, and digital marketing services."
@@ -137,7 +223,7 @@ export function OffersPage() {
         </section>
 
         {/* Featured Offers */}
-        {featured && featured.length > 0 && (
+        {featured.length > 0 && (
           <section className="section-pad py-6">
             <div className="container-x">
               <div className="text-center">
@@ -183,13 +269,17 @@ export function OffersPage() {
         {/* Offers Grid */}
         <section className="section-pad py-6">
           <div className="container-x">
-            {filteredOffers.length === 0 ? (
+            {error ? (
+              <div className="text-center py-16">
+                <p className="text-red-400">Could not load offers. Please try again later.</p>
+              </div>
+            ) : offers.length === 0 ? (
               <div className="text-center py-16">
                 <p className="text-slate-400">No offers available in this category right now.</p>
               </div>
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredOffers.map((offer) => (
+                {offers.map((offer) => (
                   <Reveal key={offer.id} delay={100}>
                     <OfferCard offer={offer} />
                   </Reveal>
@@ -220,15 +310,19 @@ export function OffersPage() {
   );
 }
 
-// --- Offer Card Component ---
-function OfferCard({ offer, featured = false }: { offer: any; featured?: boolean }) {
+// ============================================================
+// OFFER CARD
+// ============================================================
+function OfferCard({ offer, featured = false }: { offer: Offer; featured?: boolean }) {
   const nav = useNavigate();
   const isExpired = offer.deadline && new Date(offer.deadline) < new Date();
 
   return (
-    <div className={`relative flex h-full flex-col rounded-2xl glass p-6 transition-all hover:-translate-y-1 ${
-      featured ? 'ring-2 ring-yellow-500/50' : ''
-    }`}>
+    <div
+      className={`relative flex h-full flex-col rounded-2xl glass p-6 transition-all hover:-translate-y-1 ${
+        featured ? 'ring-2 ring-yellow-500/50' : ''
+      }`}
+    >
       {featured && (
         <span className="absolute -top-3 right-4 rounded-full bg-yellow-500/20 px-3 py-1 text-xs font-bold text-yellow-400 ring-1 ring-yellow-500/50">
           Featured
@@ -236,20 +330,31 @@ function OfferCard({ offer, featured = false }: { offer: any; featured?: boolean
       )}
       {offer.image_url && (
         <div className="overflow-hidden rounded-lg h-40">
-          <img src={offer.image_url} alt={offer.title} className="h-full w-full object-cover" />
+          <img
+            src={offer.image_url}
+            alt={offer.title}
+            className="h-full w-full object-cover"
+            onError={(e) => ((e.target as HTMLImageElement).style.display = 'none')}
+          />
         </div>
       )}
       <h3 className="mt-4 font-display text-lg font-semibold text-white">{offer.title}</h3>
-      {offer.description && <p className="mt-2 text-sm text-slate-400 flex-1">{offer.description}</p>}
+      {offer.description && (
+        <p className="mt-2 text-sm text-slate-400 flex-1">{offer.description}</p>
+      )}
 
       <div className="mt-4 flex items-center gap-3">
-        {offer.original_price && (
-          <span className="text-sm text-slate-500 line-through">${offer.original_price}</span>
+        {offer.original_price != null && (
+          <span className="text-sm text-slate-500 line-through">
+            ${offer.original_price}
+          </span>
         )}
-        {offer.sale_price && (
-          <span className="font-display text-2xl font-bold gradient-text">${offer.sale_price}</span>
+        {offer.sale_price != null && (
+          <span className="font-display text-2xl font-bold gradient-text">
+            ${offer.sale_price}
+          </span>
         )}
-        {offer.discount_percentage && (
+        {offer.discount_percentage != null && (
           <span className="rounded-full bg-electric-500/20 px-3 py-1 text-xs font-bold text-electric-400">
             {offer.discount_percentage}% OFF
           </span>
@@ -259,18 +364,23 @@ function OfferCard({ offer, featured = false }: { offer: any; featured?: boolean
       {offer.deadline && (
         <div className="mt-3 flex items-center gap-1.5 text-xs text-slate-500">
           <Clock className="h-3.5 w-3.5" />
-          <span>{isExpired ? 'Expired' : `Ends ${new Date(offer.deadline).toLocaleDateString()}`}</span>
+          <span>
+            {isExpired
+              ? 'Expired'
+              : `Ends ${new Date(offer.deadline).toLocaleDateString()}`}
+          </span>
         </div>
       )}
 
       <button
         onClick={() => nav(offer.cta_link || '/contact')}
         className="btn-primary mt-5 w-full text-sm"
-        disabled={isExpired}
+        disabled={!!isExpired}
       >
         {offer.cta_text || 'Claim Offer'} <ArrowRight className="h-4 w-4" />
       </button>
     </div>
   );
 }
+
 export default OffersPage;
