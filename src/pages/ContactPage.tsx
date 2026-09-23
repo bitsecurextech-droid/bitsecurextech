@@ -1,11 +1,38 @@
 import { useState, useMemo } from 'react';
-import { Mail, Phone, MapPin, Send, Calendar, CheckCircle2, Loader2, Clock, Globe2, Share2, Calculator, Check, DollarSign, X, ExternalLink, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Calendar, CheckCircle2, Loader2, Clock, Globe2, Share2, Calculator, Check, DollarSign, X, ExternalLink, ShieldCheck, MessageCircle } from 'lucide-react';
 import { Reveal } from '../components/Reveal';
 import { SEO } from '../components/SEO';
 import { supabase } from '../lib/supabase';
 import { sendTelegram, formatLeadMessage } from '../lib/telegram';
 import { contactFormTypes } from '../lib/data';
 import { useNavigate } from '../lib/router';
+
+// ============================================================
+// CONTACT NUMBERS (all WhatsApp-enabled and available for calls)
+// ============================================================
+const contactNumbers = [
+  {
+    label: 'Nigeria',
+    flag: '🇳🇬',
+    display: '+234 901 140 7095',
+    tel: '+2349011407095',
+    whatsapp: '2349011407095',
+  },
+  {
+    label: 'United States',
+    flag: '🇺🇸',
+    display: '+1 (650) 418-805',
+    tel: '+1650418805',
+    whatsapp: '1650418805',
+  },
+  {
+    label: 'United States',
+    flag: '🇺🇸',
+    display: '+1 (276) 242-7102',
+    tel: '+12762427102',
+    whatsapp: '12762427102',
+  },
+];
 
 const fiverrSpecialists = [
   { name: 'BitsecureX Lab', role: 'Lead Penetration Tester', tagline: 'CEH-certified offensive security, full-scope penetration testing and vulnerability assessment.', profileUrl: 'https://www.fiverr.com/bitsecxlab', gigUrl: 'https://www.fiverr.com/s/qDEwLmX', avatar: 'BL' },
@@ -210,7 +237,6 @@ export function ContactPage() {
 
   return (
     <>
-      {/* ✅ SEO – FIRST CHILD INSIDE THE FRAGMENT */}
       <SEO
         title="Contact BitSecureX Tech – Get a Free Consultation"
         description="Contact BitSecureX Tech for a free consultation. We offer web development, cybersecurity, AI automation, and digital marketing services for businesses worldwide. Get a free quote today."
@@ -233,7 +259,7 @@ export function ContactPage() {
           </div>
         </section>
 
-        {/* Global agents section */}
+        {/* Global agents */}
         <section className="section-pad py-8">
           <div className="container-x">
             <Reveal>
@@ -275,10 +301,54 @@ export function ContactPage() {
                   <div className="mt-4 space-y-3 text-sm">
                     <a href="mailto:contact.bitsecurex@gmail.com" className="flex items-center gap-3 text-slate-300 hover:text-cyber-400 transition-colors"><Mail className="h-4 w-4 text-cyber-400 shrink-0" /> contact.bitsecurex@gmail.com</a>
                     <a href="mailto:bitsecurex.tech@gmail.com" className="flex items-center gap-3 text-slate-300 hover:text-cyber-400 transition-colors"><Mail className="h-4 w-4 text-cyber-400 shrink-0" /> bitsecurex.tech@gmail.com</a>
-                    <a href="tel:+2349011407095" className="flex items-center gap-3 text-slate-300 hover:text-cyber-400 transition-colors"><Phone className="h-4 w-4 text-cyber-400 shrink-0" /> +234 901 140 7095</a>
                     <p className="flex items-center gap-3 text-slate-300"><MapPin className="h-4 w-4 text-cyber-400 shrink-0" /> Remote Worldwide · Agents across 10+ countries</p>
                     <p className="flex items-center gap-3 text-slate-300"><Clock className="h-4 w-4 text-cyber-400 shrink-0" /> Mon–Fri, 9am–6pm</p>
                     <p className="flex items-center gap-3 text-slate-300"><Globe2 className="h-4 w-4 text-cyber-400 shrink-0" /> Serving clients globally</p>
+                  </div>
+
+                  {/* ✅ CONTACT NUMBERS — WHATSAPP + CALL */}
+                  <div className="mt-5 border-t border-white/10 pt-5">
+                    <p className="mb-3 text-xs uppercase tracking-wider text-slate-400">
+                      Call or WhatsApp us
+                    </p>
+                    <div className="space-y-3">
+                      {contactNumbers.map((num, i) => (
+                        <div
+                          key={i}
+                          className="rounded-xl border border-white/10 bg-white/[0.03] p-3"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="text-lg">{num.flag}</span>
+                              <div>
+                                <p className="text-[10px] uppercase tracking-widest text-slate-400">
+                                  {num.label}
+                                </p>
+                                <p className="text-sm font-semibold text-white">
+                                  {num.display}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="mt-2 flex gap-2">
+                            <a
+                              href={`tel:${num.tel}`}
+                              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-slate-200 transition-colors hover:border-cyber-400/50 hover:bg-cyber-500/10 hover:text-white"
+                            >
+                              <Phone className="h-3.5 w-3.5" /> Call
+                            </a>
+                            <a
+                              href={`https://wa.me/${num.whatsapp}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-green-500/30 bg-green-500/10 px-3 py-2 text-xs font-medium text-green-400 transition-colors hover:border-green-400/60 hover:bg-green-500/20"
+                            >
+                              <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
+                            </a>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
@@ -346,7 +416,7 @@ export function ContactPage() {
           </div>
         </section>
 
-        {/* Hire Us on Fiverr */}
+        {/* Fiverr */}
         <section className="section-pad py-10">
           <div className="container-x">
             <div className="text-center">
@@ -369,20 +439,10 @@ export function ContactPage() {
                     </div>
                     <p className="mt-4 flex-1 text-sm leading-relaxed text-slate-400">{s.tagline}</p>
                     <div className="mt-6 flex flex-col gap-2.5">
-                      <a
-                        href={s.gigUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn-primary w-full text-sm"
-                      >
+                      <a href={s.gigUrl} target="_blank" rel="noopener noreferrer" className="btn-primary w-full text-sm">
                         View Gig <ExternalLink className="h-3.5 w-3.5" />
                       </a>
-                      <a
-                        href={s.profileUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition-all hover:border-cyber-400/60 hover:bg-cyber-500/10"
-                      >
+                      <a href={s.profileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition-all hover:border-cyber-400/60 hover:bg-cyber-500/10">
                         Fiverr Profile <ExternalLink className="h-3.5 w-3.5" />
                       </a>
                     </div>
@@ -393,7 +453,7 @@ export function ContactPage() {
           </div>
         </section>
 
-        {/* Full Cost Calculator */}
+        {/* Calculator */}
         <section className="section-white section-pad">
           <div className="container-x">
             <div className="text-center">
@@ -403,7 +463,6 @@ export function ContactPage() {
             </div>
 
             <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_380px]">
-              {/* Left: Form */}
               <div className="space-y-6">
                 <Reveal>
                   <div className="card-white rounded-2xl p-6">
@@ -451,7 +510,6 @@ export function ContactPage() {
                 </Reveal>
               </div>
 
-              {/* Right: Sticky summary */}
               <div className="lg:sticky lg:top-24 h-fit">
                 <Reveal>
                   <div className="card-white rounded-2xl p-6 shadow-lg">
@@ -488,7 +546,6 @@ export function ContactPage() {
           </div>
         </section>
 
-        {/* Lead capture modal */}
         {showLead && (
           <div className="fixed inset-0 z-[100] grid place-items-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setShowLead(false)}>
             <div className="card-white rounded-2xl p-7 max-w-md w-full" onClick={e => e.stopPropagation()}>
