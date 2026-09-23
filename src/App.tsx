@@ -48,34 +48,9 @@ import { CalculatorPage } from './pages/CalculatorPage';
 import { MaintenancePage } from './pages/MaintenancePage';
 import { GHLPage } from './pages/GHLPage';
 
-// ✅ IMPORT PORTAL AND ADMIN PAGES DIRECTLY (Fixes React error #306)
+// ✅ IMPORT PORTAL AND ADMIN PAGES DIRECTLY
 import { PortalPage } from './pages/PortalPage';
-import AdminPage from './pages/AdminPage';
-
-// ✅ LAZY LOAD ADMIN SUB-PAGES ONLY
-const AdminABTesting = lazy(() => import('./pages/admin/AdminABTesting'));
-const AdminAgents = lazy(() => import('./pages/admin/AdminAgents'));
-const AdminAuditLogs = lazy(() => import('./pages/admin/AdminAuditLogs'));
-const AdminBlog = lazy(() => import('./pages/admin/AdminBlog'));
-const AdminCaseStudies = lazy(() => import('./pages/admin/AdminCaseStudies'));
-const AdminCerts = lazy(() => import('./pages/admin/AdminCerts'));
-const AdminLeads = lazy(() => import('./pages/admin/AdminLeads'));
-const AdminMedia = lazy(() => import('./pages/admin/AdminMedia'));
-const AdminProjects = lazy(() => import('./pages/admin/AdminProjects'));
-const AdminResources = lazy(() => import('./pages/admin/AdminResources'));
-const AdminReviews = lazy(() => import('./pages/admin/AdminReviews'));
-const AdminSecurityCenter = lazy(() => import('./pages/admin/AdminSecurityCenter'));
-const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
-const AdminShopify = lazy(() => import('./pages/admin/AdminShopify'));
-const AdminSiteContent = lazy(() => import('./pages/admin/AdminSiteContent'));
-const AdminSubscribers = lazy(() => import('./pages/admin/AdminSubscribers'));
-const AdminTeam = lazy(() => import('./pages/admin/AdminTeam'));
-const AdminTestimonials = lazy(() => import('./pages/admin/AdminTestimonials'));
-const AdminUserFiles = lazy(() => import('./pages/admin/AdminUserFiles'));
-const AdminUserInvoices = lazy(() => import('./pages/admin/AdminUserInvoices'));
-const AdminUserManagement = lazy(() => import('./pages/admin/AdminUserManagement'));
-const AdminUserProjects = lazy(() => import('./pages/admin/AdminUserProjects'));
-const AdminUserTickets = lazy(() => import('./pages/admin/AdminUserTickets'));
+import AdminPage from './pages/admin/AdminPage'; // ✅ FIXED PATH
 
 // ============================================================
 // ERROR BOUNDARY
