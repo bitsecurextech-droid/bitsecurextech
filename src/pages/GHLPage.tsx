@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { Reveal } from '../components/Reveal';
 import { SEO } from '../components/SEO';
 import { useNavigate } from '../lib/router';
@@ -58,18 +58,154 @@ import {
   Shield,
 } from 'lucide-react';
 
+// ============================================================
+// REAL GHL LOGO COMPONENT (3 colored arrows)
+// ============================================================
+function GHLLogo({ className = 'h-10 w-auto' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 240 60" className={className} xmlns="http://www.w3.org/2000/svg" aria-label="GoHighLevel">
+      {/* 3 Arrows - Yellow, Blue, Green */}
+      {/* Yellow arrow (tall, left) */}
+      <rect x="6" y="18" width="8" height="36" fill="#FFC107" />
+      <polygon points="10,8 16,18 4,18" fill="#FFC107" />
+
+      {/* Blue arrow (short, middle) */}
+      <rect x="20" y="30" width="8" height="24" fill="#2196F3" />
+      <polygon points="24,22 30,30 18,30" fill="#2196F3" />
+
+      {/* Green arrow (tall, right) */}
+      <rect x="34" y="18" width="8" height="36" fill="#4CAF50" />
+      <polygon points="38,8 44,18 32,18" fill="#4CAF50" />
+
+      {/* "HighLevel" text */}
+      <text
+        x="52"
+        y="42"
+        fontFamily="Inter, -apple-system, sans-serif"
+        fontSize="28"
+        fontWeight="700"
+        fill="#0a0a1a"
+        letterSpacing="-0.5"
+      >
+        High
+        <tspan fontWeight="800">Level</tspan>
+      </text>
+    </svg>
+  );
+}
+
+// ============================================================
+// MAIN PAGE
+// ============================================================
 export function GHLPage() {
   const nav = useNavigate();
+  const [activeTab, setActiveTab] = useState<'capture' | 'nurture' | 'close' | 'evangelize' | 'reactivate'>('capture');
 
-  // ============================================================
-  // WHATSAPP NUMBER
-  // ============================================================
   const WHATSAPP_NUMBER = '12762427102';
   const WHATSAPP_MESSAGE = encodeURIComponent('Hi, I need GoHighLevel services');
   const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`;
 
   // ============================================================
-  // DATA
+  // TAB DATA — Capture / Nurture / Close / Evangelize / Reactivate
+  // ============================================================
+  const tabData = {
+    capture: {
+      label: 'Capture',
+      title: 'Get more leads in the door',
+      subtitle: 'Attract the right people, turn interest into leads and keep your pipeline full.',
+      features: [
+        'CRM',
+        'Voice AI',
+        'Forms, Surveys & Quizzes',
+        'Websites, Funnels & Landing Pages',
+        'Webinar Funnels',
+        'Chat Widget / Conversation AI',
+        'Call Tracking',
+        'Inbound SMS & Social DMs',
+        'Social Planner',
+        'Missed Call Text-Back',
+        'AI Biz Card Scanner',
+        'QR Codes',
+        'Prospecting Tool',
+        'Ad Manager (Google/FB/Insta Ads)',
+      ],
+    },
+    nurture: {
+      label: 'Nurture',
+      title: 'Build relationships that convert',
+      subtitle: 'Keep leads engaged with personalized follow-ups and automated sequences.',
+      features: [
+        'Email Marketing',
+        'SMS Marketing',
+        'Workflow Automation',
+        'Multi-Channel Sequences',
+        'Lead Scoring',
+        'Smart Lists & Segmentation',
+        'Trigger-Based Campaigns',
+        'Drip Campaigns',
+        'Appointment Reminders',
+        'Review Requests',
+        'Birthday & Anniversary Campaigns',
+        'Re-Engagement Flows',
+      ],
+    },
+    close: {
+      label: 'Close',
+      title: 'Turn conversations into customers',
+      subtitle: 'Give your sales team the tools to close faster and increase deal value.',
+      features: [
+        'Sales Pipelines',
+        'Opportunity Management',
+        'Calendar & Booking',
+        'Proposals & Estimates',
+        'Invoicing & Payments',
+        'Stripe Integration',
+        'Upsells & Cross-Sells',
+        'Sales Automation',
+        'Deal Tracking',
+        'Team Collaboration',
+        'Call Recordings',
+        'Follow-Up Sequences',
+      ],
+    },
+    evangelize: {
+      label: 'Evangelize',
+      title: 'Turn customers into promoters',
+      subtitle: 'Build a reputation engine that generates referrals and repeat business.',
+      features: [
+        'Review Management',
+        'Reputation Monitoring',
+        'Referral Programs',
+        'Loyalty Programs',
+        'Automated Review Requests',
+        'Multi-Platform Reviews',
+        'Social Proof Widgets',
+        'Testimonial Collection',
+        'Brand Ambassador Tools',
+        'Community Building',
+      ],
+    },
+    reactivate: {
+      label: 'Reactivate',
+      title: 'Win back lost opportunities',
+      subtitle: 'Re-engage cold leads and past customers with targeted campaigns.',
+      features: [
+        'Database Reactivation',
+        'Dormant Lead Campaigns',
+        'Win-Back Sequences',
+        'Special Offers & Discounts',
+        'Retargeting Ads',
+        'Behavior-Triggered Messages',
+        'Churn Prevention',
+        'Customer Feedback Loop',
+        'Segment-Based Campaigns',
+        'Annual Check-Ins',
+      ],
+    },
+  };
+
+  // ============================================================
+  // DATA (other sections)
   // ============================================================
   const services = [
     {
@@ -166,64 +302,20 @@ export function GHLPage() {
   ];
 
   const benefits = [
-    {
-      icon: Rocket,
-      title: 'Replace 10+ Tools',
-      description: 'GoHighLevel replaces your CRM, email marketing, funnel builder, calendar, and more in one platform.',
-    },
-    {
-      icon: Zap,
-      title: 'Automate Everything',
-      description: 'From lead capture to follow-up, everything runs on autopilot so you can focus on growing your business.',
-    },
-    {
-      icon: Brain,
-      title: 'AI-Powered',
-      description: 'Built-in AI features including chatbots, voice AI, and predictive analytics to stay ahead.',
-    },
-    {
-      icon: Users,
-      title: 'Scale Your Team',
-      description: 'Manage unlimited sub-accounts, team members, and clients from one dashboard.',
-    },
-    {
-      icon: Shield,
-      title: 'Secure & Reliable',
-      description: 'Enterprise-grade security with 99.9% uptime guarantee and automatic backups.',
-    },
-    {
-      icon: TrendingUp,
-      title: 'Drive Revenue',
-      description: 'Proven funnels, workflows, and automations that turn leads into paying customers.',
-    },
+    { icon: Rocket, title: 'Replace 10+ Tools', description: 'GoHighLevel replaces your CRM, email marketing, funnel builder, calendar, and more in one platform.' },
+    { icon: Zap, title: 'Automate Everything', description: 'From lead capture to follow-up, everything runs on autopilot so you can focus on growing your business.' },
+    { icon: Brain, title: 'AI-Powered', description: 'Built-in AI features including chatbots, voice AI, and predictive analytics to stay ahead.' },
+    { icon: Users, title: 'Scale Your Team', description: 'Manage unlimited sub-accounts, team members, and clients from one dashboard.' },
+    { icon: Shield, title: 'Secure & Reliable', description: 'Enterprise-grade security with 99.9% uptime guarantee and automatic backups.' },
+    { icon: TrendingUp, title: 'Drive Revenue', description: 'Proven funnels, workflows, and automations that turn leads into paying customers.' },
   ];
 
   const processSteps = [
-    {
-      icon: Target,
-      title: 'Discovery Call',
-      description: 'We understand your business, goals, and current tools to plan the perfect GHL setup.',
-    },
-    {
-      icon: Brain,
-      title: 'Strategy & Planning',
-      description: 'We map out the workflows, funnels, and automations needed for your success.',
-    },
-    {
-      icon: Cpu,
-      title: 'Setup & Integration',
-      description: 'We build and configure everything inside your GHL account, ready to launch.',
-    },
-    {
-      icon: Rocket,
-      title: 'Testing & Launch',
-      description: 'We test everything, fix issues, and launch your automated system.',
-    },
-    {
-      icon: TrendingUp,
-      title: 'Ongoing Support',
-      description: 'We monitor, optimize, and support your GHL account as your business grows.',
-    },
+    { icon: Target, title: 'Discovery Call', description: 'We understand your business, goals, and current tools to plan the perfect GHL setup.' },
+    { icon: Brain, title: 'Strategy & Planning', description: 'We map out the workflows, funnels, and automations needed for your success.' },
+    { icon: Cpu, title: 'Setup & Integration', description: 'We build and configure everything inside your GHL account, ready to launch.' },
+    { icon: Rocket, title: 'Testing & Launch', description: 'We test everything, fix issues, and launch your automated system.' },
+    { icon: TrendingUp, title: 'Ongoing Support', description: 'We monitor, optimize, and support your GHL account as your business grows.' },
   ];
 
   const industries = [
@@ -242,31 +334,15 @@ export function GHLPage() {
   ];
 
   const faqs = [
-    {
-      q: 'What is GoHighLevel?',
-      a: 'GoHighLevel (GHL) is an all-in-one marketing and CRM platform that replaces dozens of tools. It includes funnels, websites, CRM, email/SMS marketing, calendars, automation, AI chatbots, and more, all under one roof.',
-    },
-    {
-      q: 'Do I need technical skills to use GHL?',
-      a: 'Not at all! We set everything up for you and provide training so you can manage your account with ease. Everything is designed to be user-friendly.',
-    },
-    {
-      q: 'Can you migrate my existing data to GHL?',
-      a: 'Yes! We can migrate your contacts, funnels, and other data from your existing tools into GoHighLevel. We handle the entire migration process for you.',
-    },
-    {
-      q: 'How long does a typical GHL setup take?',
-      a: 'A basic setup can be completed in 1-2 weeks. A comprehensive setup with multiple funnels, workflows, and automations may take 3-4 weeks. We provide a timeline during our discovery call.',
-    },
-    {
-      q: 'Do you offer ongoing support after setup?',
-      a: 'Yes! We offer ongoing support and optimization packages. We monitor your account, make improvements, and are available for questions and support.',
-    },
-    {
-      q: 'Is there a free trial for GoHighLevel?',
-      a: 'GoHighLevel offers a 14-day free trial. We can help you set up during the trial period so you can see the value before committing.',
-    },
+    { q: 'What is GoHighLevel?', a: 'GoHighLevel (GHL) is an all-in-one marketing and CRM platform that replaces dozens of tools. It includes funnels, websites, CRM, email/SMS marketing, calendars, automation, AI chatbots, and more, all under one roof.' },
+    { q: 'Do I need technical skills to use GHL?', a: 'Not at all! We set everything up for you and provide training so you can manage your account with ease. Everything is designed to be user-friendly.' },
+    { q: 'Can you migrate my existing data to GHL?', a: 'Yes! We can migrate your contacts, funnels, and other data from your existing tools into GoHighLevel. We handle the entire migration process for you.' },
+    { q: 'How long does a typical GHL setup take?', a: 'A basic setup can be completed in 1-2 weeks. A comprehensive setup with multiple funnels, workflows, and automations may take 3-4 weeks. We provide a timeline during our discovery call.' },
+    { q: 'Do you offer ongoing support after setup?', a: 'Yes! We offer ongoing support and optimization packages. We monitor your account, make improvements, and are available for questions and support.' },
+    { q: 'Is there a free trial for GoHighLevel?', a: 'GoHighLevel offers a 14-day free trial. We can help you set up during the trial period so you can see the value before committing.' },
   ];
+
+  const currentTab = tabData[activeTab];
 
   return (
     <>
@@ -286,69 +362,23 @@ export function GHLPage() {
           <div className="container-x relative">
             <div className="max-w-4xl mx-auto text-center">
 
-              {/* ✅ GHL LOGO */}
+              {/* ✅ REAL GHL LOGO */}
               <Reveal>
-                <div className="flex justify-center mb-5">
-                  <div className="flex items-center gap-3 rounded-2xl border border-cyber-500/30 bg-cyber-500/10 px-5 py-3 backdrop-blur-sm">
-                    <svg
-                      viewBox="0 0 40 40"
-                      className="h-10 w-10"
-                      xmlns="http://www.w3.org/2000/svg"
-                      aria-hidden="true"
-                    >
-                      <defs>
-                        <linearGradient id="ghlGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="#00e676" />
-                          <stop offset="50%" stopColor="#00b0ff" />
-                          <stop offset="100%" stopColor="#0066ff" />
-                        </linearGradient>
-                      </defs>
-                      <circle cx="20" cy="20" r="18" fill="url(#ghlGrad)" opacity="0.15" />
-                      <circle cx="20" cy="20" r="18" fill="none" stroke="url(#ghlGrad)" strokeWidth="1.5" />
-                      <path
-                        d="M20 6 L20 34 M6 20 L34 20"
-                        stroke="url(#ghlGrad)"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        opacity="0.4"
-                      />
-                      <text
-                        x="20"
-                        y="26"
-                        textAnchor="middle"
-                        fontFamily="Inter, sans-serif"
-                        fontSize="16"
-                        fontWeight="800"
-                        fill="url(#ghlGrad)"
-                      >
-                        GHL
-                      </text>
-                    </svg>
-                    <div className="text-left">
-                      <p className="text-lg font-bold tracking-tight text-white leading-none">
-                        GoHighLevel
-                      </p>
-                      <p className="mt-0.5 text-[10px] font-medium uppercase tracking-widest text-cyber-400">
-                        Certified Automation Partner
-                      </p>
-                    </div>
+                <div className="flex justify-center mb-6">
+                  <div className="rounded-2xl bg-white px-6 py-4 shadow-lg ring-1 ring-cyber-500/20">
+                    <GHLLogo className="h-10 w-auto" />
                   </div>
                 </div>
               </Reveal>
 
-              {/* EYEBROW */}
               <Reveal delay={40}>
                 <span className="eyebrow text-electric-400">GoHighLevel Automation Agency</span>
               </Reveal>
-
-              {/* TITLE */}
               <Reveal delay={80}>
                 <h1 className="mt-5 font-display text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
                   GoHighLevel <span className="gradient-text">Automation Services</span>
                 </h1>
               </Reveal>
-
-              {/* DESCRIPTION */}
               <Reveal delay={160}>
                 <p className="mt-5 text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto">
                   BitSecureX Tech is your GoHighLevel expert. We set up, configure, and manage GHL for
@@ -356,24 +386,141 @@ export function GHLPage() {
                   Automate everything and grow faster with GoHighLevel.
                 </p>
               </Reveal>
-
-              {/* CTA BUTTONS */}
               <Reveal delay={240}>
                 <div className="mt-8 flex flex-wrap justify-center gap-3">
                   <button onClick={() => nav('/contact')} className="btn-primary">
                     Book a Free GHL Consultation <ArrowRight className="h-4 w-4" />
                   </button>
-                  <a
-                    href={WHATSAPP_LINK}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-ghost"
-                  >
+                  <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="btn-ghost">
                     <Phone className="h-4 w-4" /> Chat on WhatsApp
                   </a>
                 </div>
               </Reveal>
             </div>
+          </div>
+        </section>
+
+        {/* ============================================================
+            NEW SECTION: All-in-one solution with TABS
+            ============================================================ */}
+        <section className="section-pad py-12 bg-navy-800/50">
+          <div className="container-x">
+            <div className="text-center max-w-3xl mx-auto">
+              <Reveal>
+                <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+                  Your all-in-one solution for <br />
+                  <span className="text-slate-400">business growth</span>
+                </h2>
+              </Reveal>
+              <Reveal delay={80}>
+                <p className="mt-4 text-lg text-slate-400">
+                  All the tools you need in one AI-powered platform
+                </p>
+              </Reveal>
+            </div>
+
+            {/* TABS */}
+            <Reveal delay={120}>
+              <div className="mt-10 flex flex-wrap justify-center gap-2">
+                {(Object.keys(tabData) as Array<keyof typeof tabData>).map((key) => (
+                  <button
+                    key={key}
+                    onClick={() => setActiveTab(key)}
+                    className={`rounded-lg px-6 py-3 text-sm font-bold transition-all ${
+                      activeTab === key
+                        ? 'bg-yellow-400 text-navy-950 shadow-lg shadow-yellow-400/30 scale-105'
+                        : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    {tabData[key].label}
+                  </button>
+                ))}
+              </div>
+            </Reveal>
+
+            {/* TAB CONTENT */}
+            <Reveal delay={160}>
+              <div className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-8 lg:p-12 backdrop-blur-sm">
+                <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+                  {/* Left: Text + Features */}
+                  <div>
+                    <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-yellow-400">
+                      <Target className="h-7 w-7 text-navy-950" />
+                    </div>
+                    <h3 className="mt-5 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                      {currentTab.title}
+                    </h3>
+                    <p className="mt-3 text-base text-slate-400 leading-relaxed">
+                      {currentTab.subtitle}
+                    </p>
+
+                    <ul className="mt-6 grid gap-2 sm:grid-cols-2">
+                      {currentTab.features.map((feature, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                          <CheckCircle2 className="h-4 w-4 text-electric-500 shrink-0 mt-0.5" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <button
+                      onClick={() => nav('/contact')}
+                      className="mt-8 inline-flex items-center gap-2 rounded-lg bg-navy-950 px-6 py-3 text-sm font-bold text-white ring-1 ring-white/10 transition-all hover:bg-navy-900 hover:ring-cyber-500/50"
+                    >
+                      Start 14 Day Free Trial <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  {/* Right: Visual mockup */}
+                  <div className="relative">
+                    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-cyber-500/10 to-electric-500/10 p-6">
+                      {/* Mock chat conversation */}
+                      <div className="space-y-4">
+                        <div className="flex items-start gap-3">
+                          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-yellow-400 to-yellow-500 text-xs font-bold text-navy-950">
+                            GHL
+                          </div>
+                          <div className="rounded-2xl rounded-tl-sm bg-blue-600 px-4 py-3 text-sm text-white max-w-[80%]">
+                            Sorry we missed your call! Want to book an appointment?
+                          </div>
+                        </div>
+
+                        <div className="flex items-start justify-end gap-3">
+                          <div className="rounded-2xl rounded-tr-sm bg-white px-4 py-3 text-sm text-navy-950 max-w-[80%] shadow-lg">
+                            Yes, is 2 PM next Tuesday free?
+                          </div>
+                          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-electric-500 to-cyber-500 text-xs font-bold text-white">
+                            👤
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-yellow-400 to-yellow-500 text-xs font-bold text-navy-950">
+                            GHL
+                          </div>
+                          <div className="rounded-2xl rounded-tl-sm bg-blue-600 px-4 py-3 text-sm text-white max-w-[80%]">
+                            Yes! You're all set for 2 PM next Tuesday. Thank you!
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Floating badge */}
+                    <div className="absolute -bottom-4 -right-4 rounded-xl bg-white px-4 py-3 shadow-2xl ring-1 ring-cyber-500/20">
+                      <div className="flex items-center gap-2">
+                        <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-yellow-400 to-yellow-500">
+                          <Zap className="h-4 w-4 text-navy-950" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase tracking-widest text-slate-400">Response Time</p>
+                          <p className="text-sm font-bold text-navy-950">&lt; 5 seconds</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
           </div>
         </section>
 
@@ -384,9 +531,7 @@ export function GHLPage() {
               {stats.map((stat, i) => (
                 <Reveal key={i} delay={i * 60}>
                   <div className="glass card-hover rounded-2xl p-5 text-center">
-                    <p className="font-display text-3xl font-bold gradient-text sm:text-4xl">
-                      {stat.value}
-                    </p>
+                    <p className="font-display text-3xl font-bold gradient-text sm:text-4xl">{stat.value}</p>
                     <p className="mt-1 text-xs text-slate-400 sm:text-sm">{stat.label}</p>
                   </div>
                 </Reveal>
@@ -399,9 +544,7 @@ export function GHLPage() {
         <section className="section-pad py-10 bg-navy-800/50">
           <div className="container-x">
             <div className="text-center">
-              <Reveal>
-                <span className="eyebrow">Why GoHighLevel</span>
-              </Reveal>
+              <Reveal><span className="eyebrow">Why GoHighLevel</span></Reveal>
               <Reveal delay={80}>
                 <h2 className="mt-4 font-display text-3xl font-bold text-white">
                   One Platform <span className="gradient-text">Replaces Them All</span>
@@ -431,9 +574,7 @@ export function GHLPage() {
         <section className="section-pad py-10">
           <div className="container-x">
             <div className="text-center">
-              <Reveal>
-                <span className="eyebrow">Our GHL Services</span>
-              </Reveal>
+              <Reveal><span className="eyebrow">Our GHL Services</span></Reveal>
               <Reveal delay={80}>
                 <h2 className="mt-4 font-display text-3xl font-bold text-white">
                   Complete <span className="gradient-text">GoHighLevel Setup</span>
@@ -441,7 +582,7 @@ export function GHLPage() {
               </Reveal>
               <Reveal delay={160}>
                 <p className="mt-3 text-slate-400 max-w-2xl mx-auto">
-                  We handle every aspect of GoHighLevel setup for your business. Here are all the services we offer.
+                  We handle every aspect of GoHighLevel setup for your business.
                 </p>
               </Reveal>
             </div>
@@ -471,18 +612,11 @@ export function GHLPage() {
         <section className="section-pad py-10 bg-navy-800/50">
           <div className="container-x">
             <div className="text-center">
-              <Reveal>
-                <span className="eyebrow">Industries</span>
-              </Reveal>
+              <Reveal><span className="eyebrow">Industries</span></Reveal>
               <Reveal delay={80}>
                 <h2 className="mt-4 font-display text-3xl font-bold text-white">
                   GHL for Every <span className="gradient-text">Industry</span>
                 </h2>
-              </Reveal>
-              <Reveal delay={160}>
-                <p className="mt-3 text-slate-400 max-w-2xl mx-auto">
-                  We've set up GoHighLevel for businesses across all industries.
-                </p>
               </Reveal>
             </div>
             <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -502,18 +636,11 @@ export function GHLPage() {
         <section className="section-pad py-10">
           <div className="container-x">
             <div className="text-center">
-              <Reveal>
-                <span className="eyebrow">Our Process</span>
-              </Reveal>
+              <Reveal><span className="eyebrow">Our Process</span></Reveal>
               <Reveal delay={80}>
                 <h2 className="mt-4 font-display text-3xl font-bold text-white">
                   How We Set Up <span className="gradient-text">Your GHL</span>
                 </h2>
-              </Reveal>
-              <Reveal delay={160}>
-                <p className="mt-3 text-slate-400 max-w-2xl mx-auto">
-                  A proven 5-step process that gets your GoHighLevel account running in weeks, not months.
-                </p>
               </Reveal>
             </div>
             <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-5">
@@ -525,9 +652,7 @@ export function GHLPage() {
                     </div>
                     <h3 className="mt-4 font-display text-base font-semibold text-white">{step.title}</h3>
                     <p className="mt-2 text-xs text-slate-400">{step.description}</p>
-                    <span className="mt-3 inline-block text-xs font-medium text-cyber-400">
-                      Step {i + 1} of 5
-                    </span>
+                    <span className="mt-3 inline-block text-xs font-medium text-cyber-400">Step {i + 1} of 5</span>
                   </div>
                 </Reveal>
               ))}
@@ -539,9 +664,7 @@ export function GHLPage() {
         <section className="section-pad py-10 bg-navy-800/50">
           <div className="container-x max-w-3xl mx-auto">
             <div className="text-center">
-              <Reveal>
-                <span className="eyebrow">FAQ</span>
-              </Reveal>
+              <Reveal><span className="eyebrow">FAQ</span></Reveal>
               <Reveal delay={80}>
                 <h2 className="mt-4 font-display text-3xl font-bold text-white">
                   Frequently Asked <span className="gradient-text">Questions</span>
@@ -586,18 +709,10 @@ export function GHLPage() {
                     <button onClick={() => nav('/contact')} className="btn-primary">
                       Book a Free Consultation <ArrowRight className="h-4 w-4" />
                     </button>
-                    <a
-                      href={WHATSAPP_LINK}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-ghost"
-                    >
+                    <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="btn-ghost">
                       <Phone className="h-4 w-4" /> Chat on WhatsApp
                     </a>
-                    <a
-                      href="mailto:contact.bitsecurex@gmail.com?subject=GoHighLevel%20Inquiry"
-                      className="btn-ghost"
-                    >
+                    <a href="mailto:contact.bitsecurex@gmail.com?subject=GoHighLevel%20Inquiry" className="btn-ghost">
                       <Mail className="h-4 w-4" /> Send Email
                     </a>
                   </div>
@@ -610,4 +725,5 @@ export function GHLPage() {
     </>
   );
 }
+
 export default GHLPage;
