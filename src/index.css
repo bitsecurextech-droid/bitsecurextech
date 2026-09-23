@@ -196,7 +196,7 @@ html.dark .nav-link-active { color: #ffffff; }
 }
 
 /* ============================================================
-   FIX: CONTRAST - Better contrast on light backgrounds
+   FIX: CONTRAST - WCAG AA compliant on light backgrounds
    ============================================================ */
 .dark .text-slate-400 {
   color: #94a3b8;
@@ -206,13 +206,13 @@ html.dark .nav-link-active { color: #ffffff; }
 }
 
 html.light .text-slate-400 {
-  color: #64748b;
+  color: #475569; /* slate-600 — passes WCAG AA on white */
 }
 html.light .text-slate-500 {
-  color: #475569;
+  color: #334155; /* slate-700 — passes WCAG AA on white */
 }
 html.light .text-slate-600 {
-  color: #334155;
+  color: #1e293b; /* slate-800 — passes WCAG AAA on white */
 }
 
 /* ============================================================
