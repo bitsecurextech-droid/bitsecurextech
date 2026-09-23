@@ -1,3 +1,7 @@
+import { useEffect } from 'react';
+import { Reveal } from '../components/Reveal';
+import { SEO } from '../components/SEO';
+import { useNavigate } from '../lib/router';
 import {
   ArrowRight,
   CheckCircle2,
@@ -291,7 +295,7 @@ export function GHLPage() {
               </Reveal>
               <Reveal delay={240}>
                 <div className="mt-8 flex flex-wrap justify-center gap-3">
-                  <button onClick={() => nav('/contact?service=gohighlevel')} className="btn-primary">
+                  <button onClick={() => nav('/contact')} className="btn-primary">
                     Book a Free GHL Consultation <ArrowRight className="h-4 w-4" />
                   </button>
                   <a href="https://wa.me/2349011407095?text=Hi%2C%20I%20need%20GoHighLevel%20services" target="_blank" rel="noopener noreferrer" className="btn-ghost">
@@ -509,7 +513,7 @@ export function GHLPage() {
                     automate your business, save time, and grow faster with GoHighLevel.
                   </p>
                   <div className="mt-8 flex flex-wrap justify-center gap-3">
-                    <button onClick={() => nav('/contact?service=gohighlevel')} className="btn-primary">
+                    <button onClick={() => nav('/contact')} className="btn-primary">
                       Book a Free Consultation <ArrowRight className="h-4 w-4" />
                     </button>
                     <a href="https://wa.me/2349011407095?text=Hi%2C%20I%20need%20GoHighLevel%20services" target="_blank" rel="noopener noreferrer" className="btn-ghost">
