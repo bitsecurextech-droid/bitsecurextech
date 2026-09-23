@@ -50,7 +50,7 @@ import { GHLPage } from './pages/GHLPage';
 
 // ✅ IMPORT PORTAL AND ADMIN PAGES DIRECTLY
 import { PortalPage } from './pages/PortalPage';
-import AdminPage from './pages/admin/AdminPage'; // ✅ FIXED PATH
+import AdminPage from './pages/admin'; // ✅ FIXED — resolves to admin/index.tsx
 
 // ============================================================
 // ERROR BOUNDARY
