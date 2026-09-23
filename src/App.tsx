@@ -46,6 +46,7 @@ import { DisclosurePage } from './pages/DisclosurePage';
 import { BugBountyPage } from './pages/BugBountyPage';
 import { CalculatorPage } from './pages/CalculatorPage';
 import { MaintenancePage } from './pages/MaintenancePage';
+import { GHLPage } from './pages/GHLPage';
 
 // ✅ IMPORT PORTAL AND ADMIN PAGES DIRECTLY (Fixes React error #306)
 import { PortalPage } from './pages/PortalPage';
@@ -221,6 +222,7 @@ function App() {
   else if (path === '/reviews') PageComponent = ReviewsPage;
   else if (path === '/disclosure') PageComponent = DisclosurePage;
   else if (path === '/bug-bounty') PageComponent = BugBountyPage;
+  else if (path === '/gohighlevel') PageComponent = GHLPage;
 
   return (
     <ErrorBoundary>
