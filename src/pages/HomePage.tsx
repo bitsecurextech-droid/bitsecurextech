@@ -1,4 +1,4 @@
-import { ArrowRight, ShieldCheck, Zap, Star, CheckCircle2, Lock, Globe2, ExternalLink, Award, BookOpen, Briefcase, Code2, Brain, GraduationCap, Sparkles, Users, TrendingUp, Search, ShoppingBag, Megaphone, Bot, Gamepad2, Layers, Rocket, BarChart3, Smartphone, Cpu, Cloud, Mail, Phone } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Zap, Star, CheckCircle2, Lock, Globe2, ExternalLink, Award, BookOpen, Briefcase, Code2, Brain, GraduationCap, Users, TrendingUp } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { Hero } from '../components/Hero';
 import { Reveal } from '../components/Reveal';
@@ -167,16 +167,22 @@ export function HomePage() {
   const marqueeRef = useRef<HTMLDivElement>(null);
 
   // ============================================================
-  // FETCH DATA
+  // FETCH DATA — Deferred until user scrolls or 2s timeout (LCP optimization)
   // ============================================================
   useEffect(() => {
-    (async () => {
+    let loaded = false;
+
+    const loadData = async () => {
+      if (loaded) return;
+      loaded = true;
+
       const [{ data: projData }, { data: teamData }, { data: reviewData }, { data: logoData }] = await Promise.all([
         supabase.from('admin_projects').select('*').order('created_at', { ascending: false }),
         supabase.from('admin_team_members').select('*').order('created_at', { ascending: false }),
         supabase.from('public_reviews').select('*').eq('status', 'Approved').order('created_at', { ascending: false }).limit(3),
         supabase.from('client_logos').select('*').eq('is_active', true).order('display_order', { ascending: true }),
       ]);
+
       if (projData) {
         const mapped: Project[] = (projData as any[]).map((p) => ({
           slug: `admin-${p.id}`,
@@ -197,7 +203,24 @@ export function HomePage() {
       if (teamData) setTeamMembers(teamData as TeamMember[]);
       if (reviewData) setTestimonials(reviewData as Testimonial[]);
       if (logoData) setClientLogos(logoData as ClientLogo[]);
-    })();
+    };
+
+    // Load data after 2s OR when user scrolls past hero — whichever comes first
+    const timer = setTimeout(loadData, 2000);
+
+    const onScroll = () => {
+      if (window.scrollY > 400) {
+        clearTimeout(timer);
+        loadData();
+        window.removeEventListener('scroll', onScroll);
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
   // ============================================================
@@ -246,7 +269,7 @@ export function HomePage() {
       <Hero />
 
       {/* ============================================================
-      SECTION 1: STATS (Animated Counters) - FIXED CLS with min-h-[80px]
+      SECTION 1: STATS (Animated Counters)
       ============================================================ */}
       <section className="section-dark section-pad py-8 border-t border-white/5">
         <div className="container-x">
@@ -352,7 +375,7 @@ export function HomePage() {
       ============================================================ */}
       <section className="section-white section-pad py-6">
         <div className="container-x">
-          <p className="text-center text-sm uppercase tracking-wider text-slate-400">
+          <p className="text-center text-sm uppercase tracking-wider text-slate-500">
             Trusted by businesses worldwide
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-8 opacity-60">
@@ -368,10 +391,10 @@ export function HomePage() {
               ))
             ) : (
               <>
-                <span className="text-sm font-medium text-slate-400">Client 1</span>
-                <span className="text-sm font-medium text-slate-400">Client 2</span>
-                <span className="text-sm font-medium text-slate-400">Client 3</span>
-                <span className="text-sm font-medium text-slate-400">Client 4</span>
+                <span className="text-sm font-medium text-slate-500">Client 1</span>
+                <span className="text-sm font-medium text-slate-500">Client 2</span>
+                <span className="text-sm font-medium text-slate-500">Client 3</span>
+                <span className="text-sm font-medium text-slate-500">Client 4</span>
               </>
             )}
           </div>
