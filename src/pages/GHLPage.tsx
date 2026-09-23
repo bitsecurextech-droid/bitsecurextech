@@ -1,7 +1,3 @@
-import { useEffect } from 'react';
-import { Reveal } from '../components/Reveal';
-import { SEO } from '../components/SEO';
-import { useNavigate } from '../lib/router';
 import {
   ArrowRight,
   CheckCircle2,
@@ -55,6 +51,7 @@ import {
   GraduationCap,
   Briefcase,
   Home,
+  Shield,
 } from 'lucide-react';
 
 export function GHLPage() {
