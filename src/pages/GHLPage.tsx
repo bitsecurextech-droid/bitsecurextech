@@ -62,6 +62,13 @@ export function GHLPage() {
   const nav = useNavigate();
 
   // ============================================================
+  // WHATSAPP NUMBER
+  // ============================================================
+  const WHATSAPP_NUMBER = '12762427102';
+  const WHATSAPP_MESSAGE = encodeURIComponent('Hi, I need GoHighLevel services');
+  const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`;
+
+  // ============================================================
   // DATA
   // ============================================================
   const services = [
@@ -278,14 +285,70 @@ export function GHLPage() {
           <div className="absolute -top-20 left-1/2 h-96 w-[800px] -translate-x-1/2 rounded-full bg-radial-glow blur-2xl" />
           <div className="container-x relative">
             <div className="max-w-4xl mx-auto text-center">
+
+              {/* ✅ GHL LOGO */}
               <Reveal>
+                <div className="flex justify-center mb-5">
+                  <div className="flex items-center gap-3 rounded-2xl border border-cyber-500/30 bg-cyber-500/10 px-5 py-3 backdrop-blur-sm">
+                    <svg
+                      viewBox="0 0 40 40"
+                      className="h-10 w-10"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <defs>
+                        <linearGradient id="ghlGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#00e676" />
+                          <stop offset="50%" stopColor="#00b0ff" />
+                          <stop offset="100%" stopColor="#0066ff" />
+                        </linearGradient>
+                      </defs>
+                      <circle cx="20" cy="20" r="18" fill="url(#ghlGrad)" opacity="0.15" />
+                      <circle cx="20" cy="20" r="18" fill="none" stroke="url(#ghlGrad)" strokeWidth="1.5" />
+                      <path
+                        d="M20 6 L20 34 M6 20 L34 20"
+                        stroke="url(#ghlGrad)"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        opacity="0.4"
+                      />
+                      <text
+                        x="20"
+                        y="26"
+                        textAnchor="middle"
+                        fontFamily="Inter, sans-serif"
+                        fontSize="16"
+                        fontWeight="800"
+                        fill="url(#ghlGrad)"
+                      >
+                        GHL
+                      </text>
+                    </svg>
+                    <div className="text-left">
+                      <p className="text-lg font-bold tracking-tight text-white leading-none">
+                        GoHighLevel
+                      </p>
+                      <p className="mt-0.5 text-[10px] font-medium uppercase tracking-widest text-cyber-400">
+                        Certified Automation Partner
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+
+              {/* EYEBROW */}
+              <Reveal delay={40}>
                 <span className="eyebrow text-electric-400">GoHighLevel Automation Agency</span>
               </Reveal>
+
+              {/* TITLE */}
               <Reveal delay={80}>
                 <h1 className="mt-5 font-display text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
                   GoHighLevel <span className="gradient-text">Automation Services</span>
                 </h1>
               </Reveal>
+
+              {/* DESCRIPTION */}
               <Reveal delay={160}>
                 <p className="mt-5 text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto">
                   BitSecureX Tech is your GoHighLevel expert. We set up, configure, and manage GHL for
@@ -293,12 +356,19 @@ export function GHLPage() {
                   Automate everything and grow faster with GoHighLevel.
                 </p>
               </Reveal>
+
+              {/* CTA BUTTONS */}
               <Reveal delay={240}>
                 <div className="mt-8 flex flex-wrap justify-center gap-3">
                   <button onClick={() => nav('/contact')} className="btn-primary">
                     Book a Free GHL Consultation <ArrowRight className="h-4 w-4" />
                   </button>
-                  <a href="https://wa.me/2349011407095?text=Hi%2C%20I%20need%20GoHighLevel%20services" target="_blank" rel="noopener noreferrer" className="btn-ghost">
+                  <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-ghost"
+                  >
                     <Phone className="h-4 w-4" /> Chat on WhatsApp
                   </a>
                 </div>
@@ -516,10 +586,18 @@ export function GHLPage() {
                     <button onClick={() => nav('/contact')} className="btn-primary">
                       Book a Free Consultation <ArrowRight className="h-4 w-4" />
                     </button>
-                    <a href="https://wa.me/2349011407095?text=Hi%2C%20I%20need%20GoHighLevel%20services" target="_blank" rel="noopener noreferrer" className="btn-ghost">
+                    <a
+                      href={WHATSAPP_LINK}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-ghost"
+                    >
                       <Phone className="h-4 w-4" /> Chat on WhatsApp
                     </a>
-                    <a href="mailto:contact.bitsecurex@gmail.com?subject=GoHighLevel%20Inquiry" className="btn-ghost">
+                    <a
+                      href="mailto:contact.bitsecurex@gmail.com?subject=GoHighLevel%20Inquiry"
+                      className="btn-ghost"
+                    >
                       <Mail className="h-4 w-4" /> Send Email
                     </a>
                   </div>
