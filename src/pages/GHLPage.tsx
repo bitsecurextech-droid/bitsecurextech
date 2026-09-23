@@ -9,41 +9,26 @@ import {
   Target,
   Users,
   TrendingUp,
-  BarChart3,
   Bot,
   Brain,
   Cpu,
-  Sparkles,
   Rocket,
   Star,
   X,
-  Eye,
   Calendar,
   DollarSign,
-  PieChart,
-  Award,
-  MessageCircle,
-  Crown,
   Code2,
   Globe,
-  Lock,
-  Gauge,
-  Server,
-  Database,
   Layers,
   Phone,
   Mail,
   MessageSquare,
-  Video,
-  Mic,
-  Headphones,
   FileText,
   Send,
   Workflow,
   Filter,
   Layout,
   FormInput,
-  Clock,
   Bell,
   Repeat,
   GitBranch,
@@ -56,40 +41,69 @@ import {
   Briefcase,
   Home,
   Shield,
+  Mic,
 } from 'lucide-react';
 
 // ============================================================
-// REAL GHL LOGO COMPONENT (3 colored arrows)
+// REAL GHL LOGO — 3 Colored Arrows (bar chart style)
+// Used everywhere GHL logo is needed
 // ============================================================
-function GHLLogo({ className = 'h-10 w-auto' }: { className?: string }) {
+function GHLLogo({
+  className = 'h-10 w-auto',
+  showText = true,
+}: {
+  className?: string;
+  showText?: boolean;
+}) {
   return (
-    <svg viewBox="0 0 240 60" className={className} xmlns="http://www.w3.org/2000/svg" aria-label="GoHighLevel">
-      {/* 3 Arrows - Yellow, Blue, Green */}
+    <svg
+      viewBox={showText ? '0 0 240 60' : '0 0 50 60'}
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="GoHighLevel"
+    >
       {/* Yellow arrow (tall, left) */}
-      <rect x="6" y="18" width="8" height="36" fill="#FFC107" />
+      <rect x="6" y="18" width="8" height="36" fill="#FFC107" rx="1" />
       <polygon points="10,8 16,18 4,18" fill="#FFC107" />
 
       {/* Blue arrow (short, middle) */}
-      <rect x="20" y="30" width="8" height="24" fill="#2196F3" />
+      <rect x="20" y="30" width="8" height="24" fill="#2196F3" rx="1" />
       <polygon points="24,22 30,30 18,30" fill="#2196F3" />
 
       {/* Green arrow (tall, right) */}
-      <rect x="34" y="18" width="8" height="36" fill="#4CAF50" />
+      <rect x="34" y="18" width="8" height="36" fill="#4CAF50" rx="1" />
       <polygon points="38,8 44,18 32,18" fill="#4CAF50" />
 
-      {/* "HighLevel" text */}
-      <text
-        x="52"
-        y="42"
-        fontFamily="Inter, -apple-system, sans-serif"
-        fontSize="28"
-        fontWeight="700"
-        fill="#0a0a1a"
-        letterSpacing="-0.5"
-      >
-        High
-        <tspan fontWeight="800">Level</tspan>
-      </text>
+      {showText && (
+        <text
+          x="52"
+          y="42"
+          fontFamily="Inter, -apple-system, sans-serif"
+          fontSize="28"
+          fontWeight="700"
+          fill="#0a0a1a"
+          letterSpacing="-0.5"
+        >
+          High
+          <tspan fontWeight="800">Level</tspan>
+        </text>
+      )}
+    </svg>
+  );
+}
+
+// ============================================================
+// SMALL ICON-ONLY VERSION (for badges, avatars)
+// ============================================================
+function GHLLogoIcon({ className = 'h-8 w-8' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 50 60" className={className} xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="6" y="18" width="8" height="36" fill="#FFC107" rx="1" />
+      <polygon points="10,8 16,18 4,18" fill="#FFC107" />
+      <rect x="20" y="30" width="8" height="24" fill="#2196F3" rx="1" />
+      <polygon points="24,22 30,30 18,30" fill="#2196F3" />
+      <rect x="34" y="18" width="8" height="36" fill="#4CAF50" rx="1" />
+      <polygon points="38,8 44,18 32,18" fill="#4CAF50" />
     </svg>
   );
 }
@@ -102,11 +116,11 @@ export function GHLPage() {
   const [activeTab, setActiveTab] = useState<'capture' | 'nurture' | 'close' | 'evangelize' | 'reactivate'>('capture');
 
   const WHATSAPP_NUMBER = '12762427102';
-  const WHATSAPP_MESSAGE = encodeURIComponent('Hi, I need GoHighLevel services');
+  const WHATSAPP_MESSAGE = encodeURIComponent('Hi, I want a free GoHighLevel consultation');
   const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`;
 
   // ============================================================
-  // TAB DATA — Capture / Nurture / Close / Evangelize / Reactivate
+  // TAB DATA
   // ============================================================
   const tabData = {
     capture: {
@@ -205,93 +219,23 @@ export function GHLPage() {
   };
 
   // ============================================================
-  // DATA (other sections)
+  // DATA
   // ============================================================
   const services = [
-    {
-      icon: Globe,
-      title: 'GHL Website Setup',
-      description: 'Complete GoHighLevel website build with custom design, mobile optimization, and SEO-ready structure.',
-      features: ['Custom design', 'Mobile responsive', 'SEO optimized', 'Fast loading', 'Lead capture built-in'],
-    },
-    {
-      icon: Workflow,
-      title: 'Workflow Setup',
-      description: 'Automated workflows that trigger actions based on customer behavior, saving hours of manual work.',
-      features: ['Trigger-based automation', 'Multi-step sequences', 'Conditional logic', 'Error handling', 'Performance tracking'],
-    },
-    {
-      icon: Filter,
-      title: 'Funnel Setup',
-      description: 'High-converting sales funnels designed to turn visitors into customers, with A/B testing built in.',
-      features: ['Landing pages', 'Upsell/downsell', 'Order forms', 'A/B testing', 'Conversion tracking'],
-    },
-    {
-      icon: Layout,
-      title: 'Landing Page Setup',
-      description: 'Beautiful, conversion-focused landing pages designed to capture leads and drive action.',
-      features: ['Custom templates', 'Mobile optimized', 'Fast loading', 'Form integration', 'Analytics ready'],
-    },
-    {
-      icon: Users2,
-      title: 'CRM Setup',
-      description: 'Complete CRM configuration to manage contacts, track deals, and organize your entire sales pipeline.',
-      features: ['Contact management', 'Deal tracking', 'Custom fields', 'Tag organization', 'Bulk operations'],
-    },
-    {
-      icon: Calendar,
-      title: 'Calendar & Booking Setup',
-      description: 'Integrated booking system with automated confirmations, reminders, and calendar sync.',
-      features: ['Custom availability', 'Auto confirmations', 'SMS/Email reminders', 'Calendar sync', 'Payment collection'],
-    },
-    {
-      icon: Mail,
-      title: 'Email & SMS Automation',
-      description: 'Automated email and SMS campaigns that nurture leads and keep customers engaged.',
-      features: ['Drip campaigns', 'Broadcast messages', 'Trigger-based sends', 'A/B testing', 'Performance analytics'],
-    },
-    {
-      icon: Star,
-      title: 'Review Automation',
-      description: 'Automated review requests that grow your online reputation on autopilot.',
-      features: ['Auto review requests', 'Multi-platform support', 'Reputation monitoring', 'Response automation', 'Analytics dashboard'],
-    },
-    {
-      icon: Bot,
-      title: 'AI Chatbot Setup',
-      description: 'Intelligent chatbots that handle customer inquiries 24/7, qualify leads, and book appointments.',
-      features: ['24/7 availability', 'Lead qualification', 'Appointment booking', 'Multi-channel', 'Analytics'],
-    },
-    {
-      icon: Mic,
-      title: 'Voice AI Setup',
-      description: 'AI-powered voice agents that handle calls, qualify leads, and book appointments automatically.',
-      features: ['Inbound/outbound calls', 'Lead qualification', 'Appointment booking', 'Call recording', 'Transcription'],
-    },
-    {
-      icon: GitBranch,
-      title: 'Pipeline Setup',
-      description: 'Visual sales pipelines that show exactly where every lead is in your sales process.',
-      features: ['Custom stages', 'Drag & drop', 'Automation triggers', 'Reporting', 'Team collaboration'],
-    },
-    {
-      icon: FormInput,
-      title: 'Lead Capture Forms',
-      description: 'High-converting forms that capture leads and feed them directly into your CRM.',
-      features: ['Custom fields', 'Multi-step forms', 'Conditional logic', 'Auto-populate', 'Analytics'],
-    },
-    {
-      icon: Bell,
-      title: 'Appointment Reminder System',
-      description: 'Automated reminders via SMS, email, and voicemail to reduce no-shows.',
-      features: ['Multi-channel reminders', 'Custom timing', 'Confirmation links', 'Reschedule options', 'No-show tracking'],
-    },
-    {
-      icon: Repeat,
-      title: 'Lead Nurturing System',
-      description: 'Long-term nurture campaigns that keep your brand top-of-mind and convert leads over time.',
-      features: ['Drip sequences', 'Behavior triggers', 'Content delivery', 'Engagement tracking', 'Conversion optimization'],
-    },
+    { icon: Globe, title: 'GHL Website Setup', description: 'Complete GoHighLevel website build with custom design, mobile optimization, and SEO-ready structure.', features: ['Custom design', 'Mobile responsive', 'SEO optimized', 'Fast loading', 'Lead capture built-in'] },
+    { icon: Workflow, title: 'Workflow Setup', description: 'Automated workflows that trigger actions based on customer behavior, saving hours of manual work.', features: ['Trigger-based automation', 'Multi-step sequences', 'Conditional logic', 'Error handling', 'Performance tracking'] },
+    { icon: Filter, title: 'Funnel Setup', description: 'High-converting sales funnels designed to turn visitors into customers, with A/B testing built in.', features: ['Landing pages', 'Upsell/downsell', 'Order forms', 'A/B testing', 'Conversion tracking'] },
+    { icon: Layout, title: 'Landing Page Setup', description: 'Beautiful, conversion-focused landing pages designed to capture leads and drive action.', features: ['Custom templates', 'Mobile optimized', 'Fast loading', 'Form integration', 'Analytics ready'] },
+    { icon: Users2, title: 'CRM Setup', description: 'Complete CRM configuration to manage contacts, track deals, and organize your entire sales pipeline.', features: ['Contact management', 'Deal tracking', 'Custom fields', 'Tag organization', 'Bulk operations'] },
+    { icon: Calendar, title: 'Calendar & Booking Setup', description: 'Integrated booking system with automated confirmations, reminders, and calendar sync.', features: ['Custom availability', 'Auto confirmations', 'SMS/Email reminders', 'Calendar sync', 'Payment collection'] },
+    { icon: Mail, title: 'Email & SMS Automation', description: 'Automated email and SMS campaigns that nurture leads and keep customers engaged.', features: ['Drip campaigns', 'Broadcast messages', 'Trigger-based sends', 'A/B testing', 'Performance analytics'] },
+    { icon: Star, title: 'Review Automation', description: 'Automated review requests that grow your online reputation on autopilot.', features: ['Auto review requests', 'Multi-platform support', 'Reputation monitoring', 'Response automation', 'Analytics dashboard'] },
+    { icon: Bot, title: 'AI Chatbot Setup', description: 'Intelligent chatbots that handle customer inquiries 24/7, qualify leads, and book appointments.', features: ['24/7 availability', 'Lead qualification', 'Appointment booking', 'Multi-channel', 'Analytics'] },
+    { icon: Mic, title: 'Voice AI Setup', description: 'AI-powered voice agents that handle calls, qualify leads, and book appointments automatically.', features: ['Inbound/outbound calls', 'Lead qualification', 'Appointment booking', 'Call recording', 'Transcription'] },
+    { icon: GitBranch, title: 'Pipeline Setup', description: 'Visual sales pipelines that show exactly where every lead is in your sales process.', features: ['Custom stages', 'Drag & drop', 'Automation triggers', 'Reporting', 'Team collaboration'] },
+    { icon: FormInput, title: 'Lead Capture Forms', description: 'High-converting forms that capture leads and feed them directly into your CRM.', features: ['Custom fields', 'Multi-step forms', 'Conditional logic', 'Auto-populate', 'Analytics'] },
+    { icon: Bell, title: 'Appointment Reminder System', description: 'Automated reminders via SMS, email, and voicemail to reduce no-shows.', features: ['Multi-channel reminders', 'Custom timing', 'Confirmation links', 'Reschedule options', 'No-show tracking'] },
+    { icon: Repeat, title: 'Lead Nurturing System', description: 'Long-term nurture campaigns that keep your brand top-of-mind and convert leads over time.', features: ['Drip sequences', 'Behavior triggers', 'Content delivery', 'Engagement tracking', 'Conversion optimization'] },
   ];
 
   const stats = [
@@ -348,7 +292,7 @@ export function GHLPage() {
     <>
       <SEO
         title="GoHighLevel Automation Services | GHL Setup & Management | BitSecureX Tech"
-        description="BitSecureX Tech offers expert GoHighLevel (GHL) setup services including workflows, funnels, CRM, calendars, AI chatbots, voice AI, email/SMS automation, and more. Automate your business today."
+        description="BitSecureX Tech offers expert GoHighLevel (GHL) setup services including workflows, funnels, CRM, calendars, AI chatbots, voice AI, email/SMS automation, and more."
         keywords="GoHighLevel, GHL setup, GHL automation, GoHighLevel agency, GHL funnel, GHL CRM, GHL workflow, AI chatbot, voice AI, marketing automation"
         url="https://bitsecurextech.com/gohighlevel"
         type="website"
@@ -366,7 +310,7 @@ export function GHLPage() {
               <Reveal>
                 <div className="flex justify-center mb-6">
                   <div className="rounded-2xl bg-white px-6 py-4 shadow-lg ring-1 ring-cyber-500/20">
-                    <GHLLogo className="h-10 w-auto" />
+                    <GHLLogo className="h-12 w-auto" />
                   </div>
                 </div>
               </Reveal>
@@ -388,8 +332,12 @@ export function GHLPage() {
               </Reveal>
               <Reveal delay={240}>
                 <div className="mt-8 flex flex-wrap justify-center gap-3">
-                  <button onClick={() => nav('/contact')} className="btn-primary">
-                    Book a Free GHL Consultation <ArrowRight className="h-4 w-4" />
+                  <button
+                    onClick={() => nav('/contact')}
+                    className="inline-flex items-center gap-2 rounded-lg bg-yellow-400 px-6 py-3 text-sm font-bold text-navy-950 shadow-lg shadow-yellow-400/30 transition-all hover:bg-yellow-300 hover:scale-105"
+                  >
+                    <GHLLogoIcon className="h-5 w-5" />
+                    Get Free GHL Consultation <ArrowRight className="h-4 w-4" />
                   </button>
                   <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="btn-ghost">
                     <Phone className="h-4 w-4" /> Chat on WhatsApp
@@ -401,7 +349,7 @@ export function GHLPage() {
         </section>
 
         {/* ============================================================
-            NEW SECTION: All-in-one solution with TABS
+            ALL-IN-ONE SECTION with TABS
             ============================================================ */}
         <section className="section-pad py-12 bg-navy-800/50">
           <div className="container-x">
@@ -444,8 +392,8 @@ export function GHLPage() {
                 <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
                   {/* Left: Text + Features */}
                   <div>
-                    <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-yellow-400">
-                      <Target className="h-7 w-7 text-navy-950" />
+                    <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-lg">
+                      <GHLLogoIcon className="h-8 w-8" />
                     </div>
                     <h3 className="mt-5 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
                       {currentTab.title}
@@ -463,40 +411,44 @@ export function GHLPage() {
                       ))}
                     </ul>
 
+                    {/* ✅ ATTRACTIVE BUTTON */}
                     <button
                       onClick={() => nav('/contact')}
-                      className="mt-8 inline-flex items-center gap-2 rounded-lg bg-navy-950 px-6 py-3 text-sm font-bold text-white ring-1 ring-white/10 transition-all hover:bg-navy-900 hover:ring-cyber-500/50"
+                      className="mt-8 inline-flex items-center gap-2 rounded-lg bg-yellow-400 px-6 py-3 text-sm font-bold text-navy-950 shadow-lg shadow-yellow-400/30 transition-all hover:bg-yellow-300 hover:scale-105"
                     >
-                      Start 14 Day Free Trial <ArrowRight className="h-4 w-4" />
+                      <GHLLogoIcon className="h-5 w-5" />
+                      Get Free GHL Consultation <ArrowRight className="h-4 w-4" />
                     </button>
                   </div>
 
-                  {/* Right: Visual mockup */}
+                  {/* Right: Chat mockup with GHL logo */}
                   <div className="relative">
                     <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-cyber-500/10 to-electric-500/10 p-6">
-                      {/* Mock chat conversation */}
                       <div className="space-y-4">
+                        {/* GHL message 1 */}
                         <div className="flex items-start gap-3">
-                          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-yellow-400 to-yellow-500 text-xs font-bold text-navy-950">
-                            GHL
+                          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white shadow-lg">
+                            <GHLLogoIcon className="h-6 w-6" />
                           </div>
                           <div className="rounded-2xl rounded-tl-sm bg-blue-600 px-4 py-3 text-sm text-white max-w-[80%]">
                             Sorry we missed your call! Want to book an appointment?
                           </div>
                         </div>
 
+                        {/* Customer reply */}
                         <div className="flex items-start justify-end gap-3">
                           <div className="rounded-2xl rounded-tr-sm bg-white px-4 py-3 text-sm text-navy-950 max-w-[80%] shadow-lg">
                             Yes, is 2 PM next Tuesday free?
                           </div>
-                          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-electric-500 to-cyber-500 text-xs font-bold text-white">
+                          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-electric-500 to-cyber-500 text-lg font-bold text-white">
                             👤
                           </div>
                         </div>
 
+                        {/* GHL message 2 */}
                         <div className="flex items-start gap-3">
-                          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-yellow-400 to-yellow-500 text-xs font-bold text-navy-950">
-                            GHL
+                          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white shadow-lg">
+                            <GHLLogoIcon className="h-6 w-6" />
                           </div>
                           <div className="rounded-2xl rounded-tl-sm bg-blue-600 px-4 py-3 text-sm text-white max-w-[80%]">
                             Yes! You're all set for 2 PM next Tuesday. Thank you!
@@ -505,11 +457,11 @@ export function GHLPage() {
                       </div>
                     </div>
 
-                    {/* Floating badge */}
+                    {/* Floating badge with GHL logo */}
                     <div className="absolute -bottom-4 -right-4 rounded-xl bg-white px-4 py-3 shadow-2xl ring-1 ring-cyber-500/20">
                       <div className="flex items-center gap-2">
-                        <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-yellow-400 to-yellow-500">
-                          <Zap className="h-4 w-4 text-navy-950" />
+                        <div className="grid h-8 w-8 place-items-center rounded-lg bg-white ring-1 ring-cyber-500/20">
+                          <GHLLogoIcon className="h-5 w-5" />
                         </div>
                         <div>
                           <p className="text-[10px] uppercase tracking-widest text-slate-400">Response Time</p>
@@ -550,11 +502,6 @@ export function GHLPage() {
                   One Platform <span className="gradient-text">Replaces Them All</span>
                 </h2>
               </Reveal>
-              <Reveal delay={160}>
-                <p className="mt-3 text-slate-400 max-w-2xl mx-auto">
-                  Stop paying for 10+ separate tools. GoHighLevel brings everything into one powerful platform.
-                </p>
-              </Reveal>
             </div>
             <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {benefits.map((benefit, i) => (
@@ -579,11 +526,6 @@ export function GHLPage() {
                 <h2 className="mt-4 font-display text-3xl font-bold text-white">
                   Complete <span className="gradient-text">GoHighLevel Setup</span>
                 </h2>
-              </Reveal>
-              <Reveal delay={160}>
-                <p className="mt-3 text-slate-400 max-w-2xl mx-auto">
-                  We handle every aspect of GoHighLevel setup for your business.
-                </p>
               </Reveal>
             </div>
             <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -697,7 +639,14 @@ export function GHLPage() {
                 <div className="absolute inset-0 bg-grid bg-grid opacity-20" />
                 <div className="absolute -top-20 left-1/2 h-60 w-[600px] -translate-x-1/2 rounded-full bg-radial-glow blur-2xl" />
                 <div className="relative">
-                  <Rocket className="mx-auto h-10 w-10 text-electric-500" />
+
+                  {/* ✅ GHL LOGO IN CTA */}
+                  <div className="flex justify-center mb-5">
+                    <div className="rounded-2xl bg-white px-5 py-3 shadow-lg">
+                      <GHLLogo className="h-10 w-auto" />
+                    </div>
+                  </div>
+
                   <h2 className="mt-5 font-display text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
                     Ready to <span className="gradient-text">Automate with GHL?</span>
                   </h2>
@@ -706,8 +655,12 @@ export function GHLPage() {
                     automate your business, save time, and grow faster with GoHighLevel.
                   </p>
                   <div className="mt-8 flex flex-wrap justify-center gap-3">
-                    <button onClick={() => nav('/contact')} className="btn-primary">
-                      Book a Free Consultation <ArrowRight className="h-4 w-4" />
+                    <button
+                      onClick={() => nav('/contact')}
+                      className="inline-flex items-center gap-2 rounded-lg bg-yellow-400 px-6 py-3 text-sm font-bold text-navy-950 shadow-lg shadow-yellow-400/30 transition-all hover:bg-yellow-300 hover:scale-105"
+                    >
+                      <GHLLogoIcon className="h-5 w-5" />
+                      Get Free GHL Consultation <ArrowRight className="h-4 w-4" />
                     </button>
                     <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="btn-ghost">
                       <Phone className="h-4 w-4" /> Chat on WhatsApp
