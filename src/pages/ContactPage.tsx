@@ -13,7 +13,7 @@ const fiverrSpecialists = [
   { name: 'NG Team', role: 'Fiverr Nigeria Team', tagline: 'Web development, e-commerce, and maintenance, trusted by 100+ clients across Africa and beyond.', profileUrl: 'https://www.fiverr.com/s/1qm3v00', gigUrl: 'https://www.fiverr.com/s/1qm3v00', avatar: 'NG' },
 ];
 
-const services = ['Web Development','Software Development','AI & Automation','Mobile Apps','Cloud Solutions','Cybersecurity','Penetration Testing','Trading Bot AI','SEO & Marketing','Partnership','Career','Other'];
+const services = ['Web Development','Software Development','AI & Automation','GoHighLevel (GHL)','Mobile Apps','Cloud Solutions','Cybersecurity','Penetration Testing','Trading Bot AI','SEO & Marketing','Partnership','Career','Other'];
 
 const slots = ['Mon 10:00','Mon 14:00','Tue 09:00','Tue 15:00','Wed 11:00','Wed 16:00','Thu 10:00','Thu 13:00','Fri 09:00','Fri 14:00'];
 
