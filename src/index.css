@@ -196,23 +196,56 @@ html.dark .nav-link-active { color: #ffffff; }
 }
 
 /* ============================================================
-   FIX: CONTRAST - WCAG AA compliant on light backgrounds
+   FIX: CONTRAST - Works on both light & dark backgrounds
    ============================================================ */
-.dark .text-slate-400 {
-  color: #94a3b8;
-}
-.dark .text-slate-500 {
-  color: #64748b;
+
+/* Default: light gray (visible on dark backgrounds) */
+.text-slate-400 { color: #94a3b8; }
+.text-slate-500 { color: #64748b; }
+
+/* Darker on light/white backgrounds */
+html.light .section-white .text-slate-400,
+html.light .section-light .text-slate-400,
+html.light .card-white .text-slate-400,
+html.light .on-white .text-slate-400 {
+  color: #475569;
 }
 
-html.light .text-slate-400 {
-  color: #475569; /* slate-600 — passes WCAG AA on white */
+html.light .section-white .text-slate-500,
+html.light .section-light .text-slate-500,
+html.light .card-white .text-slate-500,
+html.light .on-white .text-slate-500 {
+  color: #334155;
 }
-html.light .text-slate-500 {
-  color: #334155; /* slate-700 — passes WCAG AA on white */
+
+/* Dark sections ALWAYS use light grays (even in light mode) */
+.section-dark .text-slate-400,
+.section-dark-alt .text-slate-400,
+.section-navy .text-slate-400,
+footer .text-slate-400,
+.glass .text-slate-400,
+.glass-strong .text-slate-400 {
+  color: #94a3b8 !important;
 }
-html.light .text-slate-600 {
-  color: #1e293b; /* slate-800 — passes WCAG AAA on white */
+
+.section-dark .text-slate-500,
+.section-dark-alt .text-slate-500,
+.section-navy .text-slate-500,
+footer .text-slate-500,
+.glass .text-slate-500,
+.glass-strong .text-slate-500 {
+  color: #cbd5e1 !important;
+}
+
+/* Footer: always readable */
+footer p,
+footer span,
+footer a:not(.btn-primary):not(.btn-ghost) {
+  color: #cbd5e1;
+}
+
+footer a:hover {
+  color: #00e676;
 }
 
 /* ============================================================
