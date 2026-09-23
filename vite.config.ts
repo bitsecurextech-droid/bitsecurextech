@@ -10,16 +10,16 @@ export default defineConfig({
           'vendor': ['react', 'react-dom'],
           'supabase': ['@supabase/supabase-js'],
           'ui': ['lucide-react'],
-          // ✅ Split tiptap into separate chunk (only loads on admin pages)
           'tiptap': ['@tiptap/react', '@tiptap/starter-kit'],
         },
       },
     },
     chunkSizeWarningLimit: 1000,
     minify: 'esbuild',
-    sourcemap: false,
+    sourcemap: true,          // ✅ CHANGED: was false — enables source maps for debugging
     cssCodeSplit: true,
     target: 'es2020',
+    reportCompressedSize: false, // ✅ ADDED: speeds up builds
   },
   optimizeDeps: {
     include: ['react', 'react-dom', '@supabase/supabase-js', 'lucide-react'],
