@@ -41,8 +41,8 @@ export function Hero() {
     <section className="relative overflow-hidden pt-32 pb-12 lg:pt-40 lg:pb-16">
       <div className="container-x px-5 sm:px-8 lg:px-12">
         <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-          {/* Left: Text */}
-          <div className="animate-fade-up">
+          {/* Left: Text — NO animation, renders instantly for LCP */}
+          <div>
             <span className="eyebrow">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-electric-500" />
               Global Technology Partner
@@ -96,7 +96,7 @@ const phoneScreenshot = '/bitsecurex_uiux.webp';
 
 function HeroVisual() {
   return (
-    <div className="relative h-[500px] animate-fade-up" style={{ animationDelay: '200ms' }}>
+    <div className="relative h-[500px]">
       <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-cyber-500/15 to-electric-500/15 blur-2xl" />
 
       {/* Laptop */}
@@ -108,11 +108,10 @@ function HeroVisual() {
             <span className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
           </div>
           <div className="overflow-hidden rounded-lg bg-navy-950">
-            {/* Browser chrome */}
             <div className="relative flex items-center gap-2 border-b border-white/10 bg-navy-950 px-3 py-2">
               <div className="flex items-center gap-1.5">
                 <span className="grid h-5 w-5 place-items-center rounded bg-black">
-                  <img src="/icon.webp" alt="" className="h-3.5 w-3.5 rounded-sm object-cover" loading="eager" fetchpriority="high" />
+                  <img src="/icon.webp" alt="" className="h-3.5 w-3.5 rounded-sm object-cover" loading="eager" fetchpriority="high" width="14" height="14" />
                 </span>
                 <span className="font-display text-[11px] font-bold text-white">bitsecurex.tech</span>
               </div>
@@ -120,7 +119,6 @@ function HeroVisual() {
                 <span className="text-cyber-400">Home</span><span>Services</span><span>About</span><span>Pricing</span><span>Contact</span>
               </div>
             </div>
-            {/* Website screenshot preview */}
             <div className="relative h-52 overflow-hidden bg-navy-900">
               <img
                 src={heroScreenshot}
@@ -133,7 +131,6 @@ function HeroVisual() {
                 height="400"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 via-transparent to-transparent" />
-              {/* Floating UI overlay elements */}
               <div className="absolute left-3 top-3 flex items-center gap-1.5">
                 <span className="rounded bg-cyber-500/90 px-2 py-0.5 text-[8px] font-bold text-white">LIVE</span>
                 <span className="rounded bg-black/60 px-2 py-0.5 text-[8px] text-slate-300 backdrop-blur">React · Supabase</span>
@@ -148,17 +145,15 @@ function HeroVisual() {
         <div className="mx-auto h-2.5 w-[460px] rounded-b-xl border border-t-0 border-white/10 bg-navy-800" />
       </div>
 
-      {/* Phone - mobile website preview */}
+      {/* Phone */}
       <div className="absolute -bottom-2 left-0 w-32 animate-float" style={{ animationDelay: '1.5s' }}>
         <div className="rounded-[1.6rem] border border-white/15 bg-navy-800 p-1.5 shadow-xl shadow-electric-500/20">
           <div className="rounded-[1.2rem] bg-black p-1.5">
             <div className="mx-auto mb-1.5 h-1 w-7 rounded-full bg-white/20" />
-            {/* Phone screen - mobile website screenshot */}
             <div className="relative overflow-hidden rounded-lg bg-navy-900">
-              {/* Mobile browser bar */}
               <div className="flex items-center gap-1 border-b border-white/10 bg-navy-950 px-1.5 py-1">
                 <span className="grid h-3 w-3 place-items-center rounded bg-black">
-                  <img src="/icon.webp" alt="" className="h-2 w-2 rounded-sm object-cover" loading="lazy" />
+                  <img src="/icon.webp" alt="" className="h-2 w-2 rounded-sm object-cover" loading="lazy" width="8" height="8" />
                 </span>
                 <span className="text-[5px] font-bold text-white">bitsecurex.tech</span>
               </div>
@@ -204,9 +199,17 @@ function TerminalBox() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const startDelay = 2500;
     const timers: number[] = [];
-    terminalBoot.forEach((l) => { timers.push(window.setTimeout(() => setLines((p) => [...p, { text: l.text }]), l.delay)); });
-    timers.push(window.setTimeout(() => setBootDone(true), 3600));
+
+    const start = window.setTimeout(() => {
+      terminalBoot.forEach((l) => {
+        timers.push(window.setTimeout(() => setLines((p) => [...p, { text: l.text }]), l.delay));
+      });
+      timers.push(window.setTimeout(() => setBootDone(true), 3600));
+    }, startDelay);
+
+    timers.push(start);
     return () => timers.forEach(clearTimeout);
   }, []);
 
