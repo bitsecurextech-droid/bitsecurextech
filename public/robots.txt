@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Block private areas from search engines
+Disallow: /admin
+Disallow: /portal
+Disallow: /maintenance
+
+Sitemap: https://bitsecurextech.com/sitemap.xml
