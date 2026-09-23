@@ -3,10 +3,11 @@ import { useRoute, useNavigate } from '../lib/router';
 import { useTheme } from '../lib/useReveal';
 import { useAuth } from '../lib/auth';
 import {
+  import {
   Menu, X, Sun, Moon, ChevronDown, LogIn, Calculator,
   Home, Code2, Globe, Layers, Bot, Cloud, Smartphone, Megaphone,
   Search, Share2, FileText, Shield, Target, ShoppingBag,
-  Store, Tags,
+  Store, Tags, Rocket,
   Users, UserCheck, Briefcase, Handshake, Lightbulb, Newspaper,
   Wrench, ShieldAlert, Gauge, Tag, Mail, type LucideIcon,
 } from 'lucide-react';
@@ -30,12 +31,13 @@ interface DropdownLink extends NavLink {
 const navLinks: DropdownLink[] = [
   { label: 'Home', path: '/', icon: Home },
   { label: 'Technology', path: '/web-development', icon: Code2, sub: [
-    { label: 'Web Development', path: '/web-development', icon: Globe },
-    { label: 'Software Solutions', path: '/software-solutions', icon: Layers },
-    { label: 'AI & Automation', path: '/ai-automation', icon: Bot },
-    { label: 'Cloud Solutions', path: '/cloud-solutions', icon: Cloud },
-    { label: 'Mobile App Dev', path: '/mobile-app-development', icon: Smartphone },
-  ]},
+  { label: 'Web Development', path: '/web-development', icon: Globe },
+  { label: 'Software Solutions', path: '/software-solutions', icon: Layers },
+  { label: 'AI & Automation', path: '/ai-automation', icon: Bot },
+  { label: 'GoHighLevel (GHL)', path: '/gohighlevel', icon: Rocket },
+  { label: 'Cloud Solutions', path: '/cloud-solutions', icon: Cloud },
+  { label: 'Mobile App Dev', path: '/mobile-app-development', icon: Smartphone },
+]},
   { label: 'Marketing', path: '/digital-marketing', icon: Megaphone, sub: [
     { label: 'Digital Marketing', path: '/digital-marketing', icon: Megaphone },
     { label: 'SEO & Organic Traffic', path: '/seo', icon: Search },
