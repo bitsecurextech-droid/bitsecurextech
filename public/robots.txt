@@ -1,9 +1,13 @@
+# BitSecureX Tech — robots.txt
+# https://bitsecurextech.com
+
 User-agent: *
 Allow: /
 
-# Block private areas from search engines
+# Block private / internal areas
 Disallow: /admin
 Disallow: /portal
 Disallow: /maintenance
 
+# Sitemap location
 Sitemap: https://bitsecurextech.com/sitemap.xml
