@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Clock, ArrowRight, Newspaper, X, Plus, Pencil, Trash2, Loader2, CheckCircle2, Eye, EyeOff, Calendar, Image as ImageIcon } from 'lucide-react';
+import {
+  Clock, ArrowRight, Newspaper, X, Plus, Pencil, Trash2, Loader2,
+  Eye, EyeOff, Image as ImageIcon,
+} from 'lucide-react';
 import { Reveal } from '../components/Reveal';
 import { blogPosts, blogCategories } from '../lib/data';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/auth';
+import { Link, useNavigate } from '../lib/router';
 import { MediaPickerModal } from '../components/admin/MediaPickerModal';
 
 type DBPost = {
@@ -33,12 +37,16 @@ type Post = {
   isAdmin?: boolean;
 };
 
+const slugify = (s: string) =>
+  s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
 export function BlogPage() {
   const { session } = useAuth();
+  const navigate = useNavigate();
+
   const [cat, setCat] = useState('All');
   const [dbPosts, setDbPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activePost, setActivePost] = useState<Post | null>(null);
   const [showEditor, setShowEditor] = useState(false);
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -101,7 +109,7 @@ export function BlogPage() {
       image_url: formData.image_url || null,
       status: formData.status,
       published_at: formData.status === 'Published' ? new Date().toISOString() : null,
-      slug: formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      slug: slugify(formData.title),
     };
 
     let result;
@@ -178,13 +186,13 @@ export function BlogPage() {
   };
 
   const allPosts = [...dbPosts, ...blogPosts];
-  
+
   const uniqueCategories = Array.from(new Set(blogCategories));
   const dbCategories = Array.from(new Set(dbPosts.map((p) => p.category)));
   const allCats = ['All', ...uniqueCategories, ...dbCategories].filter(
     (value, index, self) => self.indexOf(value) === index
   );
-  
+
   const filtered = cat === 'All' ? allPosts : allPosts.filter((p) => p.category === cat);
   const featured = allPosts[0];
 
@@ -219,7 +227,9 @@ export function BlogPage() {
                   <Plus className="h-4 w-4" /> Write New Post
                 </button>
               </div>
-              <span className="text-xs text-slate-500">{dbPosts.filter(p => p.status === 'Published').length} published · {dbPosts.filter(p => p.status === 'Draft').length} drafts</span>
+              <span className="text-xs text-slate-500">
+                {dbPosts.filter(p => p.status === 'Published').length} published · {dbPosts.filter(p => p.status === 'Draft').length} drafts
+              </span>
             </div>
           </div>
         </section>
@@ -229,8 +239,8 @@ export function BlogPage() {
         <section className="section-pad py-6">
           <div className="container-x">
             <Reveal>
-              <button
-                onClick={() => setActivePost(featured)}
+              <Link
+                to={`/blog/${featured.slug}`}
                 className="group grid w-full overflow-hidden rounded-3xl glass card-hover text-left lg:grid-cols-2"
               >
                 <div className="relative h-56 overflow-hidden lg:h-full">
@@ -241,13 +251,10 @@ export function BlogPage() {
                 <div className="p-8 lg:p-10">
                   <span className="text-xs font-medium uppercase tracking-wider text-cyber-400">{featured.category}</span>
                   <h2 className="mt-3 font-display text-2xl font-bold text-white sm:text-3xl">{featured.title}</h2>
-                  
-                  {/* ✅ RENDER EXCERPT WITH HTML */}
-                  <div 
+                  <div
                     className="mt-3 text-slate-400 prose prose-invert max-w-none"
                     dangerouslySetInnerHTML={{ __html: featured.excerpt || '' }}
                   />
-                  
                   <div className="mt-5 flex items-center gap-4 text-sm text-slate-500">
                     <span>{featured.date}</span>
                     <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {featured.readTime}</span>
@@ -256,7 +263,7 @@ export function BlogPage() {
                     Read article <ArrowRight className="h-4 w-4" />
                   </span>
                 </div>
-              </button>
+              </Link>
             </Reveal>
           </div>
         </section>
@@ -321,8 +328,8 @@ export function BlogPage() {
                       </span>
                     )}
 
-                    <button
-                      onClick={() => p.content ? setActivePost(p) : null}
+                    <Link
+                      to={`/blog/${p.slug}`}
                       className="flex h-full w-full flex-col text-left"
                     >
                       <div className="relative h-44 overflow-hidden">
@@ -333,19 +340,16 @@ export function BlogPage() {
                       </div>
                       <div className="flex flex-1 flex-col p-6">
                         <h3 className="font-display text-lg font-semibold text-white">{p.title}</h3>
-                        
-                        {/* ✅ RENDER EXCERPT WITH HTML */}
-                        <div 
+                        <div
                           className="mt-2 flex-1 text-sm text-slate-400 prose prose-invert max-w-none line-clamp-3"
                           dangerouslySetInnerHTML={{ __html: p.excerpt || '' }}
                         />
-                        
                         <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
                           <span>{p.date}</span>
                           <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {p.readTime}</span>
                         </div>
                       </div>
-                    </button>
+                    </Link>
                   </div>
                 </Reveal>
               ))}
@@ -361,70 +365,32 @@ export function BlogPage() {
         </div>
       </section>
 
-      {/* ============================================================
-      BLOG POST MODAL (Reader) - ✅ RENDERS HTML
-      ============================================================ */}
-      {activePost && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-navy-950/80 p-4 backdrop-blur-sm sm:p-8" onClick={() => setActivePost(null)}>
-          <div className="relative my-8 w-full max-w-3xl rounded-2xl glass p-8 sm:p-10" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setActivePost(null)} className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-slate-400 transition hover:text-white">
-              <X className="h-4 w-4" />
-            </button>
-            <span className="text-xs font-medium uppercase tracking-wider text-cyber-400">{activePost.category}</span>
-            <h2 className="mt-3 font-display text-2xl font-bold text-white">{activePost.title}</h2>
-            <div className="mt-3 flex items-center gap-4 text-sm text-slate-500">
-              <span>{activePost.date}</span>
-              <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {activePost.readTime}</span>
-            </div>
-            {activePost.image && <img src={activePost.image} alt={activePost.title} className="mt-6 h-56 w-full rounded-xl object-cover" />}
-            
-            {/* ✅ RENDER FULL CONTENT WITH HTML */}
-            {activePost.content ? (
-              <div 
-                className="mt-6 prose prose-invert max-w-none text-slate-300"
-                dangerouslySetInnerHTML={{ __html: activePost.content }}
-              />
-            ) : (
-              <div 
-                className="mt-6 text-sm text-slate-400 prose prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: activePost.excerpt || '' }}
-              />
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* ============================================================
-      PREVIEW MODAL - ✅ RENDERS HTML
-      ============================================================ */}
+      {/* PREVIEW MODAL */}
       {previewContent && (
-        <div 
+        <div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm overflow-y-auto"
           onClick={() => setPreviewContent(null)}
         >
-          <div 
+          <div
             className="w-full max-w-3xl rounded-2xl bg-white p-8 text-gray-900 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-display text-xl font-bold text-gray-900">🔍 Preview</h2>
-              <button 
-                onClick={() => setPreviewContent(null)} 
+              <button
+                onClick={() => setPreviewContent(null)}
                 className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-900"
               >
                 <X className="h-6 w-6" />
               </button>
             </div>
-            
-            {/* ✅ RENDER HTML PREVIEW */}
-            <div 
+            <div
               className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: previewContent }} 
+              dangerouslySetInnerHTML={{ __html: previewContent }}
             />
-            
             <div className="mt-6 flex justify-end">
-              <button 
-                onClick={() => setPreviewContent(null)} 
+              <button
+                onClick={() => setPreviewContent(null)}
                 className="btn-primary"
               >
                 Close Preview
@@ -434,9 +400,7 @@ export function BlogPage() {
         </div>
       )}
 
-      {/* ============================================================
-      WRITE / EDIT POST MODAL - ✅ WITH LIVE PREVIEW
-      ============================================================ */}
+      {/* WRITE / EDIT POST MODAL */}
       {showEditor && isAdmin && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
@@ -460,9 +424,7 @@ export function BlogPage() {
 
             <form onSubmit={handleSubmit} className="mt-4 space-y-4">
               <div>
-                <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
-                  Title *
-                </label>
+                <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">Title *</label>
                 <input
                   type="text"
                   required
@@ -474,9 +436,7 @@ export function BlogPage() {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
-                  Category
-                </label>
+                <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">Category</label>
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
@@ -489,9 +449,7 @@ export function BlogPage() {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
-                  Excerpt / Summary
-                </label>
+                <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">Excerpt / Summary</label>
                 <textarea
                   value={formData.excerpt}
                   onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
@@ -501,25 +459,20 @@ export function BlogPage() {
                 />
               </div>
 
-              {/* ✅ CONTENT WITH LIVE PREVIEW */}
               <div>
-                <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
-                  Content *
-                </label>
+                <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">Content *</label>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <textarea
                     required
                     value={formData.content}
                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                     className="input-field resize-none min-h-[300px] font-mono text-sm"
-                    placeholder="Write your blog post content here... (Use HTML tags like &lt;p&gt;, &lt;h2&gt;, &lt;strong&gt;, etc.)"
+                    placeholder="Write your blog post content here... (HTML allowed)"
                   />
-                  
-                  {/* ✅ LIVE PREVIEW (Renders HTML) */}
                   <div className="rounded-lg border border-white/10 bg-white/5 p-4 overflow-y-auto min-h-[300px] max-h-[500px]">
                     <p className="text-xs text-slate-400 mb-2">🔍 Live Preview</p>
                     {formData.content ? (
-                      <div 
+                      <div
                         className="prose prose-invert max-w-none text-white"
                         dangerouslySetInnerHTML={{ __html: formData.content }}
                       />
@@ -531,9 +484,7 @@ export function BlogPage() {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
-                  Image URL
-                </label>
+                <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">Image URL</label>
                 <div className="flex gap-2">
                   <input
                     type="url"
@@ -561,9 +512,7 @@ export function BlogPage() {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
-                  Status
-                </label>
+                <label className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400">Status</label>
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
@@ -582,7 +531,6 @@ export function BlogPage() {
                 >
                   <Eye className="h-4 w-4" /> Preview
                 </button>
-                
                 <button
                   type="button"
                   onClick={() => setShowEditor(false)}
@@ -590,7 +538,6 @@ export function BlogPage() {
                 >
                   Cancel
                 </button>
-                
                 <button
                   type="submit"
                   disabled={isSubmitting}
@@ -616,4 +563,5 @@ export function BlogPage() {
     </div>
   );
 }
+
 export default BlogPage;
