@@ -1,200 +1,164 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-  ReactNode,
-  MouseEvent as ReactMouseEvent,
-} from 'react';
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from '../lib/router';
+import { supabase } from '../lib/supabase';
+import { Clock, ArrowLeft } from 'lucide-react';
 
-export type Route = {
-  path: string;
-  params: Record<string, string>; // query params
+type Post = {
+  id: string;
+  title: string;
+  slug: string;
+  category: string;
+  excerpt: string | null;
+  content: string | null;
+  image_url: string | null;
+  status: string;
+  published_at: string | null;
+  created_at: string;
 };
 
-interface RouterContextType {
-  route: Route;
-  navigate: (path: string, options?: { replace?: boolean }) => void;
-}
-
-const RouterContext = createContext<RouterContextType | undefined>(undefined);
-
-// ------------------------------------------------------------
-// PATH PARSING
-// ------------------------------------------------------------
-function parsePath(): Route {
-  // Always use pathname now — no more hash-based routing.
-  const path = window.location.pathname || '/';
-  const params: Record<string, string> = {};
-
-  const search = window.location.search.replace(/^\?/, '');
-  if (search) {
-    new URLSearchParams(search).forEach((value, key) => {
-      params[key] = value;
-    });
-  }
-
-  return { path: path || '/', params };
-}
-
-// ------------------------------------------------------------
-// ROUTE MATCHING HELPERS (for :slug style routes)
-// ------------------------------------------------------------
-export function matchRoute(
-  pattern: string,
-  actualPath: string
-): Record<string, string> | null {
-  const patternParts = pattern.split('/').filter(Boolean);
-  const pathParts = actualPath.split('/').filter(Boolean);
-
-  if (patternParts.length !== pathParts.length) return null;
-
-  const result: Record<string, string> = {};
-
-  for (let i = 0; i < patternParts.length; i++) {
-    const p = patternParts[i];
-    const a = pathParts[i];
-
-    if (p.startsWith(':')) {
-      result[p.slice(1)] = decodeURIComponent(a);
-    } else if (p !== a) {
-      return null;
-    }
-  }
-
-  return result;
-}
-
-// ------------------------------------------------------------
-// PROVIDER
-// ------------------------------------------------------------
-export function RouterProvider({ children }: { children: ReactNode }) {
-  const [route, setRoute] = useState<Route>(() => parsePath());
+export function BlogPostPage() {
+  const { slug } = useParams('/blog/:slug');
+  const navigate = useNavigate();
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    const onPop = () => setRoute(parsePath());
+    if (!slug) {
+      setNotFound(true);
+      setLoading(false);
+      return;
+    }
 
-    window.addEventListener('popstate', onPop);
-    return () => window.removeEventListener('popstate', onPop);
-  }, []);
+    let cancelled = false;
+    setLoading(true);
+    setNotFound(false);
 
-  const navigate = useCallback(
-    (path: string, options?: { replace?: boolean }) => {
-      if (!path) path = '/';
+    (async () => {
+      const { data, error } = await supabase
+        .from('admin_blog_posts')
+        .select('*')
+        .eq('slug', slug)
+        .eq('status', 'Published')
+        .maybeSingle();
 
-      // Preserve full URLs / external links as real navigations.
-      if (/^(https?:)?\/\//i.test(path) || path.startsWith('mailto:') || path.startsWith('tel:')) {
-        window.location.href = path;
-        return;
-      }
+      if (cancelled) return;
 
-      // Normalize: ensure leading slash.
-      const target = path.startsWith('/') ? path : `/${path}`;
-
-      const current = window.location.pathname + window.location.search;
-      if (current === target) {
-        // Still update state in case search changed.
-        setRoute(parsePath());
-        return;
-      }
-
-      if (options?.replace) {
-        window.history.replaceState({}, '', target);
+      if (error || !data) {
+        console.error('Blog post fetch error:', error);
+        setNotFound(true);
       } else {
-        window.history.pushState({}, '', target);
+        setPost(data as Post);
       }
+      setLoading(false);
+    })();
 
-      setRoute(parsePath());
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
 
-      // Handle hash anchors within same page (e.g., /#pricing).
-      const hashIndex = target.indexOf('#');
-      if (hashIndex !== -1) {
-        const id = target.slice(hashIndex + 1);
-        requestAnimationFrame(() => {
-          const el = document.getElementById(id);
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-      } else {
-        window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
-      }
-    },
-    []
-  );
+  useEffect(() => {
+    if (post) {
+      document.title = `${post.title} — BitSecureX Tech`;
+      const meta = document.querySelector('meta[name="description"]');
+      const desc = post.excerpt?.replace(/<[^>]*>/g, '').slice(0, 160) || '';
+      if (meta) meta.setAttribute('content', desc);
+    }
+    return () => {
+      document.title = 'BitSecureX Tech – We Build. We Automate. We Secure.';
+    };
+  }, [post]);
+
+  if (loading) {
+    return (
+      <div className="pt-40 flex justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-cyber-500 border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (notFound || !post) {
+    return (
+      <div className="pt-40 pb-20 text-center">
+        <h1 className="font-display text-3xl font-bold text-white">Post not found</h1>
+        <p className="mt-3 text-slate-400">
+          The article you're looking for doesn't exist or hasn't been published.
+        </p>
+        <button
+          onClick={() => navigate('/blog')}
+          className="mt-6 inline-flex items-center gap-2 text-cyber-400 hover:text-cyber-300"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to blog
+        </button>
+      </div>
+    );
+  }
+
+  const date = post.published_at
+    ? new Date(post.published_at).toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : new Date(post.created_at).toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      });
+
+  const readTime = `${Math.max(
+    1,
+    Math.ceil((post.content || post.excerpt || '').length / 1000)
+  )} min`;
 
   return (
-    <RouterContext.Provider value={{ route, navigate }}>
-      {children}
-    </RouterContext.Provider>
+    <article className="pt-28 pb-20">
+      <div className="container-x max-w-3xl">
+        <button
+          onClick={() => navigate('/blog')}
+          className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to blog
+        </button>
+
+        <span className="mt-6 block text-xs font-medium uppercase tracking-wider text-cyber-400">
+          {post.category}
+        </span>
+        <h1 className="mt-3 font-display text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
+          {post.title}
+        </h1>
+        <div className="mt-4 flex items-center gap-4 text-sm text-slate-500">
+          <span>{date}</span>
+          <span className="flex items-center gap-1">
+            <Clock className="h-3.5 w-3.5" /> {readTime}
+          </span>
+        </div>
+
+        {post.image_url && (
+          <img
+            src={post.image_url}
+            alt={post.title}
+            className="mt-8 w-full rounded-2xl object-cover"
+          />
+        )}
+
+        <div
+          className="mt-8 prose prose-invert max-w-none text-slate-300"
+          dangerouslySetInnerHTML={{ __html: post.content || post.excerpt || '' }}
+        />
+
+        <div className="mt-12 border-t border-white/10 pt-6">
+          <button
+            onClick={() => navigate('/blog')}
+            className="inline-flex items-center gap-2 text-sm text-cyber-400 hover:text-cyber-300"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to all articles
+          </button>
+        </div>
+      </div>
+    </article>
   );
 }
 
-// ------------------------------------------------------------
-// HOOKS
-// ------------------------------------------------------------
-export function useRoute(): Route {
-  const ctx = useContext(RouterContext);
-  if (!ctx) throw new Error('useRoute must be used within a RouterProvider');
-  return ctx.route;
-}
-
-export function useNavigate() {
-  const ctx = useContext(RouterContext);
-  if (!ctx) throw new Error('useNavigate must be used within a RouterProvider');
-  return ctx.navigate;
-}
-
-/**
- * Returns matched params for a given pattern.
- * Example:
- *   const { slug } = useParams('/blog/:slug');
- *   // URL: /blog/hello-world -> { slug: 'hello-world' }
- *
- * If no pattern is passed, returns the query params from the current route.
- */
-export function useParams(pattern?: string): Record<string, string> {
-  const { path, params } = useRoute();
-
-  if (!pattern) return params;
-
-  const matched = matchRoute(pattern, path);
-  return matched ?? {};
-}
-
-/**
- * <Link> component. Use this instead of <a> for internal navigation.
- *
- *   <Link to="/blog/my-post">Read</Link>
- */
-export function Link({
-  to,
-  children,
-  className,
-  onClick,
-  ...rest
-}: {
-  to: string;
-  children: ReactNode;
-  className?: string;
-  onClick?: (e: ReactMouseEvent<HTMLAnchorElement>) => void;
-  [key: string]: any;
-}) {
-  const navigate = useNavigate();
-
-  const handleClick = (e: ReactMouseEvent<HTMLAnchorElement>) => {
-    if (onClick) onClick(e);
-    if (e.defaultPrevented) return;
-
-    // Let modifier keys / middle-click behave normally.
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-
-    e.preventDefault();
-    navigate(to);
-  };
-
-  return (
-    <a href={to} className={className} onClick={handleClick} {...rest}>
-      {children}
-    </a>
-  );
-}
+export default BlogPostPage;
