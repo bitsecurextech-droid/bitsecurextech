@@ -1,165 +1,218 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from '../lib/router';
-import { supabase } from '../lib/supabase';
-import { Clock, ArrowLeft } from 'lucide-react';
+import { Component, ReactNode, Suspense, useState, useEffect } from 'react';
+import { useRoute } from './lib/router';
+import { useAuth } from './lib/auth';
+import { Background } from './components/Background';
+import { ParticleBackground } from './components/ParticleBackground';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import { AIChat } from './components/AIChat';
+import { ScrollProgress } from './components/ScrollProgress';
+import { CustomCursor } from './components/CustomCursor';
+import { LoadingScreen } from './components/LoadingScreen';
+import { supabase } from './lib/supabase';
 
-type Post = {
-  id: string;
-  title: string;
-  slug: string;
-  category: string;
-  excerpt: string | null;
-  content: string | null;
-  image_url: string | null;
-  status: string;
-  published_at: string | null;
-  created_at: string;
-};
+import { HomePage } from './pages/HomePage';
+import { ServicesPage } from './pages/ServicesPage';
+import { ServiceDetailPage } from './pages/ServiceDetailPage';
+import { OffersPage } from './pages/OffersPage';
+import { CybersecurityPage } from './pages/CybersecurityPage';
+import { PortfolioPage } from './pages/PortfolioPage';
+import { CaseStudyPage } from './pages/CaseStudyPage';
+import { BlogPage } from './pages/BlogPage';
+import { BlogPostPage } from './pages/BlogPostPage';
+import { NotFoundPage } from './pages/NotFoundPage';
+import { ToolsPage } from './pages/ToolsPage';
+import { ContactPage } from './pages/ContactPage';
+import { AboutPage } from './pages/AboutPage';
+import { PricingPage } from './pages/PricingPage';
+import { DigitalEcosystemPage } from './pages/DigitalEcosystemPage';
+import { WebDevelopmentPage } from './pages/WebDevelopmentPage';
+import { SoftwareSolutionsPage } from './pages/SoftwareSolutionsPage';
+import { AIAutomationPage } from './pages/AIAutomationPage';
+import { CloudSolutionsPage } from './pages/CloudSolutionsPage';
+import { MobileAppDevelopmentPage } from './pages/MobileAppDevelopmentPage';
+import { DigitalMarketingPage } from './pages/DigitalMarketingPage';
+import { SEOPage } from './pages/SEOPage';
+import { SocialMediaMarketingPage } from './pages/SocialMediaMarketingPage';
+import { ContentMarketingPage } from './pages/ContentMarketingPage';
+import { PenetrationTestingPage } from './pages/PenetrationTestingPage';
+import { EcommerceDevelopmentPage } from './pages/EcommerceDevelopmentPage';
+import { ShopifyStoresPage } from './pages/ShopifyStoresPage';
+import { MarketplacePage } from './pages/MarketplacePage';
+import { CareersPage } from './pages/CareersPage';
+import { PartnersPage } from './pages/PartnersPage';
+import { ReportsPage } from './pages/ReportsPage';
+import { ReviewsPage } from './pages/ReviewsPage';
+import { DisclosurePage } from './pages/DisclosurePage';
+import { BugBountyPage } from './pages/BugBountyPage';
+import { CalculatorPage } from './pages/CalculatorPage';
+import { MaintenancePage } from './pages/MaintenancePage';
+import { GHLPage } from './pages/GHLPage';
 
-export function BlogPostPage() {
-  const { slug } = useParams('/blog/:slug');
-  const navigate = useNavigate();
-  const [post, setPost] = useState<Post | null>(null);
+import { PortalPage } from './pages/PortalPage';
+import AdminPage from './pages/admin';
+
+class ErrorBoundary extends Component<{ children: ReactNode }> {
+  state = { hasError: false, error: null as any };
+
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: any, info: any) {
+    console.error('🚨 GLOBAL CRASH DETECTED:', error);
+    console.error('📂 Component Stack:', info.componentStack);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex min-h-screen flex-col items-center justify-center bg-navy-950 p-6 text-center">
+          <div className="max-w-2xl rounded-2xl border border-red-500/30 bg-red-500/10 p-8">
+            <h1 className="text-2xl font-bold text-red-400">App Crash Detected</h1>
+            <p className="mt-2 text-sm text-slate-400">
+              An error occurred while rendering the page. Check your browser console.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-6 rounded-lg bg-blue-600 px-6 py-2.5 font-medium text-white hover:bg-blue-700"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function useMaintenance() {
+  const [isMaintenance, setIsMaintenance] = useState(false);
+  const [maintenanceMessage, setMaintenanceMessage] = useState('');
   const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    if (!slug) {
-      setNotFound(true);
-      setLoading(false);
-      return;
-    }
+    const checkMaintenance = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('settings')
+          .select('key, value')
+          .in('key', ['maintenance_mode', 'maintenance_message']);
 
-    let cancelled = false;
-    setLoading(true);
-    setNotFound(false);
+        if (error) {
+          console.error('Error checking maintenance:', error);
+          setLoading(false);
+          return;
+        }
 
-    (async () => {
-      const { data, error } = await supabase
-        .from('admin_blog_posts')
-        .select('*')
-        .eq('slug', slug)
-        .eq('status', 'Published')
-        .maybeSingle();
+        const mode = data?.find((d: any) => d.key === 'maintenance_mode');
+        const message = data?.find((d: any) => d.key === 'maintenance_message');
 
-      if (cancelled) return;
-
-      if (error || !data) {
-        console.error('Blog post fetch error:', error);
-        setNotFound(true);
-      } else {
-        setPost(data as Post);
+        setIsMaintenance(mode?.value === 'true' || mode?.value === true);
+        setMaintenanceMessage(
+          message?.value || 'We are currently performing maintenance. We will be back soon!'
+        );
+      } catch (err) {
+        console.error('Maintenance check error:', err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    })();
-
-    return () => {
-      cancelled = true;
     };
-  }, [slug]);
 
-  // Update document title + meta description for SEO
-  useEffect(() => {
-    if (post) {
-      document.title = `${post.title} — BitSecureX Tech`;
-      const meta = document.querySelector('meta[name="description"]');
-      const desc = post.excerpt?.replace(/<[^>]*>/g, '').slice(0, 160) || '';
-      if (meta) meta.setAttribute('content', desc);
-    }
-    return () => {
-      document.title = 'BitSecureX Tech – We Build. We Automate. We Secure.';
-    };
-  }, [post]);
+    checkMaintenance();
+    const interval = setInterval(checkMaintenance, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
-  if (loading) {
+  return { isMaintenance, maintenanceMessage, loading };
+}
+
+const PageLoader = () => (
+  <div className="flex h-[60vh] items-center justify-center">
+    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-cyber-500 border-t-transparent" />
+  </div>
+);
+
+function App() {
+  useAuth();
+  const route = useRoute();
+  const path = route.path;
+  const { isMaintenance, maintenanceMessage } = useMaintenance();
+
+  const showMaintenance = isMaintenance && path !== '/admin' && path !== '/portal';
+
+  if (showMaintenance) {
     return (
-      <div className="pt-40 flex justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-cyber-500 border-t-transparent" />
-      </div>
+      <ErrorBoundary>
+        <MaintenancePage message={maintenanceMessage} />
+      </ErrorBoundary>
     );
   }
 
-  if (notFound || !post) {
-    return (
-      <div className="pt-40 pb-20 text-center">
-        <h1 className="font-display text-3xl font-bold text-white">Post not found</h1>
-        <p className="mt-3 text-slate-400">
-          The article you're looking for doesn't exist or hasn't been published.
-        </p>
-        <button
-          onClick={() => navigate('/blog')}
-          className="mt-6 inline-flex items-center gap-2 text-cyber-400 hover:text-cyber-300"
-        >
-          <ArrowLeft className="h-4 w-4" /> Back to blog
-        </button>
-      </div>
-    );
-  }
+  let PageComponent = NotFoundPage;
 
-  const date = post.published_at
-    ? new Date(post.published_at).toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-      })
-    : new Date(post.created_at).toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-      });
-
-  const readTime = `${Math.max(
-    1,
-    Math.ceil((post.content || post.excerpt || '').length / 1000)
-  )} min`;
+  if (path === '/') PageComponent = HomePage;
+  else if (path === '/services') PageComponent = ServicesPage;
+  else if (path.startsWith('/services/')) PageComponent = ServiceDetailPage;
+  else if (path === '/web-development') PageComponent = WebDevelopmentPage;
+  else if (path === '/software-solutions') PageComponent = SoftwareSolutionsPage;
+  else if (path === '/ai-automation') PageComponent = AIAutomationPage;
+  else if (path === '/cloud-solutions') PageComponent = CloudSolutionsPage;
+  else if (path === '/mobile-app-development') PageComponent = MobileAppDevelopmentPage;
+  else if (path === '/digital-marketing') PageComponent = DigitalMarketingPage;
+  else if (path === '/seo') PageComponent = SEOPage;
+  else if (path === '/social-media-marketing') PageComponent = SocialMediaMarketingPage;
+  else if (path === '/content-marketing') PageComponent = ContentMarketingPage;
+  else if (path === '/cybersecurity') PageComponent = CybersecurityPage;
+  else if (path === '/penetration-testing') PageComponent = PenetrationTestingPage;
+  else if (path === '/ecommerce-development') PageComponent = EcommerceDevelopmentPage;
+  else if (path === '/shopify-stores') PageComponent = ShopifyStoresPage;
+  else if (path === '/marketplace') PageComponent = MarketplacePage;
+  else if (path === '/ecosystem') PageComponent = DigitalEcosystemPage;
+  else if (path === '/about') PageComponent = AboutPage;
+  else if (path === '/careers') PageComponent = CareersPage;
+  else if (path === '/partners') PageComponent = PartnersPage;
+  else if (path === '/blog') PageComponent = BlogPage;
+  else if (path.startsWith('/blog/')) PageComponent = BlogPostPage;
+  else if (path === '/case-studies') PageComponent = CaseStudyPage;
+  else if (path === '/reports') PageComponent = ReportsPage;
+  else if (path === '/tools') PageComponent = ToolsPage;
+  else if (path === '/calculator') PageComponent = CalculatorPage;
+  else if (path === '/offers') PageComponent = OffersPage;
+  else if (path === '/portfolio') PageComponent = PortfolioPage;
+  else if (path === '/contact') PageComponent = ContactPage;
+  else if (path === '/portal') PageComponent = PortalPage;
+  else if (path === '/admin') PageComponent = AdminPage;
+  else if (path === '/pricing') PageComponent = PricingPage;
+  else if (path === '/reviews') PageComponent = ReviewsPage;
+  else if (path === '/disclosure') PageComponent = DisclosurePage;
+  else if (path === '/bug-bounty') PageComponent = BugBountyPage;
+  else if (path === '/gohighlevel') PageComponent = GHLPage;
 
   return (
-    <article className="pt-28 pb-20">
-      <div className="container-x max-w-3xl">
-        <button
-          onClick={() => navigate('/blog')}
-          className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white"
-        >
-          <ArrowLeft className="h-4 w-4" /> Back to blog
-        </button>
+    <ErrorBoundary>
+      <div className="relative min-h-screen">
+        <LoadingScreen />
+        <Background />
+        <ParticleBackground />
+        <CustomCursor />
+        <ScrollProgress />
 
-        <span className="mt-6 block text-xs font-medium uppercase tracking-wider text-cyber-400">
-          {post.category}
-        </span>
-        <h1 className="mt-3 font-display text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
-          {post.title}
-        </h1>
-        <div className="mt-4 flex items-center gap-4 text-sm text-slate-500">
-          <span>{date}</span>
-          <span className="flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5" /> {readTime}
-          </span>
-        </div>
+        {path !== '/admin' && <Navbar />}
 
-        {post.image_url && (
-          <img
-            src={post.image_url}
-            alt={post.title}
-            className="mt-8 w-full rounded-2xl object-cover"
-          />
-        )}
+        <main>
+          <Suspense fallback={<PageLoader />}>
+            <PageComponent />
+          </Suspense>
+        </main>
 
-        <div
-          className="mt-8 prose prose-invert max-w-none text-slate-300"
-          dangerouslySetInnerHTML={{ __html: post.content || post.excerpt || '' }}
-        />
+        {path !== '/admin' && <Footer />}
 
-        <div className="mt-12 border-t border-white/10 pt-6">
-          <button
-            onClick={() => navigate('/blog')}
-            className="inline-flex items-center gap-2 text-sm text-cyber-400 hover:text-cyber-300"
-          >
-            <ArrowLeft className="h-4 w-4" /> Back to all articles
-          </button>
-        </div>
+        <AIChat />
       </div>
-    </article>
+    </ErrorBoundary>
   );
 }
 
-export default BlogPostPage;
+export default App;
