@@ -103,7 +103,7 @@ export function NotFoundPage() {
             <span className="gradient-text">404</span>
           </h1>
           <h2 className="mt-4 font-display text-2xl font-semibold text-white sm:text-3xl">
-            This page could not be found
+            Hi, this page could not be found
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-400">
             The link may be broken, or the page may have been moved. Let's get you
