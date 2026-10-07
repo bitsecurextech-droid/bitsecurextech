@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from './lib/router';
+import { useParams, useNavigate } from '../lib/router';
 import { supabase } from './lib/supabase';
 import { Clock, ArrowLeft } from 'lucide-react';
 
